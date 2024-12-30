@@ -1,11 +1,12 @@
-// import React from 'react'
+import React from 'react'
+import HeroAbout from '../../components/About_Com/HeroAbout'
 
-function About() {
-  return (
-    <div>
-      About
-    </div>
-  )
+const About = () => {
+    return (
+        <>
+            <HeroAbout />
+        </>
+    )
 }
 
 export default About
