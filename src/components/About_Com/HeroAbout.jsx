@@ -1,24 +1,20 @@
-import React from 'react'
-import { Container, Col, Row } from 'react-bootstrap'
-import hero from '../../assets/hero-home.png'
+import React from "react";
+import "../About_Com/About.css";
 
 const HeroAbout = () => {
   return (
-    <Container>
-      <div>
-        <h1 className='text-primary'>Q-prep</h1>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, quod.</p>
+    <>
+      <div className="About-hero ">
+        <div className="title text-center">
+          <h1 className="text-secondary text-2xl md:text-4xl sm:text-3xl ">About Q-Prep</h1>
+          <p style={{ width: "80%", margin: "auto" }} className="text-sm text-gray-600 sm:text:xl md:text-2xl pt-3 ">
+            Empowering You to Make Informed Decisions and Choose the Perfect
+            Career Track to Achieve Your Goals
+          </p>
+        </div>
       </div>
-
-
-
-      <Row >
-        <Col lg={6}>
-          <img src={hero} alt="img" />
-        </Col>
-      </Row>
-    </Container>
-  )
-}
+    </>
+  );
+};
 
 export default HeroAbout;

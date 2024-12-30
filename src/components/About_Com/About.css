@@ -1,0 +1,96 @@
+:root{
+    --main:#6BE9D112;
+}
+h1{
+    font-size: 22px;
+    font-weight:500;
+}
+
+h2{
+    font-size: 20px;
+    font-weight: 400;
+}
+/* About-hero */
+.About-hero h1{
+    background: linear-gradient(270deg, rgba(9,9,121,1) 43%, rgb(57, 202, 231) 60%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+}
+
+/* image-container */
+
+.image-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.image-container .img{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 240px;
+    background-color: var(--main) ;
+    border-radius: 28px;
+    padding: 10px 0px;
+}
+
+/* MessageWelcome */
+
+.MessageWelcome h1{
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.MessageWelcome h2{
+    font-size: 20px;
+    font-weight: 400;
+}
+
+/* 'Collaborative-Community */
+
+.Collaborative-Community {
+    background-color: var(--main);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.Collaborative-Community h2{
+    font-size: 20px;
+}
+
+.Collaborative-Community ul {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+/* Dynamic_Resources */
+
+.Dynamic-Resources .img{
+    height: 230px;
+    width: 230px;
+    background-color: var(--main);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+}
+.Dynamic-Resources .img img{
+    width: 90%;
+}
+
+/* media Query */
+@media screen and (max-width: 350px) {
+    .MessageWelcome h1{
+        font-size: 25px;
+        font-weight: bold;
+    }
+    .MessageWelcome h2{
+        font-size: 16px;
+        font-weight: 300;
+    }
+}
