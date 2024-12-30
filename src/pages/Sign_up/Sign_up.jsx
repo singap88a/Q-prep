@@ -1,21 +1,21 @@
 // import React from 'react'
-import sign_up from "../../assets/Sign-up.png";
-import Google from "../../assets/google.png";
-import Facebook from "../../assets/facebook.png";
-import Apple from "../../assets/apple.png";
+import sign_up from "../../assets/home-img/Sign-up.png";
+import Google from "../../assets/home-img/google.png";
+import Facebook from "../../assets/home-img/facebook.png";
+import Apple from "../../assets/home-img/apple.png";
 
 function Sign_up() {
   return (
-    <div className=" container flex-container ">
+    <div className="container flex-col-reverse flex-container md:flex-row">
       <div className="coll ">
-        <img src={sign_up} alt="" className="w-[60%] m-auto" />
+        <img src={sign_up} alt="" className="md:w-[60%] m-auto flex flex-col" />
       </div>
       <div className="coll">
-        <div className=" w-[70%] m-auto  ">
+        <div className=" md:w-[70%] m-auto flex flex-col  ">
           <h1 className="text-2xl font-bold text-gray-800">
             Welcome to Q-Prep
           </h1>
-          <p className="text-primary mb-6">Register your account</p>
+          <p className="mb-6 text-primary">Register your account</p>
           <form className="space-y-4">
             <div>
               <label
@@ -28,7 +28,7 @@ function Sign_up() {
                 type="text"
                 id="name"
                 placeholder="Hanin Burham"
-                className="w-full p-3 border border-secondary rounded-lg text-secondary  "
+                className="w-full p-3 border rounded-lg border-secondary text-secondary "
               />
             </div>
 
@@ -43,7 +43,7 @@ function Sign_up() {
                 type="email"
                 id="email"
                 placeholder="Haninburham@gmail.com"
-                className="w-full p-3 border border-secondary rounded-lg text-secondary  "
+                className="w-full p-3 border rounded-lg border-secondary text-secondary "
               />
             </div>
 
@@ -58,21 +58,21 @@ function Sign_up() {
                 type="password"
                 id="password"
                 placeholder="Write strong password"
-                className="w-full p-3 border border-secondary rounded-lg text-secondary  "
+                className="w-full p-3 border rounded-lg border-secondary text-secondary "
               />
             </div>
 
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-secondary text-white py-2 rounded-lg hover:bg-purple-700 transition"
+              className="w-full py-2 text-white transition rounded-lg bg-secondary hover:bg-purple-700"
             >
               Sign up
             </button>
           </form>
 
           {/* Social Login */}
-          <p className="text-center text-primary mt-6">Create account with</p>
+          <p className="mt-6 text-center text-primary">Create account with</p>
           <div className="flex justify-center gap-10 mt-4">
             <img src={Google} alt="Google" className="w-6 h-6 cursor-pointer" />
             <img

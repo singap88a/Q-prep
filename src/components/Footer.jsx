@@ -1,28 +1,28 @@
 // import React from 'react'
 import { Link } from "react-router-dom";
-import logo from "../assets/logo.png";
+import logo from "../assets/home-img/logo.png";
 
 function Footer() {
   return (
     <div>
  
 
-<footer className="bg-bac_bg py-3">
-  <div className=" max-w-screen-xl px-4 pb-6 pt-16 sm:px-6 lg:px-8 lg:pt-10 container">
+<footer className="py-3 bg-bac_bg">
+  <div className="container max-w-screen-xl px-4 pt-16 pb-6  sm:px-6 lg:px-8 lg:pt-10">
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
       <div>
         <div className="flex justify-center text-teal-600 sm:justify-start">
         <Link to="/">
-                  <img src={logo} alt="Logo" className="h-12 w-auto" />
+                  <img src={logo} alt="Logo" className="w-auto h-12" />
                 </Link>
         </div>
 
-        <p className="mt-6 max-w-md text-center leading-relaxed text-gray-500 sm:max-w-xs sm:text-left">
+        <p className="max-w-md mt-6 leading-relaxed text-center text-gray-500 sm:max-w-xs sm:text-left">
           Lorem ipsum dolor, sit amet consectetur adipisicing elit. Incidunt consequuntur amet culpa
           cum itaque neque.
         </p>
 
-        <ul className="mt-8 flex justify-center gap-6 sm:justify-start md:gap-8">
+        <ul className="flex justify-center gap-6 mt-8 sm:justify-start md:gap-8">
           <li>
             <a
               href="#"
@@ -189,9 +189,9 @@ function Footer() {
 
                 <span className="relative flex size-2">
                   <span
-                    className="absolute inline-flex h-full w-full animate-ping rounded-full bg-teal-400 opacity-75"
+                    className="absolute inline-flex w-full h-full bg-teal-400 rounded-full opacity-75 animate-ping"
                   ></span>
-                  <span className="relative inline-flex size-2 rounded-full bg-teal-500"></span>
+                  <span className="relative inline-flex bg-teal-500 rounded-full size-2"></span>
                 </span>
               </a>
             </li>
@@ -209,7 +209,7 @@ function Footer() {
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="size-5 shrink-0 text-gray-900"
+                  className="text-gray-900 size-5 shrink-0"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -233,7 +233,7 @@ function Footer() {
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="size-5 shrink-0 text-gray-900"
+                  className="text-gray-900 size-5 shrink-0"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -255,7 +255,7 @@ function Footer() {
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="size-5 shrink-0 text-gray-900"
+                className="text-gray-900 size-5 shrink-0"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -282,7 +282,7 @@ function Footer() {
       </div>
     </div>
 
-    <div className="mt-12 border-t border-gray-100 pt-6">
+    <div className="pt-6 mt-12 border-t border-gray-100">
       <div className="text-center sm:flex sm:justify-between sm:text-left">
         <p className="text-sm text-gray-500">
           <span className="block sm:inline">All rights reserved.</span>

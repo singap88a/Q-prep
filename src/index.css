@@ -2,67 +2,70 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
-
 .container {
-    max-width: 1400px; /* العرض الأقصى */
-    margin: 0 auto; /* التوسيط أفقياً */
-    padding: 0 16px; /* حواف داخلية */
-  }
-  
+  max-width: 1350px; /* العرض الأقصى */
+  margin: 0 auto; /* التوسيط أفقياً */
+  padding: 0 16px; /* حواف داخلية */
+}
 
+.flex-container {
+  display: flex;
+  flex-wrap: wrap; /* السماح بالتفاف العناصر */
+  gap: 16px;
+  justify-content: space-between; /* توزيع العناصر */
+}
 
-  .flex-container {
-    display: flex;
-    flex-wrap: wrap; /* السماح بالتفاف العناصر */
-    gap: 16px;
-    justify-content: space-between; /* توزيع العناصر */
-  }
+.coll {
+  flex: 1 1 calc(33.333% - 16px); /* ثلاث أعمدة */
+  /* background: #f0f0f0; */
+  padding: 16px 0;
+  box-sizing: border-box;
+}
 
-
-
+/* شاشات أصغر */
+@media (max-width: 768px) {
   .coll {
-    flex: 1 1 calc(33.333% - 16px)  ; /* ثلاث أعمدة */
-    /* background: #f0f0f0; */
-    padding:  16px 0;
-    box-sizing: border-box;
-   }
-  
-  /* شاشات أصغر */
-  @media (max-width: 768px) {
-    .coll {
-      flex: 1 1 calc(50% - 16px); /* عمودان */
-    }
+    flex: 1 1 calc(50% - 16px); /* عمودان */
   }
-  
-  /* شاشات صغيرة جداً */
-  @media (max-width: 480px) {
-    .coll {
-      flex: 1 1 100%; /* عمود واحد */
-    }
+}
+
+/* شاشات صغيرة جداً */
+@media (max-width: 480px) {
+  .coll {
+    flex: 1 1 100%; /* عمود واحد */
   }
+}
 
+/* ///////// */
 
+.button_pro {
+  background-color: #462775 !important;
+  color: white;
+  border: #462775;
+  border-radius: 5px;
+  padding: 8px 15px;
+}
 
+/* home swiper */
+.swiper-button-next,
+.swiper-button-prev {
+  color: #462775 !important;
+  font-weight: 800 !important;
+  transition: transform 0.2s;
+  font-size: 10px !important;
+}
 
-  /* ///////// */
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  transform: scale(1.2);
+}
 
-  .button_pro{
-   background-color:#462775 !important;
-   color: white;
-   border: #462775;
-   border-radius: 5px;
-   padding: 8px 15px;
- 
-  }
+ /* تغيير لون Scrollbar الخاص بـ Swiper */
+.custom-swiper-scrollbar .swiper-scrollbar {
+  background-color: #e0e0e0;
+}
 
-
-
-
-
-
-
-
-
-  
+.custom-swiper-scrollbar .swiper-scrollbar-drag {
+  background-color: #4395ad;
+  border-radius: 10px;
+}
