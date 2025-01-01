@@ -1,0 +1,9 @@
+.chooseTrack  .MuiPagination-ul li .Mui-selected{
+    background-color: rgb(35, 35, 214);
+    color: white;
+}
+.chooseTrack .headTitle h1{
+    background: linear-gradient(270deg, rgba(9, 9, 121, 0.832) 50%, rgba(57, 202, 231, 0.506) 80%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

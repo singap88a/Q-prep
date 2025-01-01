@@ -71,7 +71,7 @@ const Available_Tracks = () => {
               1024: { slidesPerView: 5 },
             }}
             pagination={{ clickable: true }}
-            scrollbar={{ draggable: true }} // التمرير قابل للسحب
+            scrollbar={{ draggable: true }} 
             loop={true}
             autoplay={{
               delay: 1000,
