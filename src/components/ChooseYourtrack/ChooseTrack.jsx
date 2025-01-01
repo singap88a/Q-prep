@@ -1,123 +1,97 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 
+// Iamge-Card
 import card_img from "../../assets/ChooseTrack/Card-img.png";
 
 // Icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlass, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 // pagination
-import { Pagination, Stack, Typography } from "@mui/material";
+import { Pagination, Stack } from "@mui/material";
 
 // Search
 import Fuse from "fuse.js";
 
 // Navigate
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 // Css
 import "./Z_Track.css";
 
 const ChooseTrack = () => {
-    // Pagination
-    const navigate = useNavigate();
-    const [page, setPage] = React.useState(1);
-
-    const handleChange = (event, value) => {
-        setPage(value);
-        navigate(`/choosetrack/${value}`);
-    };
-
-    // Search
     const data = [
         {
             id: 1,
             name: "Fornt-End",
             category:
                 "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
+            content: ["HTML", "CSS", "JavaScript", "React", "Vue"],
         },
         {
-            id: 1,
+            id: 2,
             name: "React",
             category:
                 "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
+            content: ["HTML", "CSS", "JavaScript", "React", "Vue"],
         },
         {
-            id: 1,
+            id: 3,
             name: "Vue.js",
             category:
                 "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
+            content: ["HTML", "CSS", "JavaScript", "React", "Vue"],
         },
         {
-            id: 1,
+            id: 4,
             name: "Anglur",
             category:
                 "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
+            content: ["HTML", "CSS", "JavaScript", "React", "Vue"],
         },
         {
-            id: 1,
+            id: 5,
             name: "Dev-Ops",
             category:
                 "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
+            content: ["Git", "Docker", "Webpack", "Postman", "Figma"],
         },
         {
-            id: 2,
+            id: 6,
             name: "BackEnd",
             category:
                 "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
+            content: ["Node.js", "Python", "Ruby", "Java", "PHP"],
         },
         {
-            id: 1,
+            id: 7,
             name: "Data Science",
             category:
                 "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
+            content: ["HTML", "CSS", "JavaScript", "React", "Vue"],
         },
         {
-            id: 2,
+            id: 8,
             name: "BackEnd",
             category:
                 "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
+            content: ["Node.js", "Python", "Ruby", "Java", "PHP"],
         },
     ];
 
-    const recent = [
-        {
-            id: 1,
-            name: "Fornt-End",
-            category:
-                "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
-        },
-        {
-            id: 1,
-            name: "Vue.js",
-            category:
-                "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
-        },
-        {
-            id: 1,
-            name: "Anglur",
-            category:
-                "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
-        },
-        {
-            id: 1,
-            name: "Dev-Ops",
-            category:
-                "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
-        },
-        {
-            id: 2,
-            name: "BackEnd",
-            category:
-                "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
-        },
-        {
-            id: 1,
-            name: "Data Science",
-            category:
-                "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
-        },
-    ];
+
+
+    // Pagination
+    const navigate = useNavigate();
+    const [page, setPage] = React.useState(1);
+
+    // Search
+    const handleChange = (event, value) => {
+        setPage(value);
+        navigate(`/choosetrack/${value}`);
+    };
+
+
 
     const [querySearch, setquerySearch] = useState("");
     const [results, setResults] = useState(data);
@@ -127,17 +101,19 @@ const ChooseTrack = () => {
         threshold: 0.3,
     });
 
-    const handleSearch = (e) => {
-        const value = e.target.value;
-        setquerySearch(value);
+        const handleSearch = (e) => {
+            const value = e.target.value;
+            setquerySearch(value);
+            console.log("fire");
+            if (value.trim() === "") {
+                setResults(data);
+            } else {
+                const fuzzyResults = fuse.search(value);
+                setResults(fuzzyResults.map((result) => result.item));
+            }
+        };
 
-        if (value.trim() === "") {
-            setResults(data);
-        } else {
-            const fuzzyResults = fuse.search(value);
-            setResults(fuzzyResults.map((result) => result.item));
-        }
-    };
+
 
     return (
         <div className="chooseTrack my-10 container">
@@ -155,9 +131,7 @@ const ChooseTrack = () => {
             </div>
 
             {/* --cards && search-- */}
-            <div className="flex justify-center items-center flex-col"
-                style={{ padding: "20px" }}
-            >
+            <div className="flex justify-center items-center flex-col" style={{ padding: "20px" }} >
                 {/* --Search-- */}
                 <div className="relative w-full max-w-lg mx-auto mt-5">
                     <FontAwesomeIcon
@@ -172,12 +146,14 @@ const ChooseTrack = () => {
                         className="w-full placeholder:text-gray-400 placeholder:font-medium text-sm bg-white border border-gray-300 rounded-full py-2.5 pl-10 pr-4 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:focus:opacity-0"
                     />
                 </div>
+
                 {/* --Cards-- */}
                 <ul style={{ marginTop: "20px" }}>
                     <h1 className="text-2xl font-semibold">Popular Tracks</h1>
                     <div class="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-10 my-10">
                         {results.map((item) => (
-                            <div className="card rounded-lg  h-[280px] flex justify-center items-center flex-col overflow-hidden px-8 cursor-pointer" style={{ boxShadow: '0 0 5px #93c5fd' }}>
+                            
+                            <Link to={`../choosetrack/lang`} className="card rounded-lg  h-[280px] flex justify-center items-center flex-col overflow-hidden px-8 cursor-pointer" >
                                 <div className="img-card mb-4 bg-zinc-300 rounded-full p-3 w-[100px]  h-[100px] lg:w-[100px] lg:h-[100px] md:w-[95px] md:h-[95px]">
                                     <img src={card_img} alt="" className="m-auto" />
                                 </div>
@@ -187,7 +163,7 @@ const ChooseTrack = () => {
                                 <p className="desc text-center text-sm md:text-xs  sm:text-xs text-gray-600 px-2">
                                     {item.category}
                                 </p>
-                            </div>
+                            </Link>
                         ))}
                     </div>
                 </ul>
@@ -206,26 +182,6 @@ const ChooseTrack = () => {
                 </Stack>
             </div>
 
-
-            {/* Recent  */}
-            <div className="recent container">
-                <h1 className="text-2xl font-semibold">Recent Use</h1>
-                <div class="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-10 my-10">
-                    {recent.map((item) => (
-                        <div className="card rounded-lg  h-[280px] flex justify-center items-center flex-col overflow-hidden px-8 cursor-pointer" style={{ boxShadow: '0 0 5px #93c5fd' }}>
-                            <div className="img-card mb-4 bg-zinc-300 rounded-full p-3 w-[100px]  h-[100px] lg:w-[100px] lg:h-[100px] md:w-[95px] md:h-[95px]">
-                                <img src={card_img} alt="" className="m-auto" />
-                            </div>
-                            <h3 className="title text-center mb-2 text-2xl font-medium text-primary ">
-                                {item.name}
-                            </h3>
-                            <p className="desc text-center text-sm md:text-xs  sm:text-xs text-gray-600 px-2">
-                                {item.category}
-                            </p>
-                        </div>
-                    ))}
-                </div>
-            </div>
         </div>
     );
 };

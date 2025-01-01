@@ -57,14 +57,6 @@ const TestYourLevel = () => {
     }
 
     if (currentQuestionIndex < questions.length - 1) {
-      console.log( currentQuestion)
-      console.log(questions.length)
-      console.log("true")
-
-    }
-
-
-    if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setSelectedOption(null);
     } else {
