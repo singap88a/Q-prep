@@ -42,6 +42,8 @@ function Approuting() {
         <Route path="/questions" element={<Questions />} />
         <Route path="/add_question" element={<Add_question />} />
         <Route path="/test_your_level" element={<Test_your_level />} />
+
+        <Route path="/saved_questions" element={<Saved_questions />} />
            
         {/* Error */}
         <Route path="*" element={<ErrorPage />} />
