@@ -27,13 +27,15 @@ function Approuting() {
         <Route path="/login" element={<Login />} />
         <Route path="/sign-up" element={<Sign_up />} />
 
+
         {/* Pagination */}
         <Route path="/choosetrack/1" element={<ChooseTrack />} />
         <Route path="/choosetrack/2" element={<ChooseTrack />} />
         <Route path="/choosetrack/3" element={<ChooseTrack />} />
         <Route path="/choosetrack/4" element={<ChooseTrack />} />
         <Route path="/choosetrack/5" element={<ChooseTrack />} />
-        {/* ///////////////////////// */}
+
+        {/* ////// Questions //////// */}
         <Route path="/questions" element={<Questions />} />
         <Route path="/add_question" element={<Add_question />} />
         <Route path="/test_your_level" element={<Test_your_level />} />
