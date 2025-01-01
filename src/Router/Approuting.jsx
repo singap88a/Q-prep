@@ -28,24 +28,21 @@ function Approuting() {
         <Route path="/about" element={<About />} />
         <Route path="/choosetrack/1" element={<ChooseTrack />} />
 
-        {/* Auth */}
-        <Route
-          path="/login"
-          element={<Login setIsLoggedIn={setIsLoggedIn} />}
-        />
-        <Route path="/sign-up" element={<Sign_up setIsLoggedIn={setIsLoggedIn}  />} />
+        {/* auth */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/sign-up" element={<Sign_up />} />
 
         {/* Pagination */}
-        <Route path="/choosetrack/:id" element={<ChooseTrack />} />
-
-        {/* Main Features */}
+        <Route path="/choosetrack/1" element={<ChooseTrack />} />
+        <Route path="/choosetrack/2" element={<ChooseTrack />} />
+        <Route path="/choosetrack/3" element={<ChooseTrack />} />
+        <Route path="/choosetrack/4" element={<ChooseTrack />} />
+        <Route path="/choosetrack/5" element={<ChooseTrack />} />
+        {/* ///////////////////////// */}
         <Route path="/questions" element={<Questions />} />
         <Route path="/add_question" element={<Add_question />} />
         <Route path="/test_your_level" element={<Test_your_level />} />
-        
-
-        <Route path="/saved_questions" element={<Saved_questions />} />
-
+           
         {/* Error */}
         <Route path="*" element={<ErrorPage />} />
       </Routes>

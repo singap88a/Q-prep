@@ -2,7 +2,7 @@ import { useState } from "react";
 import Test_level from "../../assets/Test_level.png";
 import Test_level_2 from "../../assets/Test_level_2.png";
 
- import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 const TestYourLevel = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -52,9 +52,17 @@ const TestYourLevel = () => {
   };
 
   const handleNext = () => {
-    if (selectedOption === questions[currentQuestionIndex].correctAnswer) {
+    if (selectedOption === questions[currentQuestionIndex].correctAnswer) { 
       setScore(score + 1);
     }
+
+    if (currentQuestionIndex < questions.length - 1) {
+      console.log( currentQuestion)
+      console.log(questions.length)
+      console.log("true")
+
+    }
+
 
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -85,15 +93,14 @@ const TestYourLevel = () => {
     const level = getLevel();
 
     return (
-        
       <div className="container relative flex items-center justify-center ">
         <div className="w-full p-6 text-center rounded-lg ">
           <img src={Test_level} alt="" className="mx-auto   md:w-[40%]" />
-          <img src={Test_level_2} alt="" className="absolute hidden w-24 top-20 left-20 md:block"/>
-          <img src={Test_level_2} alt="" className="absolute hidden w-24 right-20 md:block"  />
+          <img src={Test_level_2} alt="" className="absolute hidden w-24 top-20 left-20 md:block" />
+          <img src={Test_level_2} alt="" className="absolute hidden w-24 right-20 md:block" />
 
           <p className="text-gray-600">
-            Your score is: <span className="text-blue-500">{score}</span> out of{" "}
+            Your score is: <span className="text-blue-500">{score}</span> out of
             {questions.length}.
           </p>
           <p className="py-8 text-2xl font-bold text-secondary">
@@ -102,8 +109,8 @@ const TestYourLevel = () => {
           <Link to="/" className="px-10 py-2  font-bold text-white rounded-md bg-secondary hover:bg-[#33439f] transition-all my-3  ">
             Next
           </Link>
- 
-         </div>
+
+        </div>
       </div>
     );
   }
@@ -112,14 +119,14 @@ const TestYourLevel = () => {
 
   return (
     <div className="container">
-         <div className="flex gap-3">
+      <div className="flex gap-3">
         <div className="flex items-center justify-center gap-3">
           <i className="text-2xl font-bold fa-solid fa-chevron-left text-primary"></i>
-          <h1> Front-end</h1>
+          <h1> Front-end </h1>
         </div>
         <div className="flex items-center justify-center gap-3">
           <i className="text-2xl font-bold fa-solid fa-chevron-left text-primary"></i>
-          <h1> Test your level</h1>
+          <h1>Test your level</h1>
         </div>
       </div>
       {/* ///////////////////////////////////// */}
@@ -132,9 +139,8 @@ const TestYourLevel = () => {
             {currentQuestion.options.map((option, index) => (
               <label
                 key={index}
-                className={`block p-4 border rounded-lg cursor-pointer hover:bg-gray-50 ${
-                  selectedOption === option && "bg-blue-50 border-secondary"
-                }`}
+                className={`block p-4 border rounded-lg cursor-pointer hover:bg-gray-50 ${selectedOption === option && "bg-blue-50 border-secondary"
+                  }`}
               >
                 <input
                   type="radio"
@@ -165,7 +171,7 @@ const TestYourLevel = () => {
             </button>
           </div>
         </div>
-      </div>
+      </div>, 
     </div>
   );
 };
