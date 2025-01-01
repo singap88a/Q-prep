@@ -1,5 +1,5 @@
 import React from 'react'
-import ChooseYourLevel_Com from "../../components/ChooseYourtrack/ChooseYourLevel/ChooseYourLevel_Com";
+import ChooseYourLevel_Com from "../../../components/ChooseYourtrack/ChooseYourLevel/ChooseYourLevel_Com";
 
 const ChooseYourLevel = () => {
     return (

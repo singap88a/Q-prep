@@ -70,8 +70,7 @@ const ChooseLanguage_Com = () => {
                         <h1 className="md:text-2xl text-lg font-semibold ">
                             <Link to="/choosetrack/1" className="text-blue-950">
                                 <FontAwesomeIcon icon={faAngleLeft} />
-                            </Link>
-                            FrontEnd
+                            </Link> FrontEnd
                         </h1>
                         <h1 className="md:text-xl ms-6 text-sm">Choose the framework</h1>
                     </div>
