@@ -24,12 +24,12 @@ function Hero() {
             </p>
 
             <div className="flex flex-wrap gap-4 mt-8 text-center">
-              <Link>
+              <Link to="/choosetrack/1">
               <div className="relative z-10 px-2 py-2 overflow-hidden font-bold text-white border-2 rounded-md md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary">
               Choose your track now!
                 </div>
               </Link>
-              <Link>
+              <Link to="/test_your_level">
                 <div className="relative z-10 px-2 py-2 overflow-hidden font-bold border-2 rounded-md md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-secondary before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 text-secondary hover:text-white">
                   {" "}
                   Test your level

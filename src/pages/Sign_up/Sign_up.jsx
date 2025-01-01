@@ -3,20 +3,38 @@ import sign_up from "../../assets/home-img/Sign-up.png";
 import Google from "../../assets/home-img/google.png";
 import Facebook from "../../assets/home-img/facebook.png";
 import Apple from "../../assets/home-img/apple.png";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-function Sign_up() {
+function Sign_up({ setIsLoggedIn }) {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleSignUp = (e) => {
+    e.preventDefault();
+    // Simulate sign-up logic
+    if (name && email && password) {
+      setIsLoggedIn(true); // Set logged-in state
+      navigate("/"); // Navigate to the home page
+    } else {
+      alert("Please fill in all fields");
+    }
+  };
+
   return (
     <div className="container flex-col-reverse flex-container md:flex-row">
-      <div className="coll ">
+      <div className="coll">
         <img src={sign_up} alt="" className="md:w-[60%] m-auto flex flex-col" />
       </div>
       <div className="coll">
-        <div className=" md:w-[70%] m-auto flex flex-col  ">
+        <div className="md:w-[70%] m-auto flex flex-col">
           <h1 className="text-2xl font-bold text-gray-800">
             Welcome to Q-Prep
           </h1>
           <p className="mb-6 text-primary">Register your account</p>
-          <form className="space-y-4">
+          <form onSubmit={handleSignUp} className="space-y-4">
             <div>
               <label
                 htmlFor="name"
@@ -28,7 +46,9 @@ function Sign_up() {
                 type="text"
                 id="name"
                 placeholder="Hanin Burham"
-                className="w-full p-3 border rounded-lg border-secondary text-secondary "
+                className="w-full p-3 border rounded-lg border-secondary text-secondary"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
             </div>
 
@@ -43,14 +63,16 @@ function Sign_up() {
                 type="email"
                 id="email"
                 placeholder="Haninburham@gmail.com"
-                className="w-full p-3 border rounded-lg border-secondary text-secondary "
+                className="w-full p-3 border rounded-lg border-secondary text-secondary"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-600 "
+                className="block text-sm font-medium text-gray-600"
               >
                 Password
               </label>
@@ -58,7 +80,9 @@ function Sign_up() {
                 type="password"
                 id="password"
                 placeholder="Write strong password"
-                className="w-full p-3 border rounded-lg border-secondary text-secondary "
+                className="w-full p-3 border rounded-lg border-secondary text-secondary"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
 
