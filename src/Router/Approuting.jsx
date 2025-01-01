@@ -29,8 +29,8 @@ function Approuting() {
         <Route path="/choosetrack/1" element={<ChooseTrack />} />
 
         {/* auth */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/sign-up" element={<Sign_up />} />
+        <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/sign-up" element={<Sign_up setIsLoggedIn={setIsLoggedIn} />} />
 
         {/* Pagination */}
         <Route path="/choosetrack/1" element={<ChooseTrack />} />
