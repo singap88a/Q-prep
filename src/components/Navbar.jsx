@@ -77,7 +77,7 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
           </div>
 
           {/* User Actions */}
-          <div className="space-x-4 md:flex">
+          <div className="space-x-4 md:flex ">
             {isLoggedIn ? (
               <div className="flex items-center gap-3 space-x-2">
                 {/* icon Saved questions */}
@@ -101,13 +101,13 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
                 />
                 <button
                   onClick={() => setIsLoggedIn(false)}
-                  className="px-4 py-1 text-red-600 border-2 border-red-600 rounded-md "
+                  className="hidden px-4 py-1 text-red-600 border-2 border-red-600 rounded-md md:flex"
                 >
                   Logout
                 </button>
               </div>
             ) : (
-              <>
+              <div className="hidden gap-4 md:flex">
                 <Link
                   to="/login"
                   className={`px-4 py-1 rounded ${
@@ -128,7 +128,7 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
                 >
                   Sign Up
                 </Link>
-              </>
+              </div>
             )}
           </div>
 
@@ -140,7 +140,7 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
               className="text-black focus:outline-none"
             >
               <svg
-                className="w-6 h-6"
+                className="w-8 h-8 text-primary"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
