@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import logo from "../assets/home-img/logo.png";
-import userImage from "../assets/user.png";  
+import userImage from "../assets/user.png";
 
 function Navbar({ isLoggedIn, setIsLoggedIn }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -94,11 +94,14 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
                   <i className="text-2xl font-semibold fa-regular fa-bookmark"></i>
                 </Link>
 
-                <img
-                  src={userImage}
-                  alt="User"
-                  className="w-10 h-10 rounded-full"
-                />
+                <Link to="/profile">
+                  <img
+                    src={userImage}
+                    alt="User"
+                    className="w-10 h-10 rounded-full"
+                  />
+                </Link>
+
                 <button
                   onClick={() => setIsLoggedIn(false)}
                   className="hidden px-4 py-1 text-red-600 border-2 border-red-600 rounded-md md:flex"
@@ -110,20 +113,20 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
               <div className="hidden gap-4 md:flex">
                 <Link
                   to="/login"
-                  className={`px-4 py-1 rounded ${
+                  className={` py-1 px-3 rounded ${
                     location.pathname === "/login"
                       ? "text-white bg-secondary"
-                      : "border-2 border-secondary text-secondary"
+                      : "border-2 border-secondary text-secondary relative z-10   overflow-hidden font-bold   rounded-md   isolation-auto   before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-secondary before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700   hover:text-white"
                   }`}
                 >
                   Login
                 </Link>
                 <Link
                   to="/sign-up"
-                  className={`px-4 py-1 rounded ${
+                  className={`py-1 px-3  rounded ${
                     location.pathname === "/sign-up"
                       ? "text-white bg-secondary"
-                      : "border-2 border-secondary text-secondary"
+                      : "border-2 border-secondary text-secondary relative z-10   overflow-hidden font-bold   rounded-md   isolation-auto   before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-secondary before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700   hover:text-white"
                   }`}
                 >
                   Sign Up
@@ -188,18 +191,26 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
                 </button>
               ) : (
                 <>
-                  <Link
-                    to="/login"
-                    className="px-4 py-1 border-2 rounded border-secondary text-secondary"
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    to="/sign-up"
-                    className="px-4 py-1 border-2 rounded border-secondary text-secondary"
-                  >
-                    Sign Up
-                  </Link>
+                     <Link
+                  to="/login"
+                  className={` py-1 px-3 rounded ${
+                    location.pathname === "/login"
+                      ? "text-white bg-secondary"
+                      : "border-2 border-secondary text-secondary relative z-10   overflow-hidden font-bold   rounded-md   isolation-auto   before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-secondary before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700   hover:text-white"
+                  }`}
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/sign-up"
+                  className={`py-1 px-3  rounded ${
+                    location.pathname === "/sign-up"
+                      ? "text-white bg-secondary"
+                      : "border-2 border-secondary text-secondary relative z-10   overflow-hidden font-bold   rounded-md   isolation-auto   before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-secondary before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700   hover:text-white"
+                  }`}
+                >
+                  Sign Up
+                </Link>
                 </>
               )}
             </div>

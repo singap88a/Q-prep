@@ -19,12 +19,15 @@ import Questions from "../pages/Questions/Questions";
 import Add_question from "../pages/Add_question/Add_question";
 import Test_your_level from "../pages/Test_your_level/Test_your_level";
 import Saved_questions from "../pages/Saved_questions/Saved_questions";
-
+import ScrollToTop from "./ScrollToTop";
+import Profile from "../pages/Profile/Profile";
+  
 function Approuting() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   return (
     <Router>
+       <ScrollToTop />
       <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       <Routes>
         <Route index element={<Home />} />
@@ -54,7 +57,8 @@ function Approuting() {
         <Route path="/test_your_level" element={<Test_your_level />} />
 
         <Route path="/saved_questions" element={<Saved_questions />} />
-
+        <Route path="/profile" element={<Profile/>} />
+ 
         {/* Error */}
         <Route path="*" element={<ErrorPage />} />
       </Routes>

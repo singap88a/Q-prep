@@ -116,14 +116,14 @@ const ChooseTrack = () => {
 
 
     return (
-        <div className="chooseTrack my-10 container">
-            <div className="headTitle flex justify-center items-center flex-col">
-                <h1 className="text-secondary text-2xl md:text-4xl sm:text-3xl font-bold">
+        <div className="container my-10 chooseTrack">
+            <div className="flex flex-col items-center justify-center headTitle">
+                <h1 className="text-2xl font-bold text-secondary md:text-4xl sm:text-3xl">
                     Choose Your track now!
                 </h1>
                 <p
                     style={{ margin: "auto" }}
-                    className="text-center text-sm text-gray-600 sm:text:xl md:text-2xl py-3 px-5"
+                    className="px-5 py-3 text-sm text-center text-gray-600 sm:text:xl md:text-2xl"
                 >
                     Whether you're a beginner or a professional, we're here to help you
                     achieve your goals with confidence.
@@ -131,12 +131,12 @@ const ChooseTrack = () => {
             </div>
 
             {/* --cards && search-- */}
-            <div className="flex justify-center items-center flex-col" style={{ padding: "20px" }} >
+            <div className="flex flex-col items-center justify-center" style={{ padding: "20px" }} >
                 {/* --Search-- */}
                 <div className="relative w-full max-w-lg mx-auto mt-5">
                     <FontAwesomeIcon
                         icon={faSearch}
-                        className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+                        className="absolute text-gray-400 transform -translate-y-1/2 left-4 top-1/2"
                     />
                     <input
                         type="text"
@@ -150,17 +150,17 @@ const ChooseTrack = () => {
                 {/* --Cards-- */}
                 <ul style={{ marginTop: "20px" }}>
                     <h1 className="text-2xl font-semibold">Popular Tracks</h1>
-                    <div class="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-10 my-10">
+                    <div className="grid grid-cols-1 gap-20 my-10 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2">
                         {results.map((item) => (
 
                             <Link to={`../choosetrack/lang`} className="card rounded-lg  h-[280px] flex justify-center items-center flex-col overflow-hidden px-8 cursor-pointer" >
                                 <div className="img-card mb-4 bg-zinc-300 rounded-full p-3 w-[100px]  h-[100px] lg:w-[100px] lg:h-[100px] md:w-[95px] md:h-[95px]">
                                     <img src={card_img} alt="" className="m-auto" />
                                 </div>
-                                <h3 className="title text-center mb-2 text-2xl font-medium text-primary ">
+                                <h3 className="mb-2 text-2xl font-medium text-center title text-primary ">
                                     {item.name}
                                 </h3>
-                                <p className="desc text-center text-sm md:text-xs  sm:text-xs text-gray-600 px-2">
+                                <p className="px-2 text-sm text-center text-gray-600 desc md:text-xs sm:text-xs">
                                     {item.category}
                                 </p>
                             </Link>
@@ -170,7 +170,7 @@ const ChooseTrack = () => {
             </div>
 
             {/* --Pagination-- */}
-            <div className="pagination-cards my-7 flex justify-center items-center">
+            <div className="flex items-center justify-center pagination-cards my-7">
                 <Stack spacing={2}>
                     <Pagination
                         count={6}
