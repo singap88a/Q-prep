@@ -83,7 +83,7 @@ const ChooseLanguage_Com = () => {
 
         <div className="grid grid-cols-1 gap-10 my-10 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2">
           {lang.map((item) => (
-            <Link
+            <Link 
               to="level"
               key={item.id}
               className="card rounded-lg  h-[280px] flex justify-center items-center flex-col overflow-hidden px-8 cursor-pointer"

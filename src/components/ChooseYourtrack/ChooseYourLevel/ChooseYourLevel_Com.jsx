@@ -48,7 +48,7 @@ const ChooseLanguage_Com = () => {
         </div>
                     <div className="grid grid-cols-1 gap-10 my-10 md:grid-cols-3 sm:grid-cols-2 lg:px-32 md:px-10">
                         {level.map((item) => (
-                            <Link to='' key={item.id} className="card rounded-lg  h-[280px] flex justify-center items-center flex-col overflow-hidden px-8 cursor-pointer" >
+                            <Link to='/questions' key={item.id} className="card rounded-lg  h-[280px] flex justify-center items-center flex-col overflow-hidden px-8 cursor-pointer" >
                                 <div className="img-card mb-4 bg-zinc-300 rounded-full p-3 w-[100px]  h-[100px] lg:w-[100px] lg:h-[100px] md:w-[95px] md:h-[95px]">
                                     <img src={card_img} alt="" className="m-auto" />
                                 </div>

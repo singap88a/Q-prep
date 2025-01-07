@@ -69,3 +69,16 @@
   background-color: #4395ad;
   border-radius: 10px;
 }
+
+
+
+/*  profile input number */
+
+.react-tel-input .form-control {
+  background-color: #8349db34 !important; /* نفس اللون */
+  padding: 1.3rem 3rem !important; /* نفس الحواف */
+  border-radius: 0.25rem !important; /* نفس الانحناءات */
+  width: 100% !important; /* ملء العرض */
+  border: none !important; /* إزالة الحدود إذا لم تكن موجودة */
+}
+
