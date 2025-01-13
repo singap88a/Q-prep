@@ -15,6 +15,7 @@ export default {
         hover_secondary: "#33728C",
         bac_bg: "#8349DB0D",
       },
+          
     },
   },
   plugins: [],

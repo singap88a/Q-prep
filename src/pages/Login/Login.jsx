@@ -1,10 +1,12 @@
 // import React from 'react'
-import login from "../../assets/home-img/login.png";
+// import login from "../../assets/home-img/login.png";
 import Google from "../../assets/home-img/google.png";
 import Facebook from "../../assets/home-img/facebook.png";
 import Apple from "../../assets/home-img/apple.png";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Lottie from "lottie-react";
+import Login_animation from "../../../public/animations/Login_animation.json"
 function Login({ setIsLoggedIn }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,11 +21,15 @@ function Login({ setIsLoggedIn }) {
     }
   };
   return (
-    <div className="container flex-col-reverse flex-container md:flex-row">
-      <div className="coll ">
-        <img src={login} alt="" className="md:w-[60%] m-auto flex flex-col " />
+    <div className="container ">
+      
+    <div className="flex flex-col-reverse py-16 gap-28 md:flex-row">
+      <div className="w-full ">
+        {/* <img src={login} alt="" className="md:w-[70%] m-auto flex flex-col animate-zoom " /> */}
+        <Lottie animationData={Login_animation} className="md:w-[75%] m-auto flex flex-col   "/>
+
       </div>
-      <div className="coll">
+      <div className="w-full">
         <div className=" md:w-[70%] m-auto flex flex-col ">
           <h1 className="text-2xl font-bold text-gray-800">
             Welcome back to Q-Prep{" "}
@@ -76,6 +82,8 @@ function Login({ setIsLoggedIn }) {
         </div>
       </div>
     </div>
+    </div>
+
   );
 }
 

@@ -7,9 +7,4 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
-.card{
-    box-shadow: 0 0 5px #8349DB3D;
-}
-.card:hover{
-    box-shadow: 0 0 14px #3e066c94;
- }
+ 

@@ -1,189 +1,161 @@
-import React, { useState } from "react";
-
-// Iamge-Card
-import card_img from "../../assets/ChooseTrack/Card-img.png";
-
-// Icons
+import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import card_img from "../../assets/ChooseTrack/Card-img.png";
+import { Link } from "react-router-dom";
 
-// pagination
-import { Pagination, Stack } from "@mui/material";
+function ChooseTrack() {
+  // بيانات "ChooseTrack"
+  const tracksData = [
+    {
+      id: 1,
+      title: "Web Development",
+      description: "Learn the basics of building websites and web apps.",
+    },
+    {
+      id: 2,
+      title: "Data Science",
+      description:
+        "Dive into data analysis, visualization, and machine learning.",
+    },
+    {
+      id: 3,
+      title: "Mobile Development",
+      description: "Build apps for iOS and Android using modern frameworks.",
+    },
+    {
+      id: 4,
+      title: "Cybersecurity",
+      description: "Protect systems and data from cyber threats.",
+    },
+    {
+      id: 5,
+      title: "AI and Machine Learning",
+      description:
+        "Explore artificial intelligence and deep learning concepts.",
+    },
+    {
+      id: 6,
+      title: "Mobile Development",
+      description: "Build apps for iOS and Android using modern frameworks.",
+    },
+    {
+      id: 7,
+      title: "Cybersecurity",
+      description: "Protect systems and data from cyber threats.",
+    },
+    {
+      id: 8,
+      title: "AI and Machine Learning",
+      description:
+        "Explore artificial intelligence and deep learning concepts.",
+    },
+    // أضف المزيد من الخيارات هنا
+  ];
 
-// Search
-import Fuse from "fuse.js";
+  // حالة البحث
+  const [searchTerm, setSearchTerm] = useState("");
+  // حالة التقسيم إلى صفحات
+  const [currentPage, setCurrentPage] = useState(1);
+  const cardsPerPage = 6;
 
-// Navigate
-import { Link, useNavigate, useParams } from "react-router-dom";
+  // فلترة البيانات حسب البحث
+  const filteredTracks = tracksData.filter((track) =>
+    track.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-// Css
-import "./Z_Track.css";
+  // بيانات الصفحة الحالية
+  const indexOfLastCard = currentPage * cardsPerPage;
+  const indexOfFirstCard = indexOfLastCard - cardsPerPage;
+  const currentTracks = filteredTracks.slice(indexOfFirstCard, indexOfLastCard);
 
-const ChooseTrack = () => {
-    const data = [
-        {
-            id: 1,
-            name: "Fornt-End",
-            category:
-                "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
-            content: ["HTML", "CSS", "JavaScript", "React", "Vue"],
-        },
-        {
-            id: 2,
-            name: "React",
-            category:
-                "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
-            content: ["HTML", "CSS", "JavaScript", "React", "Vue"],
-        },
-        {
-            id: 3,
-            name: "Vue.js",
-            category:
-                "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
-            content: ["HTML", "CSS", "JavaScript", "React", "Vue"],
-        },
-        {
-            id: 4,
-            name: "Anglur",
-            category:
-                "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
-            content: ["HTML", "CSS", "JavaScript", "React", "Vue"],
-        },
-        {
-            id: 5,
-            name: "Dev-Ops",
-            category:
-                "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
-            content: ["Git", "Docker", "Webpack", "Postman", "Figma"],
-        },
-        {
-            id: 6,
-            name: "BackEnd",
-            category:
-                "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
-            content: ["Node.js", "Python", "Ruby", "Java", "PHP"],
-        },
-        {
-            id: 7,
-            name: "Data Science",
-            category:
-                "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
-            content: ["HTML", "CSS", "JavaScript", "React", "Vue"],
-        },
-        {
-            id: 8,
-            name: "BackEnd",
-            category:
-                "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
-            content: ["Node.js", "Python", "Ruby", "Java", "PHP"],
-        },
-    ];
+  // عدد الصفحات
+  const totalPages = Math.ceil(filteredTracks.length / cardsPerPage);
 
+  return (
+    <div className="container">
+      <div className="flex flex-col items-center justify-center headTitle">
+        <h1 className="text-2xl font-bold text-center text-transparent bg-gradient-to-r from-primary via-slate-600 to-secondary bg-clip-text md:text-4xl sm:text-3xl">
+          Choose Your Learning Track
+        </h1>
+        <p className="md:w-[50%] text-center text-gray-800 w-[100%]">
+          Select a track that aligns with your career goals and interests.
+        </p>
+      </div>
 
+      {/* شريط البحث */}
+      <div className="relative w-full max-w-lg mx-auto mt-5 mb-6">
+        <FontAwesomeIcon
+          icon={faSearch}
+          className="absolute text-gray-400 transform -translate-y-1/2 left-4 top-1/2"
+        />
+        <input
+          type="text"
+          placeholder="Search tracks..."
+          className="w-full p-2 px-10 border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
 
-    // Pagination
-    const navigate = useNavigate();
-    const [page, setPage] = React.useState(1);
-
-    // Search
-    const handleChange = (event, value) => {
-        setPage(value);
-        navigate(`/choosetrack/${value}`);
-    };
-
-
-
-    const [querySearch, setquerySearch] = useState("");
-    const [results, setResults] = useState(data);
-
-    const fuse = new Fuse(data, {
-        keys: ["name", "category"],
-        threshold: 0.3,
-    });
-
-    const handleSearch = (e) => {
-        const value = e.target.value;
-        setquerySearch(value);
-        console.log("fire");
-        if (value.trim() === "") {
-            setResults(data);
-        } else {
-            const fuzzyResults = fuse.search(value);
-            setResults(fuzzyResults.map((result) => result.item));
-        }
-    };
-
-
-
-    return (
-        <div className="container my-10 chooseTrack">
-            <div className="flex flex-col items-center justify-center headTitle">
-                <h1 className="text-2xl font-bold text-secondary md:text-4xl sm:text-3xl">
-                    Choose Your track now!
-                </h1>
-                <p
-                    style={{ margin: "auto" }}
-                    className="px-5 py-3 text-sm text-center text-gray-600 sm:text:xl md:text-2xl"
-                >
-                    Whether you're a beginner or a professional, we're here to help you
-                    achieve your goals with confidence.
-                </p>
-            </div>
-
-            {/* --cards && search-- */}
-            <div className="flex flex-col items-center justify-center" style={{ padding: "20px" }} >
-                {/* --Search-- */}
-                <div className="relative w-full max-w-lg mx-auto mt-5">
-                    <FontAwesomeIcon
-                        icon={faSearch}
-                        className="absolute text-gray-400 transform -translate-y-1/2 left-4 top-1/2"
-                    />
-                    <input
-                        type="text"
-                        value={querySearch}
-                        onChange={handleSearch}
-                        placeholder="Find Your Track..."
-                        className="w-full placeholder:text-gray-400 placeholder:font-medium text-sm bg-white border border-gray-300 rounded-full py-2.5 pl-10 pr-4 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:focus:opacity-0"
-                    />
-                </div>
-
-                {/* --Cards-- */}
-                <ul style={{ marginTop: "20px" }}>
-                    <h1 className="text-2xl font-semibold">Popular Tracks</h1>
-                    <div className="grid grid-cols-1 gap-20 my-10 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2">
-                        {results.map((item) => (
-
-                            <Link to={`../choosetrack/lang`} className="card rounded-lg  h-[280px] flex justify-center items-center flex-col overflow-hidden px-8 cursor-pointer" >
-                                <div className="img-card mb-4 bg-zinc-300 rounded-full p-3 w-[100px]  h-[100px] lg:w-[100px] lg:h-[100px] md:w-[95px] md:h-[95px]">
-                                    <img src={card_img} alt="" className="m-auto" />
-                                </div>
-                                <h3 className="mb-2 text-2xl font-medium text-center title text-primary ">
-                                    {item.name}
-                                </h3>
-                                <p className="px-2 text-sm text-center text-gray-600 desc md:text-xs sm:text-xs">
-                                    {item.category}
-                                </p>
-                            </Link>
-                        ))}
-                    </div>
-                </ul>
-            </div>
-
-            {/* --Pagination-- */}
-            <div className="flex items-center justify-center pagination-cards my-7">
-                <Stack spacing={2}>
-                    <Pagination
-                        count={6}
-                        variant="outlined"
-                        page={page}
-                        shape="rounded"
-                        onChange={handleChange}
-                    />
-                </Stack>
-            </div>
-
-        </div>
-    );
+      {/* عرض الكروت */}
+      <div className="grid gap-10 md:grid-cols-3 sm:grid-cols-2 lg:grid-cols-4">
+        {currentTracks.length >= 1 ? (
+          currentTracks.map((track) => (
+            <Link
+              to="/choosetrack/lang"
+              key={track.id}
+              className="card "
+            >
+              <div className="bg_card ">
+                <img src={card_img} alt=""   />
+              </div>
+              <h3 className="">
+                {track.title}
+              </h3>
+              <p className="">
+                {track.description}
+              </p>
+            </Link>
+          ))
+        ) : (
+          <h1 className="font-bold text-center text-secondary">
+            No tracks found
+          </h1>
+        )}
+      </div>
+      {/* التقسيم إلى صفحات */}
+      <div className="flex justify-center mt-6 mb-20">
+        <button
+          className="px-4 py-2 mx-1 bg-gray-200 rounded-lg hover:bg-gray-300"
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage((prev) => prev - 1)}
+        >
+          <i className="fa-solid fa-angles-left"></i>
+        </button>
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index}
+            className={`px-4 py-2 mx-1 rounded-lg ${
+              currentPage === index + 1
+                ? "bg-secondary text-white"
+                : "bg-gray-200 hover:bg-gray-300"
+            }`}
+            onClick={() => setCurrentPage(index + 1)}
+          >
+            {index + 1}
+          </button>
+        ))}
+        <button
+          className="px-4 py-2 mx-1 bg-gray-200 rounded-lg hover:bg-gray-300"
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage((prev) => prev + 1)}
+        >
+          <i className="fa-solid fa-angles-right"></i>
+        </button>
+      </div>
+    </div>
+  );
 }
 
 export default ChooseTrack;

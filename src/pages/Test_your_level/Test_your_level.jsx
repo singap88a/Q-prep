@@ -1,7 +1,8 @@
 import { useState } from "react";
 import Test_level from "../../assets/Test_level.png";
 import Test_level_2 from "../../assets/Test_level_2.png";
-
+import Lottie from "lottie-react";
+import TestYourLevel_animation from "../../../public/animations/TestYourLevel_animation.json"
 import { Link } from "react-router-dom";
 const TestYourLevel = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -85,11 +86,17 @@ const TestYourLevel = () => {
     const level = getLevel();
 
     return (
+
+      
       <div className="container relative flex items-center justify-center ">
+
         <div className="w-full p-6 text-center rounded-lg ">
-          <img src={Test_level} alt="" className="mx-auto   md:w-[40%]" />
-          <img src={Test_level_2} alt="" className="absolute hidden w-24 top-20 left-20 md:block" />
-          <img src={Test_level_2} alt="" className="absolute hidden w-24 right-20 md:block" />
+          <img src={Test_level} alt="" className="mx-auto   md:w-[40%]  "  />
+          <Lottie animationData={TestYourLevel_animation} className="absolute top-0"/>
+
+          <img src={Test_level_2} alt="" className="absolute hidden w-24 top-20 left-20 md:block animate-slide" />
+          <img src={Test_level_2} alt="" className="absolute hidden w-24 right-20 md:block animate-slide" />
+          <Lottie animationData={TestYourLevel_animation} className="absolute top-0 right-0"/>
 
           <p className="text-gray-600">
             Your score is: <span className="text-blue-500">{score}</span> out of

@@ -1,16 +1,17 @@
 // import React from 'react'
 
 import { Link } from "react-router-dom";
-import hero from "../../assets/home-img/hero-home.png";
-import hero_color from "../../assets/home-img/hero-color.png";
-import hero_3 from "../../assets/home-img/hero-3.png";
-
+// import hero from "../../assets/home-img/hero-home.png";
+// import hero_color from "../../assets/home-img/hero-color.png";
+// import hero_3 from "../../assets/home-img/hero-3.png";
+import Lottie from "lottie-react";
+import Hero_animation from "../../../public/animations/Hero_2.json";
 function Hero() {
   return (
-    <div>
-      <div>
-        <div className="container flex-col-reverse flex-container md:flex-row">
-          <div className="m-auto ltr:sm:text-left rtl:sm:text-right coll">
+    <div className="pb-2">
+      <div className="container ">
+        <div className="flex flex-col-reverse justify-between gap-28 md:flex-row">
+          <div className="w-full pt-16 ltr:sm:text-left rtl:sm:text-right">
             <h1 className="text-2xl font-extrabold sm:text-3xl text-secondary ">
               Prepare for your interviews with confidence!
             </h1>
@@ -25,8 +26,8 @@ function Hero() {
 
             <div className="flex flex-wrap gap-4 mt-8 text-center">
               <Link to="/choosetrack/1">
-              <div className="relative z-10 px-2 py-2 overflow-hidden font-bold text-white border-2 rounded-md md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary">
-              Choose your track now!
+                <div className="relative z-10 px-2 py-2 overflow-hidden font-bold text-white border-2 rounded-md md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary">
+                  Choose your track now!
                 </div>
               </Link>
               <Link to="/test_your_level">
@@ -36,24 +37,28 @@ function Hero() {
               </Link>
             </div>
           </div>
-          <div className="coll">
-            <div className="relative flex items-center justify-center w-full h-full py-20 ">
+          <div className="">
+            {/* <div className="relative flex items-center justify-center w-full ">
               <img
-                className="object-cover  md:w-[55%] z-10 flex  flex-col"
+                className="object-cover  md:w-[65%] z-10 flex  flex-col"
                 src={hero}
                 alt="Image"
               />
               <img
-                className="object-cover flex-col md:w-[55%] absolute z-11 "
+                className="object-cover flex-col md:w-[65%] absolute z-11   "
                 src={hero_color}
                 alt="Image"
               />
               <img
-                className="object-cover  w-[50%] absolute left-[-20%] top-[48%] rotate-6 hidden sm:block"
+                className="object-cover  w-[60%] absolute left-[-35%] top-[40%] rotate-6 hidden sm:block"
                 src={hero_3}
                 alt="Image"
               />
-            </div>
+            </div> */}
+            <Lottie
+              animationData={Hero_animation}
+              className="  md:w-[100%] w-full   "
+            />
           </div>
         </div>
       </div>

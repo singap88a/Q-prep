@@ -7,27 +7,6 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
   const [isOpen, setIsOpen] = useState(false);
   const [hasShadow, setHasShadow] = useState(false);
   const location = useLocation();
-  {
-    /* icon Saved questions start */
-  }
-
-  const [active, setActive] = useState(false);
-  const handleGlobalLinkClick = (e) => {
-    if (e.target.tagName === "A") {
-      setActive(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("click", handleGlobalLinkClick);
-
-    return () => {
-      document.removeEventListener("click", handleGlobalLinkClick);
-    };
-  }, []);
-  {
-    /* icon Saved questions end */
-  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,6 +18,10 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
     };
   }, []);
 
+  const closeMenu = () => {
+    setIsOpen(false);
+  };
+
   return (
     <div>
       <nav
@@ -46,7 +29,7 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
           hasShadow ? "bg-white shadow-md shadow-[#4627757c]" : ""
         }`}
       >
-        <div className="container flex items-center justify-between h-16">
+        <div className="container relative flex items-center justify-between h-16">
           {/* Logo */}
           <div className="text-xl font-bold">
             <Link to="/">
@@ -55,11 +38,11 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
           </div>
 
           {/* Links */}
-          <div className="hidden space-x-4 md:flex">
+          <div className="hidden space-x-4 mr-36 md:flex">
             {[
               { to: "/", text: "Home" },
               { to: "/about", text: "About Us" },
-              { to: "/choosetrack/1", text: "Choose Your Track" },
+              { to: "/choosetrack", text: "Choose Your Track" },
               { to: "/community", text: "Our Community" },
             ].map((link) => (
               <Link
@@ -77,23 +60,13 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
           </div>
 
           {/* User Actions */}
-          <div className="space-x-4 md:flex ">
+          <div className="space-x-4 md:flex">
             {isLoggedIn ? (
-              <div className="flex items-center gap-3 space-x-2">
-                {/* icon Saved questions */}
+              <div className="absolute flex items-center gap-3 space-x-2 md:right-5 top-3 right-20">
                 <Link
                   to="/saved_questions"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setActive(true);
-                  }}
-                  className={`bookmark-link ${
-                    active ? "text-primary" : "text-gray-900"
-                  }`}
-                >
-                  <i className="text-2xl font-semibold fa-regular fa-bookmark"></i>
-                </Link>
-
+                  className="text-2xl font-semibold text-gray-900 fa-regular fa-bookmark"
+                ></Link>
                 <Link to="/profile">
                   <img
                     src={userImage}
@@ -101,7 +74,6 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
                     className="w-10 h-10 rounded-full"
                   />
                 </Link>
-
                 <button
                   onClick={() => setIsLoggedIn(false)}
                   className="hidden px-4 py-1 text-red-600 border-2 border-red-600 rounded-md md:flex"
@@ -113,21 +85,13 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
               <div className="hidden gap-4 md:flex">
                 <Link
                   to="/login"
-                  className={` py-1 px-3 rounded ${
-                    location.pathname === "/login"
-                      ? "text-white bg-secondary"
-                      : "border-2 border-secondary text-secondary relative z-10   overflow-hidden font-bold   rounded-md   isolation-auto   before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-secondary before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700   hover:text-white"
-                  }`}
+                  className="px-3 py-1 border-2 rounded border-secondary text-secondary"
                 >
                   Login
                 </Link>
                 <Link
                   to="/sign-up"
-                  className={`py-1 px-3  rounded ${
-                    location.pathname === "/sign-up"
-                      ? "text-white bg-secondary"
-                      : "border-2 border-secondary text-secondary relative z-10   overflow-hidden font-bold   rounded-md   isolation-auto   before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-secondary before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700   hover:text-white"
-                  }`}
+                  className="px-3 py-1 border-2 rounded border-secondary text-secondary"
                 >
                   Sign Up
                 </Link>
@@ -136,8 +100,7 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
           </div>
 
           {/* Mobile Menu Button */}
-
-          <div className="md:hidden">
+          <div className=" md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="text-black focus:outline-none"
@@ -154,7 +117,9 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
                   strokeLinejoin="round"
                   strokeWidth={2}
                   d={
-                    isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"
+                    isOpen
+                      ? "M6 18L18 6M6 6l12 12"
+                      : "M4 6h16M4 12h16M4 18h16"
                   }
                 />
               </svg>
@@ -164,58 +129,64 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="text-black bg-white border-b-2 md:hidden">
-            {[
-              { to: "/", text: "Home" },
-              { to: "/about", text: "About Us" },
-              { to: "/choosetrack", text: "Choose Your Track" },
-              { to: "/community", text: "Our Community" },
-            ].map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className={`block px-4 py-2 hover:bg-gray-200 ${
-                  location.pathname === link.to ? "text-secondary" : ""
-                }`}
-              >
-                {link.text}
-              </Link>
-            ))}
-            <div className="flex gap-5 py-5 ml-5">
-              {isLoggedIn ? (
-                <button
-                  onClick={() => setIsLoggedIn(false)}
-                  className="px-4 py-1 text-red-600 border-2 border-red-600 rounded-md"
-                >
-                  Logout
-                </button>
-              ) : (
-                <>
-                     <Link
-                  to="/login"
-                  className={` py-1 px-3 rounded ${
-                    location.pathname === "/login"
-                      ? "text-white bg-secondary"
-                      : "border-2 border-secondary text-secondary relative z-10   overflow-hidden font-bold   rounded-md   isolation-auto   before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-secondary before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700   hover:text-white"
-                  }`}
-                >
-                  Login
-                </Link>
-                <Link
-                  to="/sign-up"
-                  className={`py-1 px-3  rounded ${
-                    location.pathname === "/sign-up"
-                      ? "text-white bg-secondary"
-                      : "border-2 border-secondary text-secondary relative z-10   overflow-hidden font-bold   rounded-md   isolation-auto   before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-secondary before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700   hover:text-white"
-                  }`}
-                >
-                  Sign Up
-                </Link>
-                </>
-              )}
-            </div>
-          </div>
+  <>
+    {/* Background Overlay */}
+    <div
+      className="fixed inset-0 z-40 bg-black bg-opacity-50 top-28"
+      onClick={closeMenu}
+    ></div>
+
+    {/* Mobile Menu */}
+    <div className="fixed left-0 z-50 w-full text-black bg-white border-b-2 top-16 md:hidden">
+      {[
+        { to: "/", text: "Home" },
+        { to: "/about", text: "About Us" },
+        { to: "/choosetrack", text: "Choose Your Track" },
+        { to: "/community", text: "Our Community" },
+      ].map((link) => (
+        <Link
+          key={link.to}
+          to={link.to}
+          className="block px-4 py-2 hover:bg-gray-200"
+          onClick={closeMenu}
+        >
+          {link.text}
+        </Link>
+      ))}
+      <div className="flex gap-5 py-5 ml-5">
+        {isLoggedIn ? (
+          <button
+            onClick={() => {
+              setIsLoggedIn(false);
+              closeMenu();
+            }}
+            className="px-4 py-1 text-red-600 border-2 border-red-600 rounded-md"
+          >
+            Logout
+          </button>
+        ) : (
+          <>
+            <Link
+              to="/login"
+              className="px-3 py-1 border-2 rounded border-secondary text-secondary"
+              onClick={closeMenu}
+            >
+              Login
+            </Link>
+            <Link
+              to="/sign-up"
+              className="px-3 py-1 border-2 rounded border-secondary text-secondary"
+              onClick={closeMenu}
+            >
+              Sign Up
+            </Link>
+          </>
         )}
+      </div>
+    </div>
+  </>
+)}
+
       </nav>
       <div className="h-20"></div>
     </div>

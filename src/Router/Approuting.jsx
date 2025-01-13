@@ -17,7 +17,8 @@ import Test_your_level from "../pages/Test_your_level/Test_your_level";
 import Saved_questions from "../pages/Saved_questions/Saved_questions";
 import ScrollToTop from "./ScrollToTop";
 import Profile from "../pages/Profile/Profile";
-
+import  "../style/animations.css"
+import Community_1 from "../pages/Community/Community_1";
 function Approuting() {
   // قراءة حالة تسجيل الدخول من localStorage عند تحميل الصفحة
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
@@ -36,18 +37,13 @@ function Approuting() {
       <Routes>
         <Route index element={<Home />} />
         <Route path="/about" element={<About />} />
-        <Route path="/choosetrack/1" element={<ChooseYourTrack />} />
+        <Route path="/choosetrack" element={<ChooseYourTrack />} />
 
         {/* auth */}
         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/sign-up" element={<Sign_up setIsLoggedIn={setIsLoggedIn} />} />
 
-        {/* Pagination */}
-        <Route path="/choosetrack/1" element={<ChooseYourTrack />} />
-        <Route path="/choosetrack/2" element={<ChooseYourTrack />} />
-        <Route path="/choosetrack/3" element={<ChooseYourTrack />} />
-        <Route path="/choosetrack/4" element={<ChooseYourTrack />} />
-        <Route path="/choosetrack/5" element={<ChooseYourTrack />} />
+ 
 
         {/* ChooseYourLanguage */}
         <Route path="/choosetrack/lang" element={<ChooseLanguage />} />
@@ -60,6 +56,8 @@ function Approuting() {
         <Route path="/saved_questions" element={<Saved_questions />} />
         <Route path="/profile" element={<Profile />} />
 
+        {/* Community */}
+            <Route path="/community" element={<Community_1 />} />
         {/* Error */}
         <Route path="*" element={<ErrorPage />} />
       </Routes>

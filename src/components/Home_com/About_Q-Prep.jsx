@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
-import about_img from "../../assets/home-img/About_Q_Prep.png";
-
+// import about_img from "../../assets/home-img/About_Q_Prep.png";
+import Lottie from "lottie-react";
+import About_Q__Prep from "../../../public/animations/About_Q_Prep_2.json"
 function About_Q_Prep() {
   return (
     <div className="container px-4 py-10 mx-auto">
@@ -8,12 +9,9 @@ function About_Q_Prep() {
       About <span className="text-transparent bg-gradient-to-r from-primary via-slate-500 to-secondary bg-clip-text">Q-Prep</span>
       </h1>
       <div className="flex flex-col justify-between gap-10 md:flex-row">
-         <div className="w-full md:w-[30%] flex justify-center mb-6 md:mb-0">
-          <img
-            src={about_img}
-            alt="About Q-Prep"
-            className=""
-          />
+         <div className="w-full md:w-[33%] flex justify-center    ">
+         <Lottie animationData={About_Q__Prep} className=""/>
+
         </div>
 
          <div className="w-full md:w-[55%] flex flex-col justify-center">
@@ -23,7 +21,7 @@ function About_Q_Prep() {
           <p className="mb-4 text-xl text-gray-600">
             Welcome to Q-Prep, your ultimate companion for interview preparation! Our platform is designed to simplify and enhance your journey toward acing interviews in your chosen track. Heres what makes Q-Prep unique.
           </p>
-          <Link className="text-lg underline text-primary">Read more</Link>
+          <Link className="text-lg underline text-primary" to="/about">Read more</Link>
         </div>
       </div>
     </div>

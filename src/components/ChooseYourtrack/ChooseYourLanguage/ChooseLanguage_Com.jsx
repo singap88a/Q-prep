@@ -86,15 +86,15 @@ const ChooseLanguage_Com = () => {
             <Link 
               to="level"
               key={item.id}
-              className="card rounded-lg  h-[280px] flex justify-center items-center flex-col overflow-hidden px-8 cursor-pointer"
+              className="card "
             >
-              <div className="img-card mb-4 bg-zinc-300 rounded-full p-3 w-[100px]  h-[100px] lg:w-[100px] lg:h-[100px] md:w-[95px] md:h-[95px]">
+              <div className="bg_card">
                 <img src={card_img} alt="" className="m-auto" />
               </div>
-              <h3 className="mb-2 text-2xl font-medium text-center title text-primary ">
+              <h3 className="">
                 {item.name}
               </h3>
-              <p className="px-2 text-sm text-center text-gray-600 desc md:text-xs sm:text-xs">
+              <p className="">
                 {item.category}
               </p>
             </Link>
