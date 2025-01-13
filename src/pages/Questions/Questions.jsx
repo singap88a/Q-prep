@@ -8,9 +8,20 @@ function Questions() {
   const navigate = useNavigate();
 
   const faqs = [
-    { question: "What is React?", answer: "React is a JavaScript library for building user interfaces." },
-    { question: "What is Tailwind CSS?", answer: "Tailwind CSS is a utility-first CSS framework for creating custom designs." },
-    { question: "How do I install React?", answer: "You can install React using npm with the command: npm install react." },
+    {
+      question: "What is React?",
+      answer: "React is a JavaScript library for building user interfaces.",
+    },
+    {
+      question: "What is Tailwind CSS?",
+      answer:
+        "Tailwind CSS is a utility-first CSS framework for creating custom designs.",
+    },
+    {
+      question: "How do I install React?",
+      answer:
+        "You can install React using npm with the command: npm install react.",
+    },
   ];
 
   const toggleAnswer = (index) => {
@@ -31,7 +42,8 @@ function Questions() {
     navigate("/saved_questions", { state: { savedQuestions } });
   };
 
-  const isQuestionSaved = (faq) => savedQuestions.some((saved) => saved.question === faq.question);
+  const isQuestionSaved = (faq) =>
+    savedQuestions.some((saved) => saved.question === faq.question);
 
   return (
     <div className="container">
@@ -43,13 +55,13 @@ function Questions() {
         <div className="flex gap-4">
           <button
             onClick={goToSavedQuestions}
-            className="px-5 py-1 border-2 rounded-full border-secondary text-secondary hover:text-white"
+            className="relative flex items-center gap-3 px-4 py-1 overflow-hidden font-bold border-2 rounded-full isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-secondary before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 text-secondary hover:text-white"
           >
-            View Saved Questions
+            <h1 className="text-xl"> View Saved Questions</h1>
           </button>
           <Link
             to="/add_question"
-            className="relative flex items-center gap-2 px-5 py-1 overflow-hidden border-2 rounded-full isolation-auto border-secondary text-secondary hover:text-white"
+            className="relative flex items-center gap-3 px-4 py-1 overflow-hidden font-bold border-2 rounded-full isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-secondary before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 text-secondary hover:text-white"
           >
             <i className="text-xl fa-solid fa-plus"></i>
             <h1 className="text-xl">Add question</h1>
@@ -61,7 +73,10 @@ function Questions() {
       <div className="container max-w-4xl mx-auto">
         <div className="grid gap-4 py-10 sm:grid-cols-1 md:grid-cols-1">
           {faqs.map((faq, index) => (
-            <div key={index} className="p-4 bg-[#6BE9D112] border rounded-lg shadow-md">
+            <div
+              key={index}
+              className="p-4 bg-[#6BE9D112] border rounded-lg shadow-md"
+            >
               <button
                 onClick={() => toggleAnswer(index)}
                 className="flex items-center justify-between w-full text-lg font-semibold text-left"
@@ -69,7 +84,9 @@ function Questions() {
                 {faq.question}
                 <div className="flex gap-8">
                   <i
-                    className={`cursor-pointer fa-regular fa-bookmark ${isQuestionSaved(faq) ? "text-primary  font-bold" : ""}`}
+                    className={`cursor-pointer fa-regular fa-bookmark ${
+                      isQuestionSaved(faq) ? "text-primary  font-bold" : ""
+                    }`}
                     onClick={(e) => {
                       e.stopPropagation(); // Prevent button click from toggling answer
                       handleSaveQuestion(faq);
@@ -82,7 +99,9 @@ function Questions() {
                   )}
                 </div>
               </button>
-              {activeIndex === index && <p className="mt-2 text-gray-600">{faq.answer}</p>}
+              {activeIndex === index && (
+                <p className="mt-2 text-gray-600">{faq.answer}</p>
+              )}
             </div>
           ))}
         </div>

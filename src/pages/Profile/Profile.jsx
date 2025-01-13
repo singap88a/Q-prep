@@ -52,7 +52,7 @@ function Profile() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-20 mb-8 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 mb-8 md:gap-20 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-2">
             <div className="flex flex-col gap-2">
               <label htmlFor="email" className="font-semibold text-secondary">
                 Email
@@ -77,7 +77,7 @@ function Profile() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-20 mb-8 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 mb-8 md:gap-20 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2">
             <div className="flex flex-col gap-2">
               <label htmlFor="phone" className="font-semibold text-secondary">
                 Phone number
