@@ -50,7 +50,7 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
                 to={link.to}
                 className={`hover:text-secondary px-2 relative ${
                   location.pathname === link.to
-                    ? "text-secondary after:content-[''] after:absolute after:right-0 after:bottom-[-2px] after:w-[35%] after:h-[3px] after:bg-secondary before:content-[''] before:absolute before:left-0 before:top-0 before:w-[35%] before:h-[3px] before:bg-secondary "
+                    ? "text-secondary after:content-[''] after:absolute after:right-0 after:bottom-[-2px] after:w-[35%] after:h-[3px] after:bg-secondary before:content-[''] before:absolute before:left-0 before:top-0 before:w-[35%] before:h-[2.7px] before:bg-secondary "
                     : ""
                 }`}
               >
