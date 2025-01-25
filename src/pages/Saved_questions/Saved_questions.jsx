@@ -5,28 +5,27 @@ import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 function Saved_questions() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { savedQuestions, setSavedQuestions } = location.state || { savedQuestions: [] }; // Assuming savedQuestions are passed down
-  const [activeIndex, setActiveIndex] = useState(null); // Track which question is expanded
+  const { savedQuestions, setSavedQuestions } = location.state || { savedQuestions: [] };  
+  const [activeIndex, setActiveIndex] = useState(null);  
 
   const toggleAnswer = (index) => {
     if (index === activeIndex) {
-      setActiveIndex(null); // Close the answer if it's already expanded
+      setActiveIndex(null);  
     } else {
-      setActiveIndex(index); // Expand the answer for the clicked question
+      setActiveIndex(index);  
     }
   };
 
   const handleSaveQuestion = (faq) => {
     const isConfirmed = window.confirm("Are you sure you want to remove this question from your saved list?");
     if (isConfirmed) {
-      // Remove the question from the savedQuestions list
-      const updatedSavedQuestions = savedQuestions.filter((saved) => saved.question !== faq.question); // Remove the question
-      setSavedQuestions(updatedSavedQuestions); // Update the state with the new list of saved questions
+       const updatedSavedQuestions = savedQuestions.filter((saved) => saved.question !== faq.question);  
+      setSavedQuestions(updatedSavedQuestions);  
     }
   };
 
   const isQuestionSaved = (faq) => {
-    return savedQuestions.some((saved) => saved.question === faq.question); // Check if the question is saved
+    return savedQuestions.some((saved) => saved.question === faq.question);  
   };
 
   return (
@@ -35,7 +34,7 @@ function Saved_questions() {
       <div className="flex items-center gap-3 mb-6">
         <i
           className="text-2xl font-bold cursor-pointer fa-solid fa-chevron-left text-primary"
-          onClick={() => navigate(-1)} // Navigate back to the previous page
+          onClick={() => navigate(-1)}  
         ></i>
         <h1 className="text-xl font-bold">Saved Questions</h1>
       </div>
@@ -47,7 +46,7 @@ function Saved_questions() {
             savedQuestions.map((faq, index) => (
               <div key={index} className="p-4 bg-[#6BE9D112] border rounded-lg shadow-md">
                 <button
-                  onClick={() => toggleAnswer(index)} // Toggle answer visibility
+                  onClick={() => toggleAnswer(index)}  
                   className="flex items-center justify-between w-full text-lg font-semibold text-left"
                 >
                   {faq.question}
@@ -55,8 +54,8 @@ function Saved_questions() {
                     <i
                       className={`cursor-pointer fa-regular fa-bookmark ${isQuestionSaved(faq) ? "text-primary font-bold" : ""}`}
                       onClick={(e) => {
-                        e.stopPropagation(); // Prevent answer toggle when clicking bookmark
-                        handleSaveQuestion(faq); // Remove question from saved list with confirmation
+                        e.stopPropagation();  
+                        handleSaveQuestion(faq);  
                       }}
                     ></i>
                     {activeIndex === index ? (

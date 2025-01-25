@@ -99,7 +99,7 @@ function ChooseTrack() {
       </div>
 
       {/* عرض الكروت */}
-      <div className="grid gap-10 md:grid-cols-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-10 md:grid-cols-3 sm:grid-cols-2 lg:grid-cols-5">
         {currentTracks.length >= 1 ? (
           currentTracks.map((track) => (
             <Link

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 // import React from 'react'
 // import login from "../../assets/home-img/login.png";
 import Google from "../../assets/home-img/google.png";

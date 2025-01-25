@@ -1,12 +1,15 @@
+/* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/home-img/logo.png";
 import userImage from "../assets/user.png";
 
-function Navbar({ isLoggedIn, setIsLoggedIn }) {
+function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
   const [isOpen, setIsOpen] = useState(false);
   const [hasShadow, setHasShadow] = useState(false);
-  const location = useLocation();
+  const [isBookmarkClicked, setIsBookmarkClicked] = useState(false); // حالة لتتبع النقر
+  const location = useLocation();  
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,8 +21,17 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
     };
   }, []);
 
+   useEffect(() => {
+    setIsBookmarkClicked(false);  
+  }, [location.pathname]);  
+
   const closeMenu = () => {
     setIsOpen(false);
+  };
+
+  const goToSavedQuestions = () => {
+    navigate("/saved_questions", { state: { savedQuestions } });
+    setIsBookmarkClicked(true);  
   };
 
   return (
@@ -63,10 +75,14 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
           <div className="space-x-4 md:flex">
             {isLoggedIn ? (
               <div className="absolute flex items-center gap-3 space-x-2 md:right-5 top-3 right-20">
-                <Link
-                  to="/saved_questions"
-                  className="text-2xl font-semibold text-gray-900 fa-regular fa-bookmark"
-                ></Link>
+                <button
+                  onClick={goToSavedQuestions}
+                  className={`text-2xl font-semibold  ${
+                    isBookmarkClicked ? "text-primary " : " "
+                  }`}
+                >
+                  <i className="fa-regular fa-bookmark"></i>
+                </button>
                 <Link to="/profile">
                   <img
                     src={userImage}
@@ -100,7 +116,7 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
           </div>
 
           {/* Mobile Menu Button */}
-          <div className=" md:hidden">
+          <div className="md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="text-black focus:outline-none"
@@ -117,9 +133,7 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
                   strokeLinejoin="round"
                   strokeWidth={2}
                   d={
-                    isOpen
-                      ? "M6 18L18 6M6 6l12 12"
-                      : "M4 6h16M4 12h16M4 18h16"
+                    isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"
                   }
                 />
               </svg>
@@ -129,64 +143,63 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
 
         {/* Mobile Menu */}
         {isOpen && (
-  <>
-    {/* Background Overlay */}
-    <div
-      className="fixed inset-0 z-40 bg-black bg-opacity-50 top-28"
-      onClick={closeMenu}
-    ></div>
-
-    {/* Mobile Menu */}
-    <div className="fixed left-0 z-50 w-full text-black bg-white border-b-2 top-16 md:hidden">
-      {[
-        { to: "/", text: "Home" },
-        { to: "/about", text: "About Us" },
-        { to: "/choosetrack", text: "Choose Your Track" },
-        { to: "/community", text: "Our Community" },
-      ].map((link) => (
-        <Link
-          key={link.to}
-          to={link.to}
-          className="block px-4 py-2 hover:bg-gray-200"
-          onClick={closeMenu}
-        >
-          {link.text}
-        </Link>
-      ))}
-      <div className="flex gap-5 py-5 ml-5">
-        {isLoggedIn ? (
-          <button
-            onClick={() => {
-              setIsLoggedIn(false);
-              closeMenu();
-            }}
-            className="px-4 py-1 text-red-600 border-2 border-red-600 rounded-md"
-          >
-            Logout
-          </button>
-        ) : (
           <>
-            <Link
-              to="/login"
-              className="px-3 py-1 border-2 rounded border-secondary text-secondary"
+            {/* Background Overlay */}
+            <div
+              className="fixed inset-0 z-40 bg-black bg-opacity-50 top-28"
               onClick={closeMenu}
-            >
-              Login
-            </Link>
-            <Link
-              to="/sign-up"
-              className="px-3 py-1 border-2 rounded border-secondary text-secondary"
-              onClick={closeMenu}
-            >
-              Sign Up
-            </Link>
+            ></div>
+
+            {/* Mobile Menu */}
+            <div className="fixed left-0 z-50 w-full text-black bg-white border-b-2 top-16 md:hidden">
+              {[
+                { to: "/", text: "Home" },
+                { to: "/about", text: "About Us" },
+                { to: "/choosetrack", text: "Choose Your Track" },
+                { to: "/community", text: "Our Community" },
+              ].map((link) => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className="block px-4 py-2 hover:bg-gray-200"
+                  onClick={closeMenu}
+                >
+                  {link.text}
+                </Link>
+              ))}
+              <div className="flex gap-5 py-5 ml-5">
+                {isLoggedIn ? (
+                  <button
+                    onClick={() => {
+                      setIsLoggedIn(false);
+                      closeMenu();
+                    }}
+                    className="px-4 py-1 text-red-600 border-2 border-red-600 rounded-md"
+                  >
+                    Logout
+                  </button>
+                ) : (
+                  <>
+                    <Link
+                      to="/login"
+                      className="px-3 py-1 border-2 rounded border-secondary text-secondary"
+                      onClick={closeMenu}
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      to="/sign-up"
+                      className="px-3 py-1 border-2 rounded border-secondary text-secondary"
+                      onClick={closeMenu}
+                    >
+                      Sign Up
+                    </Link>
+                  </>
+                )}
+              </div>
+            </div>
           </>
         )}
-      </div>
-    </div>
-  </>
-)}
-
       </nav>
       <div className="h-20"></div>
     </div>
