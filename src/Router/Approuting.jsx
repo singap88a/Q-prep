@@ -19,8 +19,6 @@ import ScrollToTop from "./ScrollToTop";
 import Profile from "../pages/Profile/Profile";
 import "../style/animations.css";
 import Community_1 from "../pages/Community/Community_1";
-import Community_3 from "../pages/Community/Community_3";
-
 function Approuting() {
   // قراءة حالة تسجيل الدخول من localStorage عند تحميل الصفحة
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
@@ -81,9 +79,7 @@ function Approuting() {
         <Route path="/profile" element={<Profile />} />
 
         {/* Community */}
-        <Route path="/community" element={<Community_1 />} />
-        <Route path="/community_3" element={<Community_3 />} />
-
+            <Route path="/community" element={<Community_1 />} />
         {/* Error */}
         <Route path="*" element={<ErrorPage />} />
       </Routes>
