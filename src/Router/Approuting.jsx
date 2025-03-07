@@ -20,6 +20,7 @@ import Profile from "../pages/Profile/Profile";
 import "../style/animations.css";
 import Community_1 from "../pages/Community/Community_1";
 import Community_2 from "../pages/Community/Community_2";
+import TrackDetails from "../components/ChooseYourtrack/ChooseYourLevel/TrackDetails";
 function Approuting() {
   // قراءة حالة تسجيل الدخول من localStorage عند تحميل الصفحة
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
@@ -82,6 +83,7 @@ function Approuting() {
         {/* Community */}
         <Route path="/community" element={<Community_1 />} />
         <Route path="/community_2" element={<Community_2 />} />
+        <Route path="/track/:trackId" element={<TrackDetails />} />
 
         {/* Error */}
         <Route path="*" element={<ErrorPage />} />

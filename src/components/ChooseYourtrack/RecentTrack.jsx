@@ -50,7 +50,7 @@ const RecentTrack = () => {
     return (
         <div className="container recent">
             <h1 className="text-2xl font-semibold">Recent Use</h1>
-            <div className="grid grid-cols-1 gap-10 my-10 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-10 my-10 lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2">
                 {recent.map((item) => (
                     <Link to='../choosetrack/frontend' key={item.id} className="card " >
                         <div className="bg_card">

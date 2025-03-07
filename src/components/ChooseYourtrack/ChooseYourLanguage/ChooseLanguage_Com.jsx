@@ -11,49 +11,49 @@ const ChooseLanguage_Com = () => {
       id: 1,
       name: "Html",
       category:
-        "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
+        "A Front-end Developer builds the user interface of websites, ensuring they are interactive,  ",
     },
     {
       id: 2,
       name: "CSS",
       category:
-        "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
+        "A Front-end Developer builds the user interface of websites, ensuring they are interactive, ",
     },
     {
       id: 3,
       name: "JavaScript",
       category:
-        "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
+        "A Front-end Developer builds the user interface of websites, ensuring they are interactive,  ",
     },
     {
       id: 4,
       name: "React",
       category:
-        "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
+        "A Front-end Developer builds the user interface of websites, ensuring they are interactive,  ",
     },
     {
       id: 5,
       name: "Vue",
       category:
-        "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
+        "A Front-end Developer builds the user interface of websites, ensuring they are interactive, ",
     },
     {
       id: 6,
       name: "Next",
       category:
-        "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
+        "A Front-end Developer builds the user interface of websites, ensuring they are interactive,  ",
     },
     {
       id: 7,
       name: "TypeScript",
       category:
-        "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
+        "A Front-end Developer builds the user interface of websites, ensuring they are interactive,  ",
     },
     {
       id: 8,
       name: "JQuery",
       category:
-        "A Front-end Developer builds the user interface of websites, ensuring they are interactive, responsive, and visually appealing.",
+        "A Front-end Developer builds the user interface of websites, ensuring they are interactive,  ",
     },
   ];
 

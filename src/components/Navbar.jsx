@@ -7,7 +7,7 @@ import userImage from "../assets/user.png";
 function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
   const [isOpen, setIsOpen] = useState(false);
   const [hasShadow, setHasShadow] = useState(false);
-  const [isBookmarkClicked, setIsBookmarkClicked] = useState(false); // حالة لتتبع النقر
+  const [isBookmarkClicked, setIsBookmarkClicked] = useState(false); 
   const location = useLocation();  
   const navigate = useNavigate();
 

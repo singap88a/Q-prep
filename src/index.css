@@ -12,7 +12,7 @@
 
 .card {
   width: 100%;
-  height: 250px;
+  height: 245px !important;
   border-radius: 10px;
   cursor: pointer;
   margin: auto;
@@ -22,7 +22,18 @@
   transition: 0.2s ease-in-out;
   background: white;
 }
-.card:hover {
+.Levels{
+  width: 100%;
+   border-radius: 10px;
+  cursor: pointer;
+  margin: auto;
+  text-align: center;
+  padding: 30px 10px;
+  box-shadow: 0 0 10px #8f56e44e;
+  transition: 0.2s ease-in-out;
+  background: white;
+}
+.card:hover, .Levels:hover {
   box-shadow: 0 0 14px #3e066c94;
 }
 .bg_card {
@@ -33,13 +44,13 @@
   height: 90px;
   padding: 5px;
 }
-.card img {
+.card img, .Levels img {
   margin: auto;
   width: 75px;
   align-items: center;
 }
 
-.card h3 {
+.card h3, .Levels h3 {
   font-weight: 700;
   color: #4395ad;
   font-size: 18px;

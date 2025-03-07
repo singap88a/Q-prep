@@ -1,52 +1,47 @@
-// import React from "react";
+import  { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import "swiper/css/scrollbar";
-import card_img from "../../assets/ChooseTrack/Card-img.png";
-
 import { Autoplay, Scrollbar } from "swiper/modules";
 import { Link } from "react-router-dom";
+import card_img from "../../assets/ChooseTrack/Card-img.png";
 
 const Available_Tracks = () => {
-  const tracks = [
-    {
-      title: "Front-end",
-      description:
-        "A Front-end Developer builds the user interface of websites, ensuring  ",
-     },
-    {
-      title: "Back-end",
-      description:
-        "A Back-end Developer focuses on server-side development, databases, and  ",
-     },
-    {
-      title: "Full-stack",
-      description:
-        "A Full-stack Developer handles both front-end and back-end development for a  ",
-     },
-    {
-      title: "Data Science",
-      description:
-        "Data Scientists analyze data to extract meaningful insights and build predictive  ",
-     },
-    {
-      title: "DevOps",
-      description:
-        "DevOps Engineers streamline development and deployment processes for continuous  ",
-     },
-    {
-      title: "DevOps",
-      description:
-        "DevOps Engineers streamline development and deployment processes for continuous ",
-     },
-    {
-      title: "DevOps",
-      description:
-        "DevOps Engineers streamline development and deployment processes for continuous  ",
-     },
-  ];
+  const [tracks, setTracks] = useState([]); // حالة لتخزين البيانات
+  const [loading, setLoading] = useState(true); // حالة لإدارة التحميل
+  const [error, setError] = useState(null); // حالة لإدارة الأخطاء
+
+  useEffect(() => {
+    // جلب البيانات من الـ API
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "https://questionprep.azurewebsites.net/api/MainTrack/GetMainTrack"
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        setTracks(data); // تحديث الحالة بالبيانات
+      } catch (error) {
+        setError(error.message); // في حالة حدوث خطأ
+      } finally {
+        setLoading(false); // إيقاف التحميل
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <div className="py-10 text-center">Loading...</div>; // عرض رسالة تحميل
+  }
+
+  if (error) {
+    return <div className="py-10 text-center text-red-500">Error: {error}</div>; // عرض رسالة خطأ
+  }
 
   return (
     <div className="py-10">
@@ -76,16 +71,16 @@ const Available_Tracks = () => {
             modules={[Autoplay, Scrollbar]}
             className="mySwiper custom-swiper-scrollbar"
           >
-            {tracks.map((track, index) => (
-              <SwiperSlide key={index} className="px-1 pt-6 group pb-11">
-                <div className=" card">
-                  <div className="bg_card ">
+            {tracks.map((track) => (
+              <SwiperSlide key={track.trackId} className="px-1 pt-6 group pb-11">
+                <div className="p-4 bg-white rounded-lg shadow-md card">
+                <div className="bg_card ">
                     <img src={card_img} alt="" />
-                  </div>{" "}
-                  <h3 className="">
-                    {track.title}
+                  </div> 
+                  <h3 className="mt-4 text-xl font-semibold">
+                    {track.tarckName}
                   </h3>
-                  <p className="">{track.description}</p>
+                  <p className="mt-2 text-gray-600">{track.description}</p>
                 </div>
               </SwiperSlide>
             ))}
