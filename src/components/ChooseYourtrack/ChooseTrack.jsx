@@ -4,7 +4,12 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import card_img from "../../assets/ChooseTrack/Card-img.png";
 import { Link } from "react-router-dom";
 
+
 function ChooseTrack() {
+
+
+
+
   // بيانات "ChooseTrack"
   const tracksData = [
     {
@@ -73,7 +78,16 @@ function ChooseTrack() {
   const totalPages = Math.ceil(filteredTracks.length / cardsPerPage);
 
   return (
+
+
+
+
+
     <div className="container">
+
+
+
+
       <div className="flex flex-col items-center justify-center headTitle">
         <h1 className="text-2xl font-bold text-center text-transparent bg-gradient-to-r from-primary via-slate-600 to-secondary bg-clip-text md:text-4xl sm:text-3xl">
           Choose Your Learning Track
@@ -108,7 +122,7 @@ function ChooseTrack() {
               className="card "
             >
               <div className="bg_card ">
-                <img src={card_img} alt=""   />
+                <img src={card_img} alt="" />
               </div>
               <h3 className="">
                 {track.title}
@@ -136,11 +150,10 @@ function ChooseTrack() {
         {Array.from({ length: totalPages }, (_, index) => (
           <button
             key={index}
-            className={`px-4 py-2 mx-1 rounded-lg ${
-              currentPage === index + 1
-                ? "bg-secondary text-white"
-                : "bg-gray-200 hover:bg-gray-300"
-            }`}
+            className={`px-4 py-2 mx-1 rounded-lg ${currentPage === index + 1
+              ? "bg-secondary text-white"
+              : "bg-gray-200 hover:bg-gray-300"
+              }`}
             onClick={() => setCurrentPage(index + 1)}
           >
             {index + 1}

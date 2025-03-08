@@ -36,6 +36,7 @@ function Profile() {
                 className="bg-[#8349db34] p-2 rounded"
               />
             </div>
+            
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="lastName"
@@ -64,6 +65,7 @@ function Profile() {
                 className="bg-[#8349db34] p-2 rounded"
               />
             </div>
+
             <div className="flex flex-col gap-2">
               <label htmlFor="address" className="font-semibold text-secondary">
                 Address
@@ -122,13 +124,13 @@ function Profile() {
               type="submit"
               className="relative px-2 py-1 overflow-hidden font-bold border-2 rounded-md md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-secondary before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 text-secondary hover:text-white"
             >
-              Discard changes{" "}
+              Discard changes
             </button>
             <button
               type="reset"
               className="relative z-10 px-2 py-1 overflow-hidden font-bold text-white border-2 rounded-md md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary"
             >
-              Save changes{" "}
+              Save changes
             </button>
           </div>
         </form>
