@@ -6,63 +6,8 @@ import { Link } from "react-router-dom";
 
 
 function ChooseTrack() {
-<<<<<<< HEAD
 
-
-
-
-  // بيانات "ChooseTrack"
-  const tracksData = [
-    {
-      id: 1,
-      title: "Web Development",
-      description: "Learn the basics of building websites and web apps.",
-    },
-    {
-      id: 2,
-      title: "Data Science",
-      description:
-        "Dive into data analysis, visualization, and machine learning.",
-    },
-    {
-      id: 3,
-      title: "Mobile Development",
-      description: "Build apps for iOS and Android using modern frameworks.",
-    },
-    {
-      id: 4,
-      title: "Cybersecurity",
-      description: "Protect systems and data from cyber threats.",
-    },
-    {
-      id: 5,
-      title: "AI and Machine Learning",
-      description:
-        "Explore artificial intelligence and deep learning concepts.",
-    },
-    {
-      id: 6,
-      title: "Mobile Development",
-      description: "Build apps for iOS and Android using modern frameworks.",
-    },
-    {
-      id: 7,
-      title: "Cybersecurity",
-      description: "Protect systems and data from cyber threats.",
-    },
-    {
-      id: 8,
-      title: "AI and Machine Learning",
-      description:
-        "Explore artificial intelligence and deep learning concepts.",
-    },
-    // أضف المزيد من الخيارات هنا
-  ];
-
-  // حالة البحث
-=======
   const [tracksData, setTracksData] = useState([]);
->>>>>>> 9297dd64a0791df1af78f1541386e72f79b92ec4
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const cardsPerPage = 6;
@@ -140,15 +85,12 @@ function ChooseTrack() {
         {currentTracks.length >= 1 ? (
           currentTracks.map((track) => (
             <Link
-              to={`/track/${track.trackId}`}
+              to={`/choosetrack/track/${track.trackId}`}
               key={track.trackId}
               className="card"
             >
-<<<<<<< HEAD
-              <div className="bg_card ">
-=======
+
               <div className="bg_card">
->>>>>>> 9297dd64a0791df1af78f1541386e72f79b92ec4
                 <img src={card_img} alt="" />
               </div>
               <h3 className="">{track.tarckName}</h3>

@@ -83,7 +83,7 @@ function Approuting() {
         {/* Community */}
         <Route path="/community" element={<Community_1 />} />
         <Route path="/community_2" element={<Community_2 />} />
-        <Route path="/track/:trackId" element={<TrackDetails />} />
+        <Route path="/choosetrack/track/:trackId" element={<TrackDetails />} />
 
         {/* Error */}
         <Route path="*" element={<ErrorPage />} />

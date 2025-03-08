@@ -1,8 +1,10 @@
-import   { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 const TrackDetails = () => {
   const { trackId } = useParams();
+  // console.log("Track ID from useParams:", trackId);
+
   const [trackDetails, setTrackDetails] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -11,17 +13,23 @@ const TrackDetails = () => {
     const fetchTrackDetails = async () => {
       try {
         const response = await fetch(
-          `https://questionprep.azurewebsites.net/api/Frameworks/GetFramework/${trackId}`
+          `https://questionprep.azurewebsites.net/api/Frameworks/GetFramework/${trackId}`,
+          {
+            mode: "cors",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer`,
+            },
+          }
         );
         if (!response.ok) {
           throw new Error("Failed to fetch track details");
         }
         const data = await response.json();
-        console.log("Fetched Data:", data); // تحقق من البيانات
-        setTrackDetails(data);
+        console.log("Fetched Data:", data);
+        setTrackDetails(data[0]);
       } catch (error) {
-        console.error("Error fetching track details:", error);
-        setError("فشل في تحميل تفاصيل المسار. يرجى المحاولة مرة أخرى لاحقًا.");
+        setError(error.message);
       } finally {
         setLoading(false);
       }
@@ -31,15 +39,15 @@ const TrackDetails = () => {
   }, [trackId]);
 
   if (loading) {
-    return <div className="mt-10 text-center">جارٍ التحميل...</div>;
+    return <div className="mt-10 text-center">Loading...</div>;
   }
 
   if (error) {
     return <div className="mt-10 text-center text-red-500">{error}</div>;
   }
 
-  if (!trackDetails || !trackDetails.frameworkName || !trackDetails.mainTrack) {
-    return <div className="mt-10 text-center">لا تتوفر بيانات لهذا المسار.</div>;
+  if (!trackDetails || !trackDetails.frameworkName) {
+    return <div className="mt-10 text-center">Data Not Found</div>;
   }
 
   return (
@@ -50,14 +58,16 @@ const TrackDetails = () => {
       {trackDetails.mainTrack && (
         <div className="mt-5">
           <h2 className="text-xl font-bold">تفاصيل المسار الرئيسي</h2>
-          <p><strong>اسم المسار:</strong> {trackDetails.mainTrack.tarckName}</p>
-          <p><strong>الوصف:</strong> {trackDetails.mainTrack.description}</p>
-          {trackDetails.mainTrack.photo && (
+          <p><strong> path name :</strong> {trackDetails.mainTrack.tarckName}</p>
+          <p><strong>Description :</strong> {trackDetails.mainTrack.description}</p>
+          {trackDetails.photo ? (
             <img
-              src={`https://questionprep.azurewebsites.net/${trackDetails.mainTrack.photo}`}
-              alt={trackDetails.mainTrack.tarckName}
-              className="w-48 h-48 mt-3"
+              src={`${baseURL}${trackDetails.photo}`}
+              alt={trackDetails.frameworkName}
+              style={{ width: "200px", height: "auto" }}
             />
+          ) : (
+            <p>No Image Available</p>
           )}
         </div>
       )}

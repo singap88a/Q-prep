@@ -80,7 +80,7 @@ function Profile() {
     visible: { x: 0, opacity: 1, transition: { duration: 0.5 } },
   };
 
- 
+
 
   return (
     <motion.div
@@ -113,67 +113,6 @@ function Profile() {
         </motion.label>
       </div>
 
-<<<<<<< HEAD
-      <div>
-        <form>
-          <div className="block gap-20 my-8 md:flex sm:flex lg:flex">
-            <div className="flex flex-col gap-2">
-              <label
-                htmlFor="firstName"
-                className="font-semibold text-secondary"
-              >
-                First name
-              </label>
-              <input
-                type="text"
-                placeholder="First name"
-                id="firstName"
-                className="bg-[#8349db34] p-2 rounded"
-              />
-            </div>
-            
-            <div className="flex flex-col gap-2">
-              <label
-                htmlFor="lastName"
-                className="font-semibold text-secondary"
-              >
-                Last name
-              </label>
-              <input
-                type="text"
-                placeholder="Last name"
-                id="lastName"
-                className="bg-[#8349db34] p-2 rounded"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 gap-5 mb-8 md:gap-20 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-2">
-            <div className="flex flex-col gap-2">
-              <label htmlFor="email" className="font-semibold text-secondary">
-                Email
-              </label>
-              <input
-                type="email"
-                placeholder="Email"
-                id="email"
-                className="bg-[#8349db34] p-2 rounded"
-              />
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label htmlFor="address" className="font-semibold text-secondary">
-                Address
-              </label>
-              <input
-                type="text"
-                placeholder="Address"
-                id="address"
-                className="bg-[#8349db34] p-2 rounded"
-              />
-            </div>
-          </div>
-=======
       <form onSubmit={(e) => e.preventDefault()}>
         <div className="block gap-20 my-8 md:flex sm:flex lg:flex">
           <motion.div
@@ -252,7 +191,6 @@ function Profile() {
             />
           </motion.div>
         </div>
->>>>>>> 9297dd64a0791df1af78f1541386e72f79b92ec4
 
         <div className="grid grid-cols-1 gap-5 mb-8 md:gap-20 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2">
           <motion.div
@@ -304,20 +242,6 @@ function Profile() {
               disabled={!isEditMode}
               required
             >
-<<<<<<< HEAD
-              Discard changes
-            </button>
-            <button
-              type="reset"
-              className="relative z-10 px-2 py-1 overflow-hidden font-bold text-white border-2 rounded-md md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary"
-            >
-              Save changes
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-=======
               <option value="Egypt">Egypt</option>
               <option value="USA">USA</option>
               <option value="Canada">Canada</option>
@@ -376,7 +300,6 @@ function Profile() {
         </div>
       </form>
     </motion.div>
->>>>>>> 9297dd64a0791df1af78f1541386e72f79b92ec4
   );
 }
 
