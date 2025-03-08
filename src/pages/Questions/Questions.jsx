@@ -1,10 +1,12 @@
+/* eslint-disable react/prop-types */
+// Questions.js
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
-function Questions() {
+function Questions({ savedQuestions, setSavedQuestions }) {
   const [activeIndex, setActiveIndex] = useState(null);
-  const [savedQuestions, setSavedQuestions] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   const navigate = useNavigate();
 
   const faqs = [
@@ -38,10 +40,6 @@ function Questions() {
     }
   };
 
-  const goToSavedQuestions = () => {
-    navigate("/saved_questions", { state: { savedQuestions } });
-  };
-
   const isQuestionSaved = (faq) =>
     savedQuestions.some((saved) => saved.question === faq.question);
 
@@ -53,12 +51,6 @@ function Questions() {
           <h1>Front-end</h1>
         </div>
         <div className="flex gap-4">
-          <button
-            onClick={goToSavedQuestions}
-            className="relative flex items-center gap-3 px-4 py-1 overflow-hidden font-bold border-2 rounded-full isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-secondary before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 text-secondary hover:text-white"
-          >
-            <h1 className="text-xl"> View Saved Questions</h1>
-          </button>
           <Link
             to="/add_question"
             className="relative flex items-center gap-3 px-4 py-1 overflow-hidden font-bold border-2 rounded-full isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-secondary before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 text-secondary hover:text-white"

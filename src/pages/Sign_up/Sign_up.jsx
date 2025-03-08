@@ -1,26 +1,68 @@
-// import React from 'react'
-// import sign_up from "../../assets/home-img/Sign-up.png";
+/* eslint-disable react/prop-types */
+import  { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Lottie from "lottie-react";
+import sign__up from "../../../public/animations/Login_animation.json";
 import Google from "../../assets/home-img/google.png";
 import Facebook from "../../assets/home-img/facebook.png";
 import Apple from "../../assets/home-img/apple.png";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import sign__up from "../../../public/animations/Login_animation.json";
-import Lottie from "lottie-react";
+
 function Sign_up({ setIsLoggedIn }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(null); // حالة لإدارة الأخطاء
+  const [loading, setLoading] = useState(false); // حالة لإدارة التحميل
   const navigate = useNavigate();
 
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
-    // Simulate sign-up logic
-    if (name && email && password) {
-      setIsLoggedIn(true); // Set logged-in state
-      navigate("/"); // Navigate to the home page
-    } else {
+  
+    // التحقق من أن جميع الحقول مملوءة
+    if (!name || !email || !password) {
       alert("Please fill in all fields");
+      return;
+    }
+  
+    setLoading(true); // بدء التحميل
+    setError(null); // إعادة تعيين حالة الخطأ
+  
+    try {
+      // إرسال طلب POST إلى الـ API
+      const response = await fetch(
+        "https://questionprep.azurewebsites.net/api/Authenticate/Register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            Name: name, // تم تغيير `username` إلى `Name`
+            email: email, // البريد الإلكتروني
+            password: password, // كلمة المرور
+          }),
+        }
+      );
+  
+      // تسجيل حالة الاستجابة وبياناتها
+      console.log("Response status:", response.status);
+      const data = await response.json();
+      console.log("Response data:", data);
+  
+      // التحقق من نجاح الطلب
+      if (!response.ok) {
+        throw new Error(data.message || "Registration failed");
+      }
+  
+      // إذا نجح التسجيل
+      setIsLoggedIn(true); // تحديث حالة تسجيل الدخول
+      navigate("/"); // الانتقال إلى الصفحة الرئيسية
+    } catch (error) {
+      console.error("Error:", error); // تسجيل الخطأ في وحدة التحكم
+      setError(error.message); // تحديث حالة الخطأ
+      alert(error.message || "Registration failed. Please try again."); // عرض رسالة الخطأ
+    } finally {
+      setLoading(false); // إيقاف التحميل
     }
   };
 
@@ -28,10 +70,9 @@ function Sign_up({ setIsLoggedIn }) {
     <div className="container">
       <div className="flex flex-col-reverse py-16 gap-28 md:flex-row">
         <div className="w-full">
-          {/* <img src={sign_up} alt="" className="md:w-[70%] m-auto flex flex-col animate-zoom" /> */}
           <Lottie
             animationData={sign__up}
-            className="md:w-[75%] m-auto flex flex-col   "
+            className="md:w-[75%] m-auto flex flex-col"
           />
         </div>
         <div className="w-full">
@@ -40,7 +81,10 @@ function Sign_up({ setIsLoggedIn }) {
               Welcome to Q-Prep
             </h1>
             <p className="mb-6 text-primary">Register your account</p>
+
+            {/* نموذج التسجيل */}
             <form onSubmit={handleSignUp} className="space-y-4">
+              {/* حقل الاسم */}
               <div>
                 <label
                   htmlFor="name"
@@ -58,6 +102,7 @@ function Sign_up({ setIsLoggedIn }) {
                 />
               </div>
 
+              {/* حقل البريد الإلكتروني */}
               <div>
                 <label
                   htmlFor="email"
@@ -75,6 +120,7 @@ function Sign_up({ setIsLoggedIn }) {
                 />
               </div>
 
+              {/* حقل كلمة المرور */}
               <div>
                 <label
                   htmlFor="password"
@@ -92,16 +138,17 @@ function Sign_up({ setIsLoggedIn }) {
                 />
               </div>
 
-              {/* Submit Button */}
+              {/* زر التسجيل */}
               <button
                 type="submit"
                 className="w-full py-2 text-white transition rounded-lg bg-secondary hover:bg-purple-700"
+                disabled={loading} // تعطيل الزر أثناء التحميل
               >
-                Sign up
+                {loading ? "Signing up..." : "Sign up"}
               </button>
             </form>
 
-            {/* Social Login */}
+            {/* تسجيل الدخول عبر وسائل التواصل الاجتماعي */}
             <p className="mt-6 text-center text-primary">Create account with</p>
             <div className="flex justify-center gap-10 mt-4">
               <img

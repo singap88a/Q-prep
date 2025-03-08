@@ -17,14 +17,18 @@ import Test_your_level from "../pages/Test_your_level/Test_your_level";
 import Saved_questions from "../pages/Saved_questions/Saved_questions";
 import ScrollToTop from "./ScrollToTop";
 import Profile from "../pages/Profile/Profile";
-import  "../style/animations.css"
+import "../style/animations.css";
 import Community_1 from "../pages/Community/Community_1";
 import Community_2 from "../pages/Community/Community_2";
+import TrackDetails from "../components/ChooseYourtrack/ChooseYourLevel/TrackDetails";
 function Approuting() {
   // قراءة حالة تسجيل الدخول من localStorage عند تحميل الصفحة
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     return JSON.parse(localStorage.getItem("isLoggedIn")) || false;
   });
+
+  // حالة الأسئلة المحفوظة
+  const [savedQuestions, setSavedQuestions] = useState([]);
 
   // تحديث localStorage عند تغيير حالة تسجيل الدخول
   useEffect(() => {
@@ -34,32 +38,53 @@ function Approuting() {
   return (
     <Router>
       <ScrollToTop />
-      <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+      <Navbar
+        isLoggedIn={isLoggedIn}
+        setIsLoggedIn={setIsLoggedIn}
+        savedQuestions={savedQuestions}
+      />
       <Routes>
         <Route index element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/choosetrack" element={<ChooseYourTrack />} />
 
         {/* auth */}
-        <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
-        <Route path="/sign-up" element={<Sign_up setIsLoggedIn={setIsLoggedIn} />} />
-
- 
+        <Route
+          path="/login"
+          element={<Login setIsLoggedIn={setIsLoggedIn} />}
+        />
+        <Route
+          path="/sign-up"
+          element={<Sign_up setIsLoggedIn={setIsLoggedIn} />}
+        />
 
         {/* ChooseYourLanguage */}
         <Route path="/choosetrack/lang" element={<ChooseLanguage />} />
         <Route path="/choosetrack/lang/level" element={<ChooseYourLevel />} />
 
         {/* ////// Questions //////// */}
-        <Route path="/questions" element={<Questions />} />
+        <Route
+          path="/questions"
+          element={
+            <Questions
+              savedQuestions={savedQuestions}
+              setSavedQuestions={setSavedQuestions}
+            />
+          }
+        />
         <Route path="/add_question" element={<Add_question />} />
         <Route path="/test_your_level" element={<Test_your_level />} />
-        <Route path="/saved_questions" element={<Saved_questions />} />
+        <Route
+          path="/saved_questions"
+          element={<Saved_questions savedQuestions={savedQuestions} />}
+        />
         <Route path="/profile" element={<Profile />} />
 
         {/* Community */}
-            <Route path="/community" element={<Community_1 />} />
-            <Route path="/community2" element={<Community_2 />} />
+        <Route path="/community" element={<Community_1 />} />
+        <Route path="/community_2" element={<Community_2 />} />
+        <Route path="/track/:trackId" element={<TrackDetails />} />
+
         {/* Error */}
         <Route path="*" element={<ErrorPage />} />
       </Routes>
@@ -69,4 +94,4 @@ function Approuting() {
   );
 }
 
-export default Approuting;
+export default Approuting; // يمكنك تغيير الاسم هنا إذا أردت

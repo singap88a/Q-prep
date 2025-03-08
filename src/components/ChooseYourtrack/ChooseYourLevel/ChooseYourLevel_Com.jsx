@@ -46,10 +46,10 @@ const ChooseLanguage_Com = () => {
             </Link>
           </div>
         </div>
-                    <div className="grid grid-cols-1 gap-10 my-10 md:grid-cols-3 sm:grid-cols-2 lg:px-32 md:px-10">
+                    <div className="grid grid-cols-1 gap-32 my-20 md:grid-cols-3 sm:grid-cols-2 lg:px-32 md:px-10">
                         {level.map((item) => (
-                            <Link to='/questions' key={item.id} className="card " >
-                                <div className="bg_card">
+                            <Link to='/questions' key={item.id} className="h-full Levels" >
+                                <div className=" bg_card">
                                     <img src={card_img} alt="" className="m-auto" />
                                 </div>
                                 <h3 className="">

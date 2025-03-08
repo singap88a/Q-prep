@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import card_img from "../../assets/ChooseTrack/Card-img.png";
@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 
 
 function ChooseTrack() {
+<<<<<<< HEAD
 
 
 
@@ -59,14 +60,36 @@ function ChooseTrack() {
   ];
 
   // حالة البحث
+=======
+  const [tracksData, setTracksData] = useState([]);
+>>>>>>> 9297dd64a0791df1af78f1541386e72f79b92ec4
   const [searchTerm, setSearchTerm] = useState("");
-  // حالة التقسيم إلى صفحات
   const [currentPage, setCurrentPage] = useState(1);
   const cardsPerPage = 6;
 
+  // جلب البيانات من الـ API
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "https://questionprep.azurewebsites.net/api/MainTrack/GetMainTrack"
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        const data = await response.json();
+        setTracksData(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   // فلترة البيانات حسب البحث
   const filteredTracks = tracksData.filter((track) =>
-    track.title.toLowerCase().includes(searchTerm.toLowerCase())
+    track.tarckName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // بيانات الصفحة الحالية
@@ -113,23 +136,23 @@ function ChooseTrack() {
       </div>
 
       {/* عرض الكروت */}
-      <div className="grid gap-10 md:grid-cols-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-10 md:grid-cols-3 sm:grid-cols-2 lg:grid-cols-5">
         {currentTracks.length >= 1 ? (
           currentTracks.map((track) => (
             <Link
-              to="/choosetrack/lang"
-              key={track.id}
-              className="card "
+              to={`/track/${track.trackId}`}
+              key={track.trackId}
+              className="card"
             >
+<<<<<<< HEAD
               <div className="bg_card ">
+=======
+              <div className="bg_card">
+>>>>>>> 9297dd64a0791df1af78f1541386e72f79b92ec4
                 <img src={card_img} alt="" />
               </div>
-              <h3 className="">
-                {track.title}
-              </h3>
-              <p className="">
-                {track.description}
-              </p>
+              <h3 className="">{track.tarckName}</h3>
+              <p className="">{track.description}</p>
             </Link>
           ))
         ) : (
@@ -138,6 +161,7 @@ function ChooseTrack() {
           </h1>
         )}
       </div>
+
       {/* التقسيم إلى صفحات */}
       <div className="flex justify-center mt-6 mb-20">
         <button
