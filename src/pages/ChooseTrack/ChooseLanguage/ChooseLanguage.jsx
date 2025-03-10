@@ -1,5 +1,4 @@
-import React from 'react'
-import ChooseLanguage_Com from '../../../components/ChooseYourtrack/ChooseYourLanguage/ChooseLanguage_Com';
+ import ChooseLanguage_Com from '../../../components/ChooseYourtrack/ChooseYourLanguage/ChooseLanguage_Com';
 
 
 const ChooseLanguage = () => {
