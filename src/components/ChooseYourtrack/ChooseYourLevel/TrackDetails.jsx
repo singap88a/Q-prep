@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import card_img from "../../../assets/ChooseTrack/Card-img.png";  
 
 const TrackDetails = () => {
   const { trackId } = useParams();
-  // console.log("Track ID from useParams:", trackId);
-
   const [trackDetails, setTrackDetails] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -26,7 +25,6 @@ const TrackDetails = () => {
           throw new Error("Failed to fetch track details");
         }
         const data = await response.json();
-        console.log("Fetched Data:", data);
         setTrackDetails(data[0]);
       } catch (error) {
         setError(error.message);
@@ -52,26 +50,21 @@ const TrackDetails = () => {
 
   return (
     <div className="container p-4 mx-auto">
-      <h1 className="text-2xl font-bold">{trackDetails.frameworkName}</h1>
-      <p className="text-gray-700">{trackDetails.description}</p>
+ 
 
-      {trackDetails.mainTrack && (
-        <div className="mt-5">
-          <h2 className="text-xl font-bold">تفاصيل المسار الرئيسي</h2>
-          <p><strong> path name :</strong> {trackDetails.mainTrack.tarckName}</p>
-          <p><strong>Description :</strong> {trackDetails.mainTrack.description}</p>
-          {trackDetails.photo ? (
-            <img
-              src={`${baseURL}${trackDetails.photo}`}
-              alt={trackDetails.frameworkName}
-              style={{ width: "200px", height: "auto" }}
-            />
-          ) : (
-            <p>No Image Available</p>
-          )}
+         <div className="mt-5">
+           <div className="grid grid-cols-1 gap-10 my-10 lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2">
+            <div className="card">
+              <div className="bg_card">
+                <img src={card_img} alt="" className="m-auto" />
+              </div>
+              <h3 className="">{trackDetails.frameworkName}</h3>
+              <p className="">{trackDetails.description}</p>
+            </div>
+          </div>
+ 
         </div>
-      )}
-    </div>
+     </div>
   );
 };
 

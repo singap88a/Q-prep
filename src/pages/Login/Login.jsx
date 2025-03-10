@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import   { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Lottie from "lottie-react";
 import Login_animation from "../../../public/animations/Login_animation.json";
@@ -11,6 +11,7 @@ function Login({ setIsLoggedIn }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null); // حالة لإدارة الأخطاء
+  const [success, setSuccess] = useState(null); // حالة لإدارة الرسائل الناجحة
   const [loading, setLoading] = useState(false); // حالة لإدارة التحميل
   const navigate = useNavigate();
 
@@ -19,12 +20,13 @@ function Login({ setIsLoggedIn }) {
 
     // التحقق من أن جميع الحقول مملوءة
     if (!email || !password) {
-      alert("Please fill in all fields");
+      setError("Please fill in all fields");
       return;
     }
 
     setLoading(true); // بدء التحميل
     setError(null); // إعادة تعيين حالة الخطأ
+    setSuccess(null); // إعادة تعيين حالة النجاح
 
     try {
       // إرسال طلب POST إلى الـ API
@@ -53,12 +55,12 @@ function Login({ setIsLoggedIn }) {
       }
 
       // إذا نجح تسجيل الدخول
+      setSuccess("Login successful! Redirecting..."); // عرض رسالة نجاح
       setIsLoggedIn(true); // تحديث حالة تسجيل الدخول
-      navigate("/"); // الانتقال إلى الصفحة الرئيسية
+      setTimeout(() => navigate("/"), 2000); // الانتقال إلى الصفحة الرئيسية بعد تأخير
     } catch (error) {
       console.error("Error:", error); // تسجيل الخطأ في وحدة التحكم
-      setError(error.message); // تحديث حالة الخطأ
-      alert(error.message || "Login failed. Please try again."); // عرض رسالة الخطأ
+      setError(error.message || "Login failed. Please try again."); // تحديث حالة الخطأ
     } finally {
       setLoading(false); // إيقاف التحميل
     }
@@ -79,6 +81,18 @@ function Login({ setIsLoggedIn }) {
               Welcome back to Q-Prep
             </h1>
             <p className="mb-6 text-primary">Login now!</p>
+
+            {/* عرض رسائل الخطأ أو النجاح */}
+            {error && (
+              <div className="p-3 mb-4 text-red-700 bg-red-100 border border-red-400 rounded-lg">
+                {error}
+              </div>
+            )}
+            {success && (
+              <div className="p-3 mb-4 text-green-700 bg-green-100 border border-green-400 rounded-lg">
+                {success}
+              </div>
+            )}
 
             {/* نموذج تسجيل الدخول */}
             <form onSubmit={handleLogin} className="space-y-4">
