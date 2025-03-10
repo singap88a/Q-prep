@@ -23,6 +23,7 @@ function ChooseTrack() {
           throw new Error("Failed to fetch data");
         }
         const data = await response.json();
+        console.log(data);
         setTracksData(data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -65,7 +66,7 @@ function ChooseTrack() {
         </p>
       </div>
 
-      {/* شريط البحث */}
+      
       <div className="relative w-full max-w-lg mx-auto mt-5 mb-6">
         <FontAwesomeIcon
           icon={faSearch}
