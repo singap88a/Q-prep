@@ -10,7 +10,7 @@ import Approuting from './Router/Approuting.jsx'
 
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <Approuting />
-  </StrictMode>,
+  // <StrictMode>
+  <Approuting />
+  // </StrictMode>,
 )
