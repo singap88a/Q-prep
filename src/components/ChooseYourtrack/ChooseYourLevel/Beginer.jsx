@@ -38,11 +38,6 @@ function Beginer({ savedQuestions, setSavedQuestions }) {
     }, [])
 
 
-
-
-
-
-
     const [activeIndex, setActiveIndex] = useState(null);
 
 

@@ -9,7 +9,7 @@ const TrackDetails = () => {
   // console.log("Track ID from useParams:", trackId);
 
 
-  // #### make map arrey =====> Mady 
+
   const [trackDetails, setTrackDetails] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -60,12 +60,12 @@ const TrackDetails = () => {
   return (
     <>
       <div className="container p-4 mx-auto">
-        <h1 className="text-2xl font-bold">{trackDetails.frameworkName}</h1>
-        <p className="text-gray-700">{trackDetails.description}</p>
+        <h1 className="text-2xl font-bold">{trackDetails.mainTrack.tarckName}</h1>
+        <p className="text-gray-700">{trackDetails.mainTrack.description}</p>
         <div className="flex flex-wrap gap-10 mb-5">
 
           {/* Staet to send specific data */}
-          <Link to={`${location.pathname}/level`} state={{frameworkId: trackDetails.frameworkId , frameworkName : trackDetails.frameworkName }}>
+          {/* <Link to={`${location.pathname}/level`} state={{ frameworkId: trackDetails.frameworkId, frameworkName: trackDetails.frameworkName }}>
             <div className="track cursor-pointer">
               {trackDetails.mainTrack ? (
                 <div className="mt-5 bg-red-200 p-4 rounded-lg">
@@ -81,6 +81,18 @@ const TrackDetails = () => {
                   ) : (
                     <p>No Image Available</p>
                   )}
+                </div>
+              ) : (
+                <p>No Tracks Available</p>
+              )}
+            </div>
+          </Link> */}
+          <Link to={`${location.pathname}/level`} state={{ frameworkId: trackDetails.frameworkId, frameworkName: trackDetails.frameworkName }}>
+            <div className="track cursor-pointer">
+              {trackDetails.mainTrack ? (
+                <div className="mt-5 bg-red-200 p-4 rounded-lg">
+                  <h1 className="text-2xl font-bold">{trackDetails.frameworkName}</h1>
+                  <p className="text-gray-700">{trackDetails.description}</p>
                 </div>
               ) : (
                 <p>No Tracks Available</p>
