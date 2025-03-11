@@ -6,6 +6,8 @@ import Login_animation from "../../../public/animations/Login_animation.json";
 import Google from "../../assets/home-img/google.png";
 import Facebook from "../../assets/home-img/facebook.png";
 import Apple from "../../assets/home-img/apple.png";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Login({ setIsLoggedIn }) {
   const [email, setEmail] = useState("");
@@ -21,6 +23,7 @@ function Login({ setIsLoggedIn }) {
     // التحقق من أن جميع الحقول مملوءة
     if (!email || !password) {
       setError("Please fill in all fields");
+      toast.error("Please fill in all fields"); // عرض رسالة خطأ باستخدام toast
       return;
     }
 
@@ -57,10 +60,12 @@ function Login({ setIsLoggedIn }) {
       // إذا نجح تسجيل الدخول
       setSuccess("Login successful! Redirecting..."); // عرض رسالة نجاح
       setIsLoggedIn(true); // تحديث حالة تسجيل الدخول
+      toast.success("Login successful! Redirecting..."); // عرض رسالة نجاح باستخدام toast
       setTimeout(() => navigate("/"), 2000); // الانتقال إلى الصفحة الرئيسية بعد تأخير
     } catch (error) {
       console.error("Error:", error); // تسجيل الخطأ في وحدة التحكم
       setError(error.message || "Login failed. Please try again."); // تحديث حالة الخطأ
+      toast.error(error.message || "Login failed. Please try again."); // عرض رسالة خطأ باستخدام toast
     } finally {
       setLoading(false); // إيقاف التحميل
     }
@@ -158,6 +163,7 @@ function Login({ setIsLoggedIn }) {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }

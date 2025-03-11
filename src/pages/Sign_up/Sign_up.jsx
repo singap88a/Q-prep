@@ -6,6 +6,8 @@ import sign__up from "../../../public/animations/Login_animation.json";
 import Google from "../../assets/home-img/google.png";
 import Facebook from "../../assets/home-img/facebook.png";
 import Apple from "../../assets/home-img/apple.png";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Sign_up({ setIsLoggedIn }) {
   const [name, setName] = useState("");
@@ -16,12 +18,25 @@ function Sign_up({ setIsLoggedIn }) {
   const [loading, setLoading] = useState(false); // حالة لإدارة التحميل
   const navigate = useNavigate();
 
+  const validatePassword = (password) => {
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return regex.test(password);
+  };
+
   const handleSignUp = async (e) => {
     e.preventDefault();
 
     // التحقق من أن جميع الحقول مملوءة
     if (!name || !email || !password) {
       setError("Please fill in all fields");
+      return;
+    }
+
+    // التحقق من قوة كلمة المرور
+    if (!validatePassword(password)) {
+      setError(
+        "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character."
+      );
       return;
     }
 
@@ -59,10 +74,12 @@ function Sign_up({ setIsLoggedIn }) {
       // إذا نجح التسجيل
       setSuccess("Registration successful! Redirecting..."); // عرض رسالة نجاح
       setIsLoggedIn(true); // تحديث حالة تسجيل الدخول
+      toast.success("Registration successful! Redirecting..."); // عرض رسالة نجاح باستخدام toast
       setTimeout(() => navigate("/"), 2000); // الانتقال إلى الصفحة الرئيسية بعد تأخير
     } catch (error) {
       console.error("Error:", error); // تسجيل الخطأ في وحدة التحكم
       setError(error.message || "Registration failed. Please try again."); // تحديث حالة الخطأ
+      toast.error(error.message || "Registration failed. Please try again."); // عرض رسالة خطأ باستخدام toast
     } finally {
       setLoading(false); // إيقاف التحميل
     }
@@ -180,6 +197,7 @@ function Sign_up({ setIsLoggedIn }) {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }
