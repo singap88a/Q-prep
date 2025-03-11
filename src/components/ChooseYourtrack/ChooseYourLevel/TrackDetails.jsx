@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
+import card_img from "../../../assets/ChooseTrack/Card-img.png";
 
 const TrackDetails = () => {
   const { trackId } = useParams();
@@ -44,7 +45,11 @@ const TrackDetails = () => {
   }
 
   if (error) {
-    return <div className="mt-10 font-semibold text-center text-red-500">{error}</div>;
+    return (
+      <div className="mt-10 font-semibold text-center text-red-500">
+        {error}
+      </div>
+    );
   }
 
   if (!trackDetails || !trackDetails.frameworkName) {
@@ -53,39 +58,22 @@ const TrackDetails = () => {
 
   return (
     <div className="container p-4 mx-auto">
-      <h1 className="text-2xl font-bold">{trackDetails.frameworkName}</h1>
-      <p className="text-gray-700">{trackDetails.description}</p>
-
-      <div className="flex flex-wrap gap-10 mb-5">
-        {/* Link to navigate to the level page */}
-        <Link
+      <div className="grid grid-cols-1 gap-10 my-10 lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2">
+         <Link
           to={`${location.pathname}/level`}
-          state={{ frameworkId: trackDetails.frameworkId, frameworkName: trackDetails.frameworkName }}
-          className="cursor-pointer track"
+          state={{
+            frameworkId: trackDetails.frameworkId,
+            frameworkName: trackDetails.frameworkName,
+            
+          }}
+          className="cursor-pointer track card"
         >
-          <div className="p-4 mt-5 bg-red-200 rounded-lg">
-            <h2 className="text-xl font-bold">تفاصيل المسار الرئيسي</h2>
-            {trackDetails.mainTrack ? (
-              <>
-                <p>
-                  <strong>Path Name:</strong> {trackDetails.mainTrack.trackName}
-                </p>
-                <p>
-                  <strong>Description:</strong> {trackDetails.mainTrack.description}
-                </p>
-                {trackDetails.mainTrack.photo ? (
-                  <img
-                    src={`https://questionprep.azurewebsites.net/${trackDetails.mainTrack.photo}`}
-                    alt={trackDetails.mainTrack.trackName}
-                    className="w-48 h-auto"
-                  />
-                ) : (
-                  <p>No Image Available</p>
-                )}
-              </>
-            ) : (
-              <p>No Tracks Available</p>
-            )}
+          <div className="">
+            <div className="bg_card">
+              <img src={card_img} alt="" className="m-auto" />
+            </div>
+            <h3 className="">{trackDetails.frameworkName} </h3>
+            <p className="">{trackDetails.description} </p>
           </div>
         </Link>
       </div>

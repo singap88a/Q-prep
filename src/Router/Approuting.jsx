@@ -9,9 +9,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Newsletter from "../components/Newsletter";
 import ChooseYourTrack from "../pages/ChooseTrack/ChooseYourTrack";
-// import ChooseLanguage from "../pages/ChooseTrack/ChooseLanguage/ChooseLanguage";
 import ChooseYourLevel from "../pages/ChooseTrack/ChooseYourLevel/ChooseYourLevel";
-// import Questions from "../pages/Questions/Questions";
 import Add_question from "../pages/Add_question/Add_question";
 import Test_your_level from "../pages/Test_your_level/Test_your_level";
 import Saved_questions from "../pages/Saved_questions/Saved_questions";
@@ -25,13 +23,13 @@ import Beginer from "../components/ChooseYourtrack/ChooseYourLevel/Beginer";
 import Intermediate from "../components/ChooseYourtrack/ChooseYourLevel/Intermediate";
 import Advanced from "../components/ChooseYourtrack/ChooseYourLevel/Advanced";
 function Approuting() {
-   const [isLoggedIn, setIsLoggedIn] = useState(() => {
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
     return JSON.parse(localStorage.getItem("isLoggedIn")) || false;
   });
 
-   const [savedQuestions, setSavedQuestions] = useState([]);
+  const [savedQuestions, setSavedQuestions] = useState([]);
 
-   useEffect(() => {
+  useEffect(() => {
     localStorage.setItem("isLoggedIn", JSON.stringify(isLoggedIn));
   }, [isLoggedIn]);
 
@@ -48,7 +46,7 @@ function Approuting() {
         <Route path="/about" element={<About />} />
         <Route path="/choosetrack" element={<ChooseYourTrack />} />
 
-         <Route
+        <Route
           path="/login"
           element={<Login setIsLoggedIn={setIsLoggedIn} />}
         />
@@ -57,12 +55,6 @@ function Approuting() {
           element={<Sign_up setIsLoggedIn={setIsLoggedIn} />}
         />
 
-        {/* ChooseYourLanguage */}
-        {/* <Route path="/choosetrack/lang" element={<ChooseLanguage />} /> */}
-        {/* <Route path="/choosetrack/lang/level" element={<ChooseYourLevel />} /> */}
-
-        {/* ////// Questions //////// */}
-        {/* <Route path="/questions" element={ <Questions savedQuestions={savedQuestions} setSavedQuestions={setSavedQuestions} />} /> */}
         <Route path="/add_question" element={<Add_question />} />
         <Route path="/test_your_level" element={<Test_your_level />} />
         <Route
@@ -75,11 +67,38 @@ function Approuting() {
         <Route path="/community" element={<Community_1 />} />
         <Route path="/community_2" element={<Community_2 />} />
         <Route path="/choosetrack/track/:trackId" element={<TrackDetails />} />
-        <Route path="/choosetrack/track/:trackId/level" element={<ChooseYourLevel />} />
+        <Route
+          path="/choosetrack/track/:trackId/level"
+          element={<ChooseYourLevel />}
+        />
         {/* <Route path="/choosetrack/track/:trackId/level/questions" element={ <Questions savedQuestions={savedQuestions} setSavedQuestions={setSavedQuestions} />} /> */}
-        <Route path="/choosetrack/track/:trackId/level/beginer" element={ <Beginer savedQuestions={savedQuestions} setSavedQuestions={setSavedQuestions} />} />
-        <Route path="/choosetrack/track/:trackId/level/Intermediate" element={ <Intermediate savedQuestions={savedQuestions} setSavedQuestions={setSavedQuestions} />} />
-        <Route path="/choosetrack/track/:trackId/level/advanced" element={ <Advanced savedQuestions={savedQuestions} setSavedQuestions={setSavedQuestions} />} />
+        <Route
+          path="/choosetrack/track/:trackId/level/beginer"
+          element={
+            <Beginer
+              savedQuestions={savedQuestions}
+              setSavedQuestions={setSavedQuestions}
+            />
+          }
+        />
+        <Route
+          path="/choosetrack/track/:trackId/level/Intermediate"
+          element={
+            <Intermediate
+              savedQuestions={savedQuestions}
+              setSavedQuestions={setSavedQuestions}
+            />
+          }
+        />
+        <Route
+          path="/choosetrack/track/:trackId/level/advanced"
+          element={
+            <Advanced
+              savedQuestions={savedQuestions}
+              setSavedQuestions={setSavedQuestions}
+            />
+          }
+        />
 
         {/* Error */}
         <Route path="*" element={<ErrorPage />} />

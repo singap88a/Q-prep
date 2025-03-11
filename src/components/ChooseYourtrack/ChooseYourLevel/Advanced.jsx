@@ -10,7 +10,7 @@ function Advanced({ savedQuestions, setSavedQuestions }) {
     const [activeIndex, setActiveIndex] = useState(null);
 
     const location = useLocation();
-    const { frameworkId, frameworkName } = location.state || {}; // Fallback to empty object
+    const { frameworkId, frameworkName } = location.state || {}; 
 
     useEffect(() => {
         const fetchData = async () => {
