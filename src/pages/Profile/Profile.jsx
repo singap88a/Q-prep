@@ -51,11 +51,11 @@ function Profile() {
         setFirstName(data.firstName);
         setLastName(data.lastName);
         setEmail(data.email);
-        setAddress(data.address); 
-        setLocation(data.location); 
-        setDob(data.birthDay);   
+        setAddress(data.address);
+        setLocation(data.location);
+        setDob(data.birthDay);
         setPhone(data.phoneNamber);
-        setProfileImage(data.urlPhoto); 
+        setProfileImage(data.urlPhoto);
         console.log("GetUser Data:", data);
       } catch (error) {
         console.error("Error fetching user:", error.message);

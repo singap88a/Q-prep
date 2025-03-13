@@ -11,8 +11,8 @@ function Sign_up({ setIsLoggedIn }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(null); 
-  const [loading, setLoading] = useState(false); 
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSignUp = async (e) => {
@@ -60,8 +60,8 @@ function Sign_up({ setIsLoggedIn }) {
       }
 
       // إذا نجح التسجيل
-      setIsLoggedIn(true); 
-      navigate("/login"); 
+      setIsLoggedIn(true);
+      navigate("/login");
     } catch (error) {
       console.error("Error:", error); // تسجيل الخطأ في وحدة التحكم
       setError(error.message); // تحديث حالة الخطأ

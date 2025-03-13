@@ -1,109 +1,125 @@
+/* eslint-disable react/prop-types */
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
-
-
-function Beginer({ savedQuestions, setSavedQuestions }) {
-
-    const [BeginQuestions, setBeginQuestions] = useState([]);
+function Beginner({ savedQuestions, setSavedQuestions }) {
+    const [beginnerQuestions, setBeginnerQuestions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [activeIndex, setActiveIndex] = useState(null);
 
     const location = useLocation();
     const { frameworkId, frameworkName } = location.state || {}; // Fallback to empty object
 
-    console.log("Received Framework ID: in Beginer :", frameworkId);
-    console.log("Received Framework Name: in Beginer :", frameworkName);
-
-    // const FrameWorkID = "d52118e8-a3e0-424e-897d-db02ee7820c1"
-
-
-    // Beginer
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`https://questionprep.azurewebsites.net/api/Questions/Q_BeginnerLevel/${frameworkId}`);
+                const response = await fetch(
+                    `https://questionprep.azurewebsites.net/api/Questions/Q_BeginnerLevel/${frameworkId}`
+                );
+                if (!response.ok) {
+                    throw new Error("Failed to fetch beginner questions");
+                }
                 const data = await response.json();
-                console.log(data);
-                setBeginQuestions(data);
+                setBeginnerQuestions(data);
             } catch (error) {
                 setError(error.message);
-                console.error('Error:', error);
+                console.error("Error fetching data:", error);
             } finally {
                 setLoading(false);
             }
         };
+
         fetchData();
     }, [])
 
 
-    const [activeIndex, setActiveIndex] = useState(null);
-
-
     const toggleAnswer = (index) => {
-        if (index === activeIndex) {
-            setActiveIndex(null);
-        } else {
-            setActiveIndex(index);
-        }
+        setActiveIndex((prevIndex) => (prevIndex === index ? null : index));
     };
 
     const handleSaveQuestion = (faq) => {
-        if (!savedQuestions.some((saved) => saved.question === faq.question)) {
+        if (!savedQuestions.some((saved) => saved.questionId === faq.questionId)) {
             setSavedQuestions([...savedQuestions, faq]);
         }
     };
 
-    const isQuestionSaved = (faq) => savedQuestions.some((saved) => saved.question === faq.question);
+    const isQuestionSaved = (faq) =>
+        savedQuestions.some((saved) => saved.questionId === faq.questionId);
 
     if (loading) {
-        console.log("Loading state:", loading);
-        return (<div className="text-center text-gl flex justify-center  text-black">Loading...</div>)
+        return (
+            <div className="flex items-center justify-center h-screen text-black">
+                <div className="animate-spin">
+                    <FaChevronDown className="text-4xl text-secondary" />
+                </div>
+                <p className="ml-3 text-xl">Loading...</p>
+            </div>
+        );
     }
+
     if (error) {
-        return <div className="mt-10 text-center font-semibold text-red-500">{error}</div>;
+        return (
+            <div className="flex items-center justify-center h-screen text-red-500">
+                <p className="text-xl font-semibold">{error}</p>
+            </div>
+        );
+    }
+
+    if (!beginnerQuestions.length) {
+        return (
+            <div className="flex items-center justify-center h-screen text-gray-600">
+                <p className="text-xl">No beginner questions found.</p>
+            </div>
+        );
     }
 
     return (
-        <div className="container">
-            <div className="flex justify-between">
-                <div className="flex items-center justify-center gap-3">
-                    <i className="text-2xl font-bold fa-solid fa-chevron-left text-primary"></i>
-                    <h1 className="text-2xl font-bold">{BeginQuestions[0]?.frameworkName}</h1>
-                    <h1>{BeginQuestions[0]?.levelName}</h1>
-                </div>
-                <div className="flex gap-4">
-                    <Link
-                        to="/add_question"
-                        className="relative flex items-center gap-3 px-4 py-1 overflow-hidden font-bold border-2 rounded-full isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-secondary before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 text-secondary hover:text-white"
-                    >
-                        <i className="text-xl fa-solid fa-plus"></i>
-                        <h1 className="text-xl">Add question</h1>
+        <div className="container px-4 mx-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between py-6">
+                <div className="flex items-center gap-3">
+                    <Link to="/" className="text-2xl font-bold text-primary">
+                        <FaChevronDown />
                     </Link>
+                    <h1 className="text-2xl font-bold">{frameworkName}</h1>
+                    <h2 className="text-xl text-gray-600">{beginnerQuestions[0]?.levelName}</h2>
                 </div>
+                <Link
+                    to="/add_question"
+                    className="flex items-center gap-2 px-4 py-2 font-bold text-white transition-all duration-300 rounded-full bg-secondary hover:bg-primary"
+                >
+                    <span className="text-xl">+</span>
+                    <span>Add Question</span>
+                </Link>
             </div>
 
-            <div className="container max-w-4xl mx-auto">
-                <div className="grid gap-4 py-10 sm:grid-cols-1 md:grid-cols-1">
-                    {BeginQuestions.map((faq, index) => (
+            {/* Questions List */}
+            <div className="max-w-4xl mx-auto">
+                <div className="grid gap-4 py-6">
+                    {beginnerQuestions.map((faq, index) => (
                         <div
-                            key={index}
-                            className="p-4 bg-[#6BE9D112] border rounded-lg shadow-md"
+                            key={faq.questionId}
+                            className="p-4 bg-white border rounded-lg shadow-md"
                         >
                             <button
                                 onClick={() => toggleAnswer(index)}
-                                className="flex items-center justify-between w-full text-lg font-semibold text-left"
+                                className="flex items-center justify-between w-full text-left"
+                                aria-expanded={activeIndex === index}
                             >
-                                {faq.questions} {faq.questionId}
-                                <div className="flex gap-8">
-                                    <i
-                                        className={`cursor-pointer fa-regular fa-bookmark ${isQuestionSaved(faq) ? "text-primary  font-bold" : ""}`}
+                                <span className="text-lg font-semibold">{faq.questions}</span>
+                                <div className="flex items-center gap-4">
+                                    <button
                                         onClick={(e) => {
-                                            e.stopPropagation(); // Prevent button click from toggling answer
+                                            e.stopPropagation();
                                             handleSaveQuestion(faq);
                                         }}
-                                    ></i>
+                                        aria-label={isQuestionSaved(faq) ? "Unsave question" : "Save question"}
+                                        className="text-xl text-gray-500 hover:text-primary"
+                                    >
+                                        {isQuestionSaved(faq) ? "✓" : "☆"}
+                                    </button>
                                     {activeIndex === index ? (
                                         <FaChevronUp className="text-secondary" />
                                     ) : (
@@ -112,7 +128,7 @@ function Beginer({ savedQuestions, setSavedQuestions }) {
                                 </div>
                             </button>
                             {activeIndex === index && (
-                                <p className="mt-2 text-gray-600">{faq.answers}</p>
+                                <p className="mt-3 text-gray-600">{faq.answers}</p>
                             )}
                         </div>
                     ))}
@@ -122,4 +138,4 @@ function Beginer({ savedQuestions, setSavedQuestions }) {
     );
 }
 
-export default Beginer;
+export default Beginner;

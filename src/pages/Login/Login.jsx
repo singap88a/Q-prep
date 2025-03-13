@@ -14,7 +14,7 @@ function Login({ setIsLoggedIn }) {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  
+
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -23,8 +23,8 @@ function Login({ setIsLoggedIn }) {
       return;
     }
 
-    setLoading(true); 
-    setError(null); 
+    setLoading(true);
+    setError(null);
 
     try {
       const response = await fetch(
