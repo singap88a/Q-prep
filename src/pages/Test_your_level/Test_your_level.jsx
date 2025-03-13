@@ -1,59 +1,83 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Test_level from "../../assets/Test_level.png";
 import Test_level_2 from "../../assets/Test_level_2.png";
 import Lottie from "lottie-react";
-import TestYourLevel_animation from "../../../public/animations/TestYourLevel_animation.json"
+import TestYourLevel_animation from "../../../public/animations/TestYourLevel_animation.json";
 import { Link } from "react-router-dom";
+
 const TestYourLevel = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [score, setScore] = useState(0);
+  const [questions, setQuestions] = useState([]); // حالة لتخزين الأسئلة
+  const [loading, setLoading] = useState(true); // حالة لإدارة التحميل
+  const [error, setError] = useState(null); // حالة لإدارة الأخطاء
 
-  const questions = [
-    {
-      id: 1,
-      question:
-        "What is the difference between div and span? When should each be used?",
-      options: [
-        "div is an inline element, and span is a block-level element.",
-        "div is used only for styling text, while span is used for layout and structure.",
-        "div is a block-level element used for structure, and span is an inline element used for styling.",
-        "div and span are interchangeable and have no functional difference.",
-      ],
-      correctAnswer:
-        "div is a block-level element used for structure, and span is an inline element used for styling.",
-    },
-    {
-      id: 2,
-      question: "What is the primary purpose of React.js?",
-      options: [
-        "To build server-side applications.",
-        "To style web pages.",
-        "To build user interfaces and manage UI state.",
-        "To perform database queries.",
-      ],
-      correctAnswer: "To build user interfaces and manage UI state.",
-    },
-    {
-      id: 3,
-      question: "What is JSX in React?",
-      options: [
-        "A CSS preprocessor.",
-        "A syntax extension for JavaScript.",
-        "A state management library.",
-        "A tool for server-side rendering.",
-      ],
-      correctAnswer: "A syntax extension for JavaScript.",
-    },
-  ];
+  // التوكن المحفوظ في localStorage
+  const token = localStorage.getItem("token");
+
+  // جلب الأسئلة من الـ API
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        // التحقق من وجود التوكن
+        if (!token) {
+          throw new Error("No token found. Please log in.");
+        }
+
+        // إرسال طلب GET إلى الـ API
+        const response = await fetch(
+          "https://questionprep.azurewebsites.net/api/TestLevel/QuestionForTesting/frontend", // استبدل frontend بالإطار المطلوب
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`, // إضافة التوكن إلى رأس الطلب
+            },
+          }
+        );
+
+        // طباعة الاستجابة الخام لفحصها
+        const rawResponse = await response.text();
+        console.log("Raw response:", rawResponse);
+
+        // التحقق من حالة الـ API
+        if (!response.ok) {
+          throw new Error(`API returned status ${response.status}: ${response.statusText}`);
+        }
+
+        // محاولة تحويل الاستجابة إلى JSON
+        let data;
+        try {
+          data = JSON.parse(rawResponse);
+        } catch (jsonError) {
+          throw new Error("API did not return valid JSON. Response: " + rawResponse);
+        }
+
+        // التحقق من أن البيانات المستلمة هي مصفوفة
+        if (!Array.isArray(data)) {
+          throw new Error("API did not return an array of questions.");
+        }
+
+        // تحديث حالة الأسئلة بالبيانات المستلمة
+        setQuestions(data);
+      } catch (error) {
+        console.error("Error fetching questions:", error);
+        setError(error.message); // تحديث حالة الخطأ
+      } finally {
+        setLoading(false); // إيقاف التحميل
+      }
+    };
+
+    fetchQuestions();
+  }, [token]); // اعتمادًا على التوكن
 
   const handleOptionChange = (option) => {
     setSelectedOption(option);
   };
 
   const handleNext = () => {
-    if (selectedOption === questions[currentQuestionIndex].correctAnswer) { 
+    if (selectedOption === questions[currentQuestionIndex].correctAnswer) {
       setScore(score + 1);
     }
 
@@ -82,33 +106,42 @@ const TestYourLevel = () => {
     return "Advanced";
   };
 
+  if (loading) {
+    return <div className="container text-center">Loading questions...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="container text-center text-red-500">
+        <p>Error: {error}</p>
+        <p>Please check your connection or try again later.</p>
+      </div>
+    );
+  }
+
   if (isSubmitted) {
     const level = getLevel();
 
     return (
-
-      
-      <div className="container relative flex items-center justify-center ">
-
-        <div className="w-full p-6 text-center rounded-lg ">
-          <img src={Test_level} alt="" className="mx-auto   md:w-[40%]  "  />
-          <Lottie animationData={TestYourLevel_animation} className="absolute top-0"/>
+      <div className="container relative flex items-center justify-center">
+        <div className="w-full p-6 text-center rounded-lg">
+          <img src={Test_level} alt="" className="mx-auto md:w-[40%]" />
+          <Lottie animationData={TestYourLevel_animation} className="absolute top-0" />
 
           <img src={Test_level_2} alt="" className="absolute hidden w-24 top-20 left-20 md:block animate-slide" />
           <img src={Test_level_2} alt="" className="absolute hidden w-24 right-20 md:block animate-slide" />
-          <Lottie animationData={TestYourLevel_animation} className="absolute top-0 right-0"/>
+          <Lottie animationData={TestYourLevel_animation} className="absolute top-0 right-0" />
 
           <p className="text-gray-600">
-            Your score is: <span className="text-blue-500">{score}</span> out of
-            {questions.length}.
+            Your score is: <span className="text-blue-500">{score}</span> out of {questions.length}.
           </p>
-          <p className="py-8 text-2xl font-bold text-secondary">
-            Your Level: {level}
-          </p>
-          <Link to="/" className="px-10 py-2  font-bold text-white rounded-md bg-secondary hover:bg-[#33439f] transition-all my-3  ">
+          <p className="py-8 text-2xl font-bold text-secondary">Your Level: {level}</p>
+          <Link
+            to="/"
+            className="px-10 py-2 font-bold text-white rounded-md bg-secondary hover:bg-[#33439f] transition-all my-3"
+          >
             Next
           </Link>
-
         </div>
       </div>
     );
@@ -129,7 +162,7 @@ const TestYourLevel = () => {
         </div>
       </div>
       {/* ///////////////////////////////////// */}
-      <div className="flex items-center justify-center py-10 ">
+      <div className="flex items-center justify-center py-10">
         <div className="w-full p-6 bg-white rounded-lg shadow-lg">
           <h1 className="mb-4 text-lg font-bold bg-[#67e1cb35] text-center py-3 rounded-md">
             {currentQuestionIndex + 1}- {currentQuestion.question}
@@ -138,8 +171,9 @@ const TestYourLevel = () => {
             {currentQuestion.options.map((option, index) => (
               <label
                 key={index}
-                className={`block p-4 border rounded-lg cursor-pointer hover:bg-gray-50 ${selectedOption === option && "bg-blue-50 border-secondary"
-                  }`}
+                className={`block p-4 border rounded-lg cursor-pointer hover:bg-gray-50 ${
+                  selectedOption === option && "bg-blue-50 border-secondary"
+                }`}
               >
                 <input
                   type="radio"
@@ -170,7 +204,7 @@ const TestYourLevel = () => {
             </button>
           </div>
         </div>
-      </div>, 
+      </div>
     </div>
   );
 };
@@ -213,81 +247,68 @@ export default TestYourLevel;
 
 
 
+// متمسحش ده
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-// import { useState, useEffect } from "react";
-// import { Link, useParams, useNavigate } from "react-router-dom";
+// import { useState } from "react";
 // import Test_level from "../../assets/Test_level.png";
 // import Test_level_2 from "../../assets/Test_level_2.png";
 // import Lottie from "lottie-react";
-// import TestYourLevel_animation from "../../../public/animations/TestYourLevel_animation.json";
-
+// import TestYourLevel_animation from "../../../public/animations/TestYourLevel_animation.json"
+// import { Link } from "react-router-dom";
 // const TestYourLevel = () => {
-//   const { framework } = useParams(); // الحصول على الإطار (framework) من الرابط
-//   const navigate = useNavigate(); // للتنقل بين الصفحات
-//   const [questions, setQuestions] = useState([]); // حالة لتخزين الأسئلة
 //   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 //   const [selectedOption, setSelectedOption] = useState(null);
 //   const [isSubmitted, setIsSubmitted] = useState(false);
 //   const [score, setScore] = useState(0);
-//   const [loading, setLoading] = useState(true); // حالة التحميل
-//   const [error, setError] = useState(null); // حالة الخطأ
 
-//   useEffect(() => {
-//     const token = localStorage.getItem("token"); // استخراج الـ token من localStorage
-//     if (!token) {
-//       navigate("/login"); // إعادة التوجيه إلى صفحة تسجيل الدخول إذا لم يكن هناك token
-//       return;
-//     }
-
-//     const fetchQuestions = async () => {
-//       try {
-//         const response = await fetch(
-//           `https://questionprep.azurewebsites.net/api/TestLevel/QuestionForTesting/${framework}`,
-//           {
-//             method: "GET",
-//             headers: {
-//               Authorization: `Bearer ${token}`, // إضافة الـ token إلى رؤوس الطلبات
-//               "Content-Type": "application/json",
-//             },
-//           }
-//         );
-
-//         if (!response.ok) {
-//           throw new Error("Failed to fetch questions");
-//         }
-
-//         const data = await response.json();
-//         setQuestions(data); // تخزين الأسئلة في الحالة
-//       } catch (error) {
-//         setError(error.message); // تخزين رسالة الخطأ
-//       } finally {
-//         setLoading(false); // إيقاف التحميل
-//       }
-//     };
-
-//     fetchQuestions();
-//   }, [framework, navigate]);
+//   const questions = [
+//     {
+//       id: 1,
+//       question:
+//         "What is the difference between div and span? When should each be used?",
+//       options: [
+//         "div is an inline element, and span is a block-level element.",
+//         "div is used only for styling text, while span is used for layout and structure.",
+//         "div is a block-level element used for structure, and span is an inline element used for styling.",
+//         "div and span are interchangeable and have no functional difference.",
+//       ],
+//       correctAnswer:
+//         "div is a block-level element used for structure, and span is an inline element used for styling.",
+//     },
+//     {
+//       id: 2,
+//       question: "What is the primary purpose of React.js?",
+//       options: [
+//         "To build server-side applications.",
+//         "To style web pages.",
+//         "To build user interfaces and manage UI state.",
+//         "To perform database queries.",
+//       ],
+//       correctAnswer: "To build user interfaces and manage UI state.",
+//     },
+//     {
+//       id: 3,
+//       question: "What is JSX in React?",
+//       options: [
+//         "A CSS preprocessor.",
+//         "A syntax extension for JavaScript.",
+//         "A state management library.",
+//         "A tool for server-side rendering.",
+//       ],
+//       correctAnswer: "A syntax extension for JavaScript.",
+//     },
+//   ];
 
 //   const handleOptionChange = (option) => {
 //     setSelectedOption(option);
 //   };
 
 //   const handleNext = () => {
-//     if (selectedOption === questions[currentQuestionIndex].correctAnswer) {
+//     if (selectedOption === questions[currentQuestionIndex].correctAnswer) { 
 //       setScore(score + 1);
 //     }
 
@@ -316,58 +337,34 @@ export default TestYourLevel;
 //     return "Advanced";
 //   };
 
-//   if (loading) {
-//     return <div className="container py-10 text-center">Loading questions...</div>;
-//   }
-
-//   if (error) {
-//     return (
-//       <div className="container py-10 text-center text-red-500">
-//         Error: {error}
-//         <br />
-//         <Link to="/login" className="text-blue-500 underline">
-//           Go to Login
-//         </Link>
-//       </div>
-//     );
-//   }
-
 //   if (isSubmitted) {
 //     const level = getLevel();
 
 //     return (
-//       <div className="container relative flex items-center justify-center">
-//         <div className="w-full p-6 text-center rounded-lg">
-//           <img src={Test_level} alt="" className="mx-auto md:w-[40%]" />
-//           <Lottie animationData={TestYourLevel_animation} className="absolute top-0" />
+
+      
+//       <div className="container relative flex items-center justify-center ">
+
+//         <div className="w-full p-6 text-center rounded-lg ">
+//           <img src={Test_level} alt="" className="mx-auto   md:w-[40%]  "  />
+//           <Lottie animationData={TestYourLevel_animation} className="absolute top-0"/>
 
 //           <img src={Test_level_2} alt="" className="absolute hidden w-24 top-20 left-20 md:block animate-slide" />
 //           <img src={Test_level_2} alt="" className="absolute hidden w-24 right-20 md:block animate-slide" />
-//           <Lottie animationData={TestYourLevel_animation} className="absolute top-0 right-0" />
+//           <Lottie animationData={TestYourLevel_animation} className="absolute top-0 right-0"/>
 
 //           <p className="text-gray-600">
-//             Your score is: <span className="text-blue-500">{score}</span> out of {questions.length}.
+//             Your score is: <span className="text-blue-500">{score}</span> out of
+//             {questions.length}.
 //           </p>
-//           <p className="py-8 text-2xl font-bold text-secondary">Your Level: {level}</p>
-//           <Link
-//             to="/"
-//             className="px-10 py-2 font-bold text-white rounded-md bg-secondary hover:bg-[#33439f] transition-all my-3"
-//           >
+//           <p className="py-8 text-2xl font-bold text-secondary">
+//             Your Level: {level}
+//           </p>
+//           <Link to="/" className="px-10 py-2  font-bold text-white rounded-md bg-secondary hover:bg-[#33439f] transition-all my-3  ">
 //             Next
 //           </Link>
-//         </div>
-//       </div>
-//     );
-//   }
 
-//   // التحقق من وجود الأسئلة
-//   if (questions.length === 0) {
-//     return (
-//       <div className="container py-10 text-center">
-//         <p className="text-red-500">No questions available for this framework.</p>
-//         <Link to="/" className="text-blue-500 underline">
-//           Go back
-//         </Link>
+//         </div>
 //       </div>
 //     );
 //   }
@@ -386,7 +383,8 @@ export default TestYourLevel;
 //           <h1>Test your level</h1>
 //         </div>
 //       </div>
-//       <div className="flex items-center justify-center py-10">
+//       {/* ///////////////////////////////////// */}
+//       <div className="flex items-center justify-center py-10 ">
 //         <div className="w-full p-6 bg-white rounded-lg shadow-lg">
 //           <h1 className="mb-4 text-lg font-bold bg-[#67e1cb35] text-center py-3 rounded-md">
 //             {currentQuestionIndex + 1}- {currentQuestion.question}
@@ -395,9 +393,8 @@ export default TestYourLevel;
 //             {currentQuestion.options.map((option, index) => (
 //               <label
 //                 key={index}
-//                 className={`block p-4 border rounded-lg cursor-pointer hover:bg-gray-50 ${
-//                   selectedOption === option && "bg-blue-50 border-secondary"
-//                 }`}
+//                 className={`block p-4 border rounded-lg cursor-pointer hover:bg-gray-50 ${selectedOption === option && "bg-blue-50 border-secondary"
+//                   }`}
 //               >
 //                 <input
 //                   type="radio"
@@ -428,7 +425,7 @@ export default TestYourLevel;
 //             </button>
 //           </div>
 //         </div>
-//       </div>
+//       </div>, 
 //     </div>
 //   );
 // };

@@ -12,20 +12,44 @@ function Sign_up({ setIsLoggedIn }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
+  const validatePassword = (password) => {
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return regex.test(password);
+  };
 
   const handleSignUp = async (e) => {
     e.preventDefault();
 
     // التحقق من أن جميع الحقول مملوءة
     if (!name || !email || !password) {
-      alert("Please fill in all fields");
+      setError("Please fill in all fields");
+      return;
+    }
+
+    // التحقق من صحة البريد الإلكتروني
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    // التحقق من قوة كلمة المرور
+    if (!validatePassword(password)) {
+      setError("Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character");
       return;
     }
 
     setLoading(true);
     setError(null);
+    setSuccess(null);
 
     try {
       // إرسال طلب POST إلى الـ API
@@ -51,7 +75,6 @@ function Sign_up({ setIsLoggedIn }) {
 
       // تسجيل حالة الاستجابة وبياناتها
       console.log("Response status:", response.status);
-      // const data = await response.json();
       console.log("Response data:", data);
 
       // التحقق من نجاح الطلب
@@ -60,12 +83,14 @@ function Sign_up({ setIsLoggedIn }) {
       }
 
       // إذا نجح التسجيل
+      setSuccess("Registration successful! Redirecting to login...");
       setIsLoggedIn(true);
-      navigate("/login");
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
     } catch (error) {
       console.error("Error:", error); // تسجيل الخطأ في وحدة التحكم
-      setError(error.message); // تحديث حالة الخطأ
-      alert(error.message || "Registration failed. Please try again."); // عرض رسالة الخطأ
+      setError(error.message || "Registration failed. Please try again."); // تحديث حالة الخطأ
     } finally {
       setLoading(false); // إيقاف التحميل
     }
@@ -86,6 +111,18 @@ function Sign_up({ setIsLoggedIn }) {
               Welcome to Q-Prep
             </h1>
             <p className="mb-6 text-primary">Register your account</p>
+
+            {/* عرض رسائل الخطأ والنجاح */}
+            {error && (
+              <div className="p-3 mb-4 text-red-700 bg-red-100 border border-red-400 rounded-lg">
+                {error}
+              </div>
+            )}
+            {success && (
+              <div className="p-3 mb-4 text-green-700 bg-green-100 border border-green-400 rounded-lg">
+                {success}
+              </div>
+            )}
 
             {/* نموذج التسجيل */}
             <form onSubmit={handleSignUp} className="space-y-4">

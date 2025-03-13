@@ -15,7 +15,7 @@ function Profile() {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [dob, setDob] = useState("");
-  const [address, setAddress] = useState("city");
+  const [address, setAddress] = useState("");
   const [location, setLocation] = useState("Egypt");
   const [profileImage, setProfileImage] = useState(userImage);
 
@@ -275,7 +275,7 @@ function Profile() {
               Phone number
             </label>
             <PhoneInput
-              country={"eg"}
+              country={"+20"}
               value={phone}
               onChange={(value) => setPhone(value)}
               containerClass="w-full"

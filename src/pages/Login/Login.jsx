@@ -10,27 +10,40 @@ import Apple from "../../assets/home-img/apple.png";
 function Login({ setIsLoggedIn }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null); // حالة لإدارة الأخطاء
+  const [success, setSuccess] = useState(null); // حالة لإدارة الرسائل الناجحة
+  const [loading, setLoading] = useState(false); // حالة لإدارة التحميل
   const navigate = useNavigate();
 
+  const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
+    // التحقق من أن جميع الحقول مملوءة
     if (!email || !password) {
-      alert("Please fill in all fields");
+      setError("Please fill in all fields");
       return;
     }
 
-    setLoading(true);
-    setError(null);
+    // التحقق من صحة البريد الإلكتروني
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    setLoading(true); // بدء التحميل
+    setError(null); // إعادة تعيين حالة الخطأ
+    setSuccess(null); // إعادة تعيين حالة النجاح
 
     try {
       const response = await fetch(
         "https://questionprep.azurewebsites.net/api/Authenticate/Login",
         {
-          method: "post",
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
@@ -44,23 +57,27 @@ function Login({ setIsLoggedIn }) {
       const data = await response.json();
       console.log("Response data:", data);
 
+      // التحقق من نجاح الطلب
       if (!response.ok) {
         throw new Error(data.message || "Login failed");
       }
 
-      //localStorage
+      // حفظ التوكن في localStorage
       localStorage.setItem("token", data.token);
 
+      // عرض رسالة نجاح
+      setSuccess("Login successful! Redirecting to home...");
       setIsLoggedIn(true);
-      navigate("/");
 
-    }
-    catch (error) {
+      // الانتقال إلى الصفحة الرئيسية بعد تأخير بسيط
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
+    } catch (error) {
       console.error("Error:", error);
-      setError(error.message);
-      alert(error.message || "Login failed. Please try again.");
+      setError(error.message || "Login failed. Please try again.");
     } finally {
-      setLoading(false);
+      setLoading(false); // إيقاف التحميل
     }
   };
 
@@ -80,7 +97,21 @@ function Login({ setIsLoggedIn }) {
             </h1>
             <p className="mb-6 text-primary">Login now!</p>
 
+            {/* عرض رسائل الخطأ والنجاح */}
+            {error && (
+              <div className="p-3 mb-4 text-red-700 bg-red-100 border border-red-400 rounded-lg">
+                {error}
+              </div>
+            )}
+            {success && (
+              <div className="p-3 mb-4 text-green-700 bg-green-100 border border-green-400 rounded-lg">
+                {success}
+              </div>
+            )}
+
+            {/* نموذج تسجيل الدخول */}
             <form onSubmit={handleLogin} className="space-y-4">
+              {/* حقل البريد الإلكتروني */}
               <div>
                 <label
                   htmlFor="email"
@@ -91,6 +122,7 @@ function Login({ setIsLoggedIn }) {
                 <input
                   type="email"
                   id="email"
+                  placeholder="Enter your email"
                   className="w-full p-3 border rounded-lg border-secondary text-secondary"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -108,6 +140,7 @@ function Login({ setIsLoggedIn }) {
                 <input
                   type="password"
                   id="password"
+                  placeholder="Enter your password"
                   className="w-full p-3 border rounded-lg border-secondary text-secondary"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -125,7 +158,7 @@ function Login({ setIsLoggedIn }) {
             </form>
 
             {/* تسجيل الدخول عبر وسائل التواصل الاجتماعي */}
-            <p className="mt-6 text-center text-primary">Create account with</p>
+            <p className="mt-6 text-center text-primary">Login with</p>
             <div className="flex justify-center gap-10 mt-4">
               <img
                 src={Google}
