@@ -13,9 +13,8 @@ const ChooseLanguage_Com = () => {
   const location = useLocation();
   const { frameworkId, frameworkName } = location.state || {}; // Fallback to empty object
 
-      // console.log("Received Framework ID : In Your Level:", frameworkId);
-    // console.log("Received Framework Name: In Your Level: ", frameworkName);
- 
+  // console.log("Received Framework ID : In Your Level:", frameworkId);
+  // console.log("Received Framework Name: In Your Level: ", frameworkName);
 
   return (
     <>
@@ -45,8 +44,8 @@ const ChooseLanguage_Com = () => {
 
         {/* Choose Your Level  */}
         <div className="grid grid-cols-1 gap-32 my-20 md:grid-cols-3 sm:grid-cols-2 lg:px-32 md:px-10">
-          
-          <Link to={`${location.pathname}/beginer`} state={{ frameworkId , frameworkName  }}  className="h-full Levels" >
+
+          <Link to={`${location.pathname}/beginer`} state={{ frameworkId, frameworkName }} className="h-full Levels" >
             <div className=" bg_card">
               <img src={card_img} alt="" className="m-auto" />
             </div>
@@ -55,7 +54,7 @@ const ChooseLanguage_Com = () => {
             </h3>
           </Link>
 
-          <Link to={`${location.pathname}/intermediate`} state={{ frameworkId , frameworkName  }} className="h-full Levels" >
+          <Link to={`${location.pathname}/intermediate`} state={{ frameworkId, frameworkName }} className="h-full Levels" >
             <div className=" bg_card">
               <img src={card_img} alt="" className="m-auto" />
             </div>
@@ -65,7 +64,7 @@ const ChooseLanguage_Com = () => {
           </Link>
 
 
-          <Link to={`${location.pathname}/advanced`} state={{ frameworkId , frameworkName  }} className="h-full Levels" >
+          <Link to={`${location.pathname}/advanced`} state={{ frameworkId, frameworkName }} className="h-full Levels" >
             <div className=" bg_card">
               <img src={card_img} alt="" className="m-auto" />
             </div>

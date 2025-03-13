@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import  { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Lottie from "lottie-react";
 import sign__up from "../../../public/animations/Login_animation.json";
@@ -11,52 +11,57 @@ function Sign_up({ setIsLoggedIn }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(null); // حالة لإدارة الأخطاء
-  const [loading, setLoading] = useState(false); // حالة لإدارة التحميل
+  const [error, setError] = useState(null); 
+  const [loading, setLoading] = useState(false); 
   const navigate = useNavigate();
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-  
+
     // التحقق من أن جميع الحقول مملوءة
     if (!name || !email || !password) {
       alert("Please fill in all fields");
       return;
     }
-  
-    setLoading(true); // بدء التحميل
-    setError(null); // إعادة تعيين حالة الخطأ
-  
+
+    setLoading(true);
+    setError(null);
+
     try {
       // إرسال طلب POST إلى الـ API
-      const response = await fetch(
-        "https://questionprep.azurewebsites.net/api/Authenticate/Register",
+      const response = await fetch("https://questionprep.azurewebsites.net/api/Authenticate/Register",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer`,
           },
           body: JSON.stringify({
-            Name: name, // تم تغيير `username` إلى `Name`
-            email: email, // البريد الإلكتروني
-            password: password, // كلمة المرور
+            Name: name,
+            email: email,
+            password: password,
           }),
         }
       );
-  
+
+      const contentType = response.headers.get("content-type");
+      const data = contentType && contentType.includes("application/json")
+        ? await response.json()
+        : await response.text();
+
       // تسجيل حالة الاستجابة وبياناتها
       console.log("Response status:", response.status);
-      const data = await response.json();
+      // const data = await response.json();
       console.log("Response data:", data);
-  
+
       // التحقق من نجاح الطلب
       if (!response.ok) {
         throw new Error(data.message || "Registration failed");
       }
-  
+
       // إذا نجح التسجيل
-      setIsLoggedIn(true); // تحديث حالة تسجيل الدخول
-      navigate("/"); // الانتقال إلى الصفحة الرئيسية
+      setIsLoggedIn(true); 
+      navigate("/login"); 
     } catch (error) {
       console.error("Error:", error); // تسجيل الخطأ في وحدة التحكم
       setError(error.message); // تحديث حالة الخطأ

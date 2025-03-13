@@ -24,10 +24,12 @@ import TrackDetails from "../components/ChooseYourtrack/ChooseYourLevel/TrackDet
 import Beginer from "../components/ChooseYourtrack/ChooseYourLevel/Beginer";
 import Intermediate from "../components/ChooseYourtrack/ChooseYourLevel/Intermediate";
 import Advanced from "../components/ChooseYourtrack/ChooseYourLevel/Advanced";
+import ProtectRouting from "./ProtectRouting";
+
+
 function Approuting() {
-  // قراءة حالة تسجيل الدخول من localStorage عند تحميل الصفحة
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    return JSON.parse(localStorage.getItem("isLoggedIn")) || false;
+    return JSON.parse(localStorage.getItem("isLoggedIn"))
   });
 
   // حالة الأسئلة المحفوظة
@@ -46,6 +48,7 @@ function Approuting() {
         setIsLoggedIn={setIsLoggedIn}
         savedQuestions={savedQuestions}
       />
+
       <Routes>
         <Route index element={<Home />} />
         <Route path="/about" element={<About />} />
@@ -68,12 +71,19 @@ function Approuting() {
         {/* ////// Questions //////// */}
         {/* <Route path="/questions" element={ <Questions savedQuestions={savedQuestions} setSavedQuestions={setSavedQuestions} />} /> */}
         <Route path="/add_question" element={<Add_question />} />
-        <Route path="/test_your_level" element={<Test_your_level />} />
+
+        <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
+          <Route path="/test_your_level" element={<Test_your_level />} />
+        </Route>
+
         <Route
           path="/saved_questions"
           element={<Saved_questions savedQuestions={savedQuestions} />}
         />
-        <Route path="/profile" element={<Profile />} />
+
+        <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
+          <Route path="/profile" element={<Profile />} />
+        </Route>
 
         {/* Community */}
         <Route path="/community" element={<Community_1 />} />
@@ -81,9 +91,9 @@ function Approuting() {
         <Route path="/choosetrack/track/:trackId" element={<TrackDetails />} />
         <Route path="/choosetrack/track/:trackId/level" element={<ChooseYourLevel />} />
         {/* <Route path="/choosetrack/track/:trackId/level/questions" element={ <Questions savedQuestions={savedQuestions} setSavedQuestions={setSavedQuestions} />} /> */}
-        <Route path="/choosetrack/track/:trackId/level/beginer" element={ <Beginer savedQuestions={savedQuestions} setSavedQuestions={setSavedQuestions} />} />
-        <Route path="/choosetrack/track/:trackId/level/Intermediate" element={ <Intermediate savedQuestions={savedQuestions} setSavedQuestions={setSavedQuestions} />} />
-        <Route path="/choosetrack/track/:trackId/level/advanced" element={ <Advanced savedQuestions={savedQuestions} setSavedQuestions={setSavedQuestions} />} />
+        <Route path="/choosetrack/track/:trackId/level/beginer" element={<Beginer savedQuestions={savedQuestions} setSavedQuestions={setSavedQuestions} />} />
+        <Route path="/choosetrack/track/:trackId/level/Intermediate" element={<Intermediate savedQuestions={savedQuestions} setSavedQuestions={setSavedQuestions} />} />
+        <Route path="/choosetrack/track/:trackId/level/advanced" element={<Advanced savedQuestions={savedQuestions} setSavedQuestions={setSavedQuestions} />} />
 
         {/* Error */}
         <Route path="*" element={<ErrorPage />} />

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import   { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Lottie from "lottie-react";
 import Login_animation from "../../../public/animations/Login_animation.json";
@@ -10,57 +10,57 @@ import Apple from "../../assets/home-img/apple.png";
 function Login({ setIsLoggedIn }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(null); // حالة لإدارة الأخطاء
-  const [loading, setLoading] = useState(false); // حالة لإدارة التحميل
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    // التحقق من أن جميع الحقول مملوءة
     if (!email || !password) {
       alert("Please fill in all fields");
       return;
     }
 
-    setLoading(true); // بدء التحميل
-    setError(null); // إعادة تعيين حالة الخطأ
+    setLoading(true); 
+    setError(null); 
 
     try {
-      // إرسال طلب POST إلى الـ API
       const response = await fetch(
         "https://questionprep.azurewebsites.net/api/Authenticate/Login",
         {
-          method: "POST",
+          method: "post",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            email: email, // البريد الإلكتروني
-            password: password, // كلمة المرور
+            email: email,
+            password: password,
           }),
         }
       );
 
-      // تسجيل حالة الاستجابة وبياناتها
-      console.log("Response status:", response.status);
       const data = await response.json();
       console.log("Response data:", data);
 
-      // التحقق من نجاح الطلب
       if (!response.ok) {
         throw new Error(data.message || "Login failed");
       }
 
-      // إذا نجح تسجيل الدخول
-      setIsLoggedIn(true); // تحديث حالة تسجيل الدخول
-      navigate("/"); // الانتقال إلى الصفحة الرئيسية
-    } catch (error) {
-      console.error("Error:", error); // تسجيل الخطأ في وحدة التحكم
-      setError(error.message); // تحديث حالة الخطأ
-      alert(error.message || "Login failed. Please try again."); // عرض رسالة الخطأ
+      //localStorage
+      localStorage.setItem("token", data.token);
+
+      setIsLoggedIn(true);
+      navigate("/");
+
+    }
+    catch (error) {
+      console.error("Error:", error);
+      setError(error.message);
+      alert(error.message || "Login failed. Please try again.");
     } finally {
-      setLoading(false); // إيقاف التحميل
+      setLoading(false);
     }
   };
 
@@ -80,9 +80,7 @@ function Login({ setIsLoggedIn }) {
             </h1>
             <p className="mb-6 text-primary">Login now!</p>
 
-            {/* نموذج تسجيل الدخول */}
             <form onSubmit={handleLogin} className="space-y-4">
-              {/* حقل البريد الإلكتروني */}
               <div>
                 <label
                   htmlFor="email"
