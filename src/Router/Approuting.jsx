@@ -9,7 +9,9 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Newsletter from "../components/Newsletter";
 import ChooseYourTrack from "../pages/ChooseTrack/ChooseYourTrack";
+// import ChooseLanguage from "../pages/ChooseTrack/ChooseLanguage/ChooseLanguage";
 import ChooseYourLevel from "../pages/ChooseTrack/ChooseYourLevel/ChooseYourLevel";
+// import Questions from "../pages/Questions/Questions";
 import Add_question from "../pages/Add_question/Add_question";
 import Test_your_level from "../pages/Test_your_level/Test_your_level";
 import Saved_questions from "../pages/Saved_questions/Saved_questions";
@@ -22,13 +24,18 @@ import TrackDetails from "../components/ChooseYourtrack/ChooseYourLevel/TrackDet
 import Beginer from "../components/ChooseYourtrack/ChooseYourLevel/Beginer";
 import Intermediate from "../components/ChooseYourtrack/ChooseYourLevel/Intermediate";
 import Advanced from "../components/ChooseYourtrack/ChooseYourLevel/Advanced";
+import ProtectRouting from "./ProtectRouting";
+
+
 function Approuting() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    return JSON.parse(localStorage.getItem("isLoggedIn")) || false;
+    return JSON.parse(localStorage.getItem("isLoggedIn"))
   });
 
+  // حالة الأسئلة المحفوظة
   const [savedQuestions, setSavedQuestions] = useState([]);
 
+  // تحديث localStorage عند تغيير حالة تسجيل الدخول
   useEffect(() => {
     localStorage.setItem("isLoggedIn", JSON.stringify(isLoggedIn));
   }, [isLoggedIn]);
@@ -41,11 +48,13 @@ function Approuting() {
         setIsLoggedIn={setIsLoggedIn}
         savedQuestions={savedQuestions}
       />
+
       <Routes>
         <Route index element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/choosetrack" element={<ChooseYourTrack />} />
 
+        {/* auth */}
         <Route
           path="/login"
           element={<Login setIsLoggedIn={setIsLoggedIn} />}
@@ -55,50 +64,36 @@ function Approuting() {
           element={<Sign_up setIsLoggedIn={setIsLoggedIn} />}
         />
 
+        {/* ChooseYourLanguage */}
+        {/* <Route path="/choosetrack/lang" element={<ChooseLanguage />} /> */}
+        {/* <Route path="/choosetrack/lang/level" element={<ChooseYourLevel />} /> */}
+
+        {/* ////// Questions //////// */}
+        {/* <Route path="/questions" element={ <Questions savedQuestions={savedQuestions} setSavedQuestions={setSavedQuestions} />} /> */}
         <Route path="/add_question" element={<Add_question />} />
-        <Route path="/test_your_level" element={<Test_your_level />} />
+
+        <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
+          <Route path="/test_your_level" element={<Test_your_level />} />
+        </Route>
+
         <Route
           path="/saved_questions"
           element={<Saved_questions savedQuestions={savedQuestions} />}
         />
-        <Route path="/profile" element={<Profile />} />
+
+        <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
+          <Route path="/profile" element={<Profile />} />
+        </Route>
 
         {/* Community */}
         <Route path="/community" element={<Community_1 />} />
         <Route path="/community_2" element={<Community_2 />} />
         <Route path="/choosetrack/track/:trackId" element={<TrackDetails />} />
-        <Route
-          path="/choosetrack/track/:trackId/level"
-          element={<ChooseYourLevel />}
-        />
+        <Route path="/choosetrack/track/:trackId/level" element={<ChooseYourLevel />} />
         {/* <Route path="/choosetrack/track/:trackId/level/questions" element={ <Questions savedQuestions={savedQuestions} setSavedQuestions={setSavedQuestions} />} /> */}
-        <Route
-          path="/choosetrack/track/:trackId/level/beginer"
-          element={
-            <Beginer
-              savedQuestions={savedQuestions}
-              setSavedQuestions={setSavedQuestions}
-            />
-          }
-        />
-        <Route
-          path="/choosetrack/track/:trackId/level/Intermediate"
-          element={
-            <Intermediate
-              savedQuestions={savedQuestions}
-              setSavedQuestions={setSavedQuestions}
-            />
-          }
-        />
-        <Route
-          path="/choosetrack/track/:trackId/level/advanced"
-          element={
-            <Advanced
-              savedQuestions={savedQuestions}
-              setSavedQuestions={setSavedQuestions}
-            />
-          }
-        />
+        <Route path="/choosetrack/track/:trackId/level/beginer" element={<Beginer savedQuestions={savedQuestions} setSavedQuestions={setSavedQuestions} />} />
+        <Route path="/choosetrack/track/:trackId/level/Intermediate" element={<Intermediate savedQuestions={savedQuestions} setSavedQuestions={setSavedQuestions} />} />
+        <Route path="/choosetrack/track/:trackId/level/advanced" element={<Advanced savedQuestions={savedQuestions} setSavedQuestions={setSavedQuestions} />} />
 
         {/* Error */}
         <Route path="*" element={<ErrorPage />} />

@@ -32,7 +32,8 @@ function Beginner({ savedQuestions, setSavedQuestions }) {
         };
 
         fetchData();
-    }, [frameworkId]);
+    }, [])
+
 
     const toggleAnswer = (index) => {
         setActiveIndex((prevIndex) => (prevIndex === index ? null : index));

@@ -6,68 +6,61 @@ import Login_animation from "../../../public/animations/Login_animation.json";
 import Google from "../../assets/home-img/google.png";
 import Facebook from "../../assets/home-img/facebook.png";
 import Apple from "../../assets/home-img/apple.png";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 function Login({ setIsLoggedIn }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(null); // حالة لإدارة الأخطاء
-  const [success, setSuccess] = useState(null); // حالة لإدارة الرسائل الناجحة
-  const [loading, setLoading] = useState(false); // حالة لإدارة التحميل
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    // التحقق من أن جميع الحقول مملوءة
     if (!email || !password) {
-      setError("Please fill in all fields");
-      toast.error("Please fill in all fields"); // عرض رسالة خطأ باستخدام toast
+      alert("Please fill in all fields");
       return;
     }
 
-    setLoading(true); // بدء التحميل
-    setError(null); // إعادة تعيين حالة الخطأ
-    setSuccess(null); // إعادة تعيين حالة النجاح
+    setLoading(true);
+    setError(null);
 
     try {
-      // إرسال طلب POST إلى الـ API
       const response = await fetch(
         "https://questionprep.azurewebsites.net/api/Authenticate/Login",
         {
-          method: "POST",
+          method: "post",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            email: email, // البريد الإلكتروني
-            password: password, // كلمة المرور
+            email: email,
+            password: password,
           }),
         }
       );
 
-      // تسجيل حالة الاستجابة وبياناتها
-      console.log("Response status:", response.status);
       const data = await response.json();
       console.log("Response data:", data);
 
-      // التحقق من نجاح الطلب
       if (!response.ok) {
         throw new Error(data.message || "Login failed");
       }
 
-      // إذا نجح تسجيل الدخول
-      setSuccess("Login successful! Redirecting..."); // عرض رسالة نجاح
-      setIsLoggedIn(true); // تحديث حالة تسجيل الدخول
-      toast.success("Login successful! Redirecting..."); // عرض رسالة نجاح باستخدام toast
-      setTimeout(() => navigate("/"), 2000); // الانتقال إلى الصفحة الرئيسية بعد تأخير
-    } catch (error) {
-      console.error("Error:", error); // تسجيل الخطأ في وحدة التحكم
-      setError(error.message || "Login failed. Please try again."); // تحديث حالة الخطأ
-      toast.error(error.message || "Login failed. Please try again."); // عرض رسالة خطأ باستخدام toast
+      //localStorage
+      localStorage.setItem("token", data.token);
+
+      setIsLoggedIn(true);
+      navigate("/");
+
+    }
+    catch (error) {
+      console.error("Error:", error);
+      setError(error.message);
+      alert(error.message || "Login failed. Please try again.");
     } finally {
-      setLoading(false); // إيقاف التحميل
+      setLoading(false);
     }
   };
 
@@ -87,21 +80,7 @@ function Login({ setIsLoggedIn }) {
             </h1>
             <p className="mb-6 text-primary">Login now!</p>
 
-            {/* عرض رسائل الخطأ أو النجاح */}
-            {error && (
-              <div className="p-3 mb-4 text-red-700 bg-red-100 border border-red-400 rounded-lg">
-                {error}
-              </div>
-            )}
-            {success && (
-              <div className="p-3 mb-4 text-green-700 bg-green-100 border border-green-400 rounded-lg">
-                {success}
-              </div>
-            )}
-
-            {/* نموذج تسجيل الدخول */}
             <form onSubmit={handleLogin} className="space-y-4">
-              {/* حقل البريد الإلكتروني */}
               <div>
                 <label
                   htmlFor="email"
@@ -163,7 +142,6 @@ function Login({ setIsLoggedIn }) {
           </div>
         </div>
       </div>
-      <ToastContainer />
     </div>
   );
 }

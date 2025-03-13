@@ -6,7 +6,8 @@ const TrackDetails = () => {
   const { trackId } = useParams();
   const location = useLocation();
 
-  const [trackDetails, setTrackDetails] = useState(null);
+
+  const [trackDetails, setTrackDetails] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -59,12 +60,12 @@ const TrackDetails = () => {
   return (
     <div className="container p-4 mx-auto">
       <div className="grid grid-cols-1 gap-10 my-10 lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2">
-         <Link
+        <Link
           to={`${location.pathname}/level`}
           state={{
             frameworkId: trackDetails.frameworkId,
             frameworkName: trackDetails.frameworkName,
-            
+
           }}
           className="cursor-pointer track card"
         >

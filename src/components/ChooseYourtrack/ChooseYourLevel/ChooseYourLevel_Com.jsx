@@ -10,6 +10,7 @@ const ChooseLanguage_Com = () => {
   const location = useLocation();
   const { frameworkId, frameworkName } = location.state || {}; // Fallback to empty object
 
+
   const levels = [
     { id: 1, name: "Beginner", path: "beginer" },
     { id: 2, name: "Intermediate", path: "intermediate" },
@@ -18,26 +19,18 @@ const ChooseLanguage_Com = () => {
 
   return (
     <div>
-      {/* Head */}
-      <div className="flex items-center justify-between head">
-        <div className="headRight">
-          <div className="flex gap-3">
-            <i className="text-2xl font-bold fa-solid fa-chevron-left text-primary"></i>
-            <h1 className="text-2xl font-bold">{frameworkName}</h1>
-          </div>
-          <h1 className="text-sm text-gray-600 md:text-xl ms-6">
-            Choose the framework
-          </h1>
-        </div>
-        <div className="headLeft">
-          <h2 className="my-1 text-sm font-normal text-center md:text-lg md:font-semibold">
-            Don’t know your level?
-          </h2>
-          <Link to="/test_your_level">
-            <div className="relative z-10 px-2 py-1 overflow-hidden font-semibold text-center text-white border-2 rounded-md md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary">
-              Test your level now!
+      <div>
+        {/* Head */}
+        <div className="flex items-center justify-between head">
+          <div className="headRight">
+            <div className="flex gap-3">
+              <i className="text-2xl font-bold fa-solid fa-chevron-left text-primary"></i>
+              <h1 className="text-2xl font-bold">{frameworkName}</h1>
             </div>
-          </Link>
+            <h1 className="text-sm text-gray-600 md:text-xl ms-6">
+              Choose the framework
+            </h1>
+          </div>
         </div>
       </div>
 
@@ -57,7 +50,7 @@ const ChooseLanguage_Com = () => {
           </Link>
         ))}
       </div>
-    </div>
+    </div >
   );
 };
 

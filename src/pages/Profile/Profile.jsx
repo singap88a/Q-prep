@@ -1,75 +1,149 @@
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion"; // Import Framer Motion
+import { motion, AnimatePresence } from "framer-motion";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import userImage from "../../assets/user.png";
 
 function Profile() {
+
+  const [originalData, setOriginalData] = useState(null);
+
+
   const [isEditMode, setIsEditMode] = useState(false);
   const [phone, setPhone] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [address, setAddress] = useState("");
   const [dob, setDob] = useState("");
+  const [address, setAddress] = useState("city");
   const [location, setLocation] = useState("Egypt");
   const [profileImage, setProfileImage] = useState(userImage);
 
-  // Load data from localStorage on component mount
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const [token, setToken] = useState(localStorage.getItem("token"));
+
   useEffect(() => {
-    const savedData = JSON.parse(localStorage.getItem("profileData"));
-    if (savedData) {
-      setPhone(savedData.phone || "");
-      setFirstName(savedData.firstName || "");
-      setLastName(savedData.lastName || "");
-      setEmail(savedData.email || "");
-      setAddress(savedData.address || "");
-      setDob(savedData.dob || "");
-      setLocation(savedData.location || "Egypt");
-      setProfileImage(savedData.profileImage || userImage);
-    }
+    const GetUserFunc = async () => {
+      if (!token) return;
+      try {
+        if (!token) {
+          throw new Error("No Token found");
+        }
+        const response = await fetch(`https://questionprep.azurewebsites.net/api/Account/GetUser`,
+          {
+            method: 'GET',
+            mode: "cors",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`,
+            },
+          }
+        );
+        if (!response.ok) {
+          throw new Error(`Failed to fetch user: ${response.status}`);
+        }
+        const data = await response.json();
+
+        setOriginalData(data);
+
+        setFirstName(data.firstName);
+        setLastName(data.lastName);
+        setEmail(data.email);
+        setAddress(data.address);
+        setLocation(data.location);
+        setDob(data.birthDay);
+        setPhone(data.phoneNamber);
+        setProfileImage(data.urlPhoto);
+        console.log("GetUser Data:", data);
+      } catch (error) {
+        console.error("Error fetching user:", error.message);
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    GetUserFunc();
   }, []);
 
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfileImage(reader.result);
-      };
-      reader.readAsDataURL(file);
+
+  // Save Changes
+  const handleSave = async () => {
+
+    if (!token) { throw new Error("Token Not found") };
+
+    setLoading(true);
+
+    const formData = new FormData();
+    formData.append("firstName", firstName);
+    formData.append("lastName", lastName);
+    formData.append("email", email);
+    formData.append("phoneNamber", phone);
+    formData.append("birthDay", dob);
+    formData.append("address", address);
+    formData.append("location", location);
+
+    if (profileImage && profileImage !== userImage) {
+      formData.append("urlPhoto", profileImage);
     }
-  };
 
-  const handleSave = () => {
-    const profileData = {
-      phone,
-      firstName,
-      lastName,
-      email,
-      address,
-      dob,
-      location,
-      profileImage,
-    };
-    localStorage.setItem("profileData", JSON.stringify(profileData));
-    setIsEditMode(false); // Exit edit mode after saving
-  };
+    console.log("Updated Profile Data:", formData);
+    try {
+      const response = await fetch(`https://questionprep.azurewebsites.net/api/Account/EditUser`,
+        {
+          method: 'PUT',
+          mode: "cors",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to edit profile: ${response.status} - ${errorText}`);
+      }
 
+      console.log("Profile edited successfully");
+      setIsEditMode(false);
+    } catch (error) {
+      console.error("Error editing profile:", error.message);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+
+  // Reset
   const handleReset = () => {
-    localStorage.removeItem("profileData");
-    setPhone("");
-    setFirstName("");
-    setLastName("");
-    setEmail("");
-    setAddress("");
-    setDob("");
-    setLocation("Egypt");
-    setProfileImage(userImage);
+    // if (originalData) {
+    //   setFirstName(originalData.firstName);
+    //   setLastName(originalData.lastName);
+    //   setEmail(originalData.email);
+    //   setAddress(originalData.address || "Cairo");
+    //   setLocation(originalData.location || "Egypt");
+    //   setDob(originalData.dob || "");
+    //   setPhone(originalData.phone || "000000");
+    //   setProfileImage(originalData.profileImage || userImage);
+    // }
     setIsEditMode(false);
-  };
+  }
 
-  // Animation variants
+  // const handleImageUpload = (event) => {
+  //   const file = event.target.files[0];
+  //   if (file) {
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => {
+  //       setProfileImage(reader.result);
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
+
+
   const fadeIn = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { duration: 0.5 } },
@@ -93,7 +167,7 @@ function Profile() {
         <i className="text-2xl font-bold cursor-pointer fa-solid fa-chevron-left text-primary"></i>
         <motion.img
           src={profileImage}
-          alt="User"
+          alt="Photo not load"
           className="w-20 h-20 rounded-full"
           whileHover={{ scale: 1.1 }} // Scale up on hover
           transition={{ type: "spring", stiffness: 300 }}
@@ -106,7 +180,7 @@ function Profile() {
           <input
             type="file"
             className="hidden"
-            onChange={handleImageUpload}
+            // onChange={handleImageUpload}
             disabled={!isEditMode}
           />
           Edit your photo

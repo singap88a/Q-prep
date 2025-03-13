@@ -6,64 +6,52 @@ import sign__up from "../../../public/animations/Login_animation.json";
 import Google from "../../assets/home-img/google.png";
 import Facebook from "../../assets/home-img/facebook.png";
 import Apple from "../../assets/home-img/apple.png";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 function Sign_up({ setIsLoggedIn }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(null); // حالة لإدارة الأخطاء
-  const [success, setSuccess] = useState(null); // حالة لإدارة الرسائل الناجحة
-  const [loading, setLoading] = useState(false); // حالة لإدارة التحميل
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
-  const validatePassword = (password) => {
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    return regex.test(password);
-  };
 
   const handleSignUp = async (e) => {
     e.preventDefault();
 
     // التحقق من أن جميع الحقول مملوءة
     if (!name || !email || !password) {
-      setError("Please fill in all fields");
+      alert("Please fill in all fields");
       return;
     }
 
-    // التحقق من قوة كلمة المرور
-    if (!validatePassword(password)) {
-      setError(
-        "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character."
-      );
-      return;
-    }
-
-    setLoading(true); // بدء التحميل
-    setError(null); // إعادة تعيين حالة الخطأ
-    setSuccess(null); // إعادة تعيين حالة النجاح
+    setLoading(true);
+    setError(null);
 
     try {
       // إرسال طلب POST إلى الـ API
-      const response = await fetch(
-        "https://questionprep.azurewebsites.net/api/Authenticate/Register",
+      const response = await fetch("https://questionprep.azurewebsites.net/api/Authenticate/Register",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer`,
           },
           body: JSON.stringify({
-            Name: name, // تم تغيير `username` إلى `Name`
-            email: email, // البريد الإلكتروني
-            password: password, // كلمة المرور
+            Name: name,
+            email: email,
+            password: password,
           }),
         }
       );
 
+      const contentType = response.headers.get("content-type");
+      const data = contentType && contentType.includes("application/json")
+        ? await response.json()
+        : await response.text();
+
       // تسجيل حالة الاستجابة وبياناتها
       console.log("Response status:", response.status);
-      const data = await response.json();
+      // const data = await response.json();
       console.log("Response data:", data);
 
       // التحقق من نجاح الطلب
@@ -72,14 +60,12 @@ function Sign_up({ setIsLoggedIn }) {
       }
 
       // إذا نجح التسجيل
-      setSuccess("Registration successful! Redirecting..."); // عرض رسالة نجاح
-      setIsLoggedIn(true); // تحديث حالة تسجيل الدخول
-      toast.success("Registration successful! Redirecting..."); // عرض رسالة نجاح باستخدام toast
-      setTimeout(() => navigate("/"), 2000); // الانتقال إلى الصفحة الرئيسية بعد تأخير
+      setIsLoggedIn(true);
+      navigate("/login");
     } catch (error) {
       console.error("Error:", error); // تسجيل الخطأ في وحدة التحكم
-      setError(error.message || "Registration failed. Please try again."); // تحديث حالة الخطأ
-      toast.error(error.message || "Registration failed. Please try again."); // عرض رسالة خطأ باستخدام toast
+      setError(error.message); // تحديث حالة الخطأ
+      alert(error.message || "Registration failed. Please try again."); // عرض رسالة الخطأ
     } finally {
       setLoading(false); // إيقاف التحميل
     }
@@ -100,18 +86,6 @@ function Sign_up({ setIsLoggedIn }) {
               Welcome to Q-Prep
             </h1>
             <p className="mb-6 text-primary">Register your account</p>
-
-            {/* عرض رسائل الخطأ أو النجاح */}
-            {error && (
-              <div className="p-3 mb-4 text-red-700 bg-red-100 border border-red-400 rounded-lg">
-                {error}
-              </div>
-            )}
-            {success && (
-              <div className="p-3 mb-4 text-green-700 bg-green-100 border border-green-400 rounded-lg">
-                {success}
-              </div>
-            )}
 
             {/* نموذج التسجيل */}
             <form onSubmit={handleSignUp} className="space-y-4">
@@ -197,7 +171,6 @@ function Sign_up({ setIsLoggedIn }) {
           </div>
         </div>
       </div>
-      <ToastContainer />
     </div>
   );
 }
