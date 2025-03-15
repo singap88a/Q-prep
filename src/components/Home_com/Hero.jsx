@@ -47,7 +47,7 @@ function Hero() {
                   Choose your track now!
                 </motion.div>
               </Link>
-              <Link to="/test_your_level">
+              {/* <Link to="/test_your_level">
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -55,7 +55,7 @@ function Hero() {
                 >
                   Test your level
                 </motion.div>
-              </Link>
+              </Link> */}
             </motion.div>
           </div>
           <motion.div

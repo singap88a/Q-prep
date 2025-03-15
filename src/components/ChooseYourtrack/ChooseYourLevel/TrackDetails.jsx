@@ -30,6 +30,7 @@ const TrackDetails = () => {
         }
 
         const data = await response.json();
+        console.log("Track Data:" , data)
         setTrackDetails(data[0]); // Assuming the API returns an array
       } catch (error) {
         setError(error.message);
@@ -65,7 +66,6 @@ const TrackDetails = () => {
           state={{
             frameworkId: trackDetails.frameworkId,
             frameworkName: trackDetails.frameworkName,
-
           }}
           className="cursor-pointer track card"
         >
