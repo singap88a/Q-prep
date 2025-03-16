@@ -50,8 +50,8 @@ const TestYourLevel = () => {
         const mappedQuestions = data.map((question) => ({
           id: question.q_Id,
           question: question.qeuestion,
-          options: [question.a_1, question.a_2, question.a_3],
-          correctAnswer: question.correctAnswer,
+          options: [question.a_1, question.a_2, question.a_3, question.a_4].filter(Boolean), // Ensure all options are included
+          correctAnswer: question.correctAnswers, // Corrected property name
         }));
 
         setQuestions(mappedQuestions);

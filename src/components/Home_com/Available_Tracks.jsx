@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -7,6 +7,7 @@ import "swiper/css/scrollbar";
 import { Autoplay, Scrollbar } from "swiper/modules";
 import { Link } from "react-router-dom";
 import card_img from "../../assets/ChooseTrack/Card-img.png";
+import { ClipLoader } from "react-spinners"; // استيراد تأثير التحميل
 
 const Available_Tracks = () => {
   const [tracks, setTracks] = useState([]); // حالة لتخزين البيانات
@@ -36,7 +37,11 @@ const Available_Tracks = () => {
   }, []);
 
   if (loading) {
-    return <div className="py-10 text-center">Loading...</div>; // عرض رسالة تحميل
+    return (
+      <div className="flex items-center justify-center py-20">
+        <ClipLoader color="#4A90E2" size={50} /> {/* تأثير التحميل */}
+      </div>
+    );
   }
 
   if (error) {
@@ -47,7 +52,7 @@ const Available_Tracks = () => {
     <div className="py-10">
       <div className="container flex justify-between">
         <h2 className="mb-4 text-2xl font-bold">Available Tracks</h2>
-        <Link className="font-bold underline text-primary" to="/choosetrack/1">
+        <Link className="font-bold underline text-primary" to="/choosetrack">
           Show all
         </Link>
       </div>
@@ -73,15 +78,17 @@ const Available_Tracks = () => {
           >
             {tracks.map((track) => (
               <SwiperSlide key={track.trackId} className="px-1 pt-6 group pb-11">
-                <div className="p-4 bg-white rounded-lg shadow-md card">
-                <div className="bg_card ">
-                    <img src={card_img} alt="" />
-                  </div> 
-                  <h3 className="mt-4 text-xl font-semibold">
-                    {track.tarckName}
-                  </h3>
-                  <p className="mt-2 text-gray-600">{track.description}</p>
-                </div>
+                <Link to={`/choosetrack/track/${track.trackId}`}> {/* ربط الكارد بالتفاصيل */}
+                  <div className="p-4 bg-white rounded-lg shadow-md card">
+                    <div className="bg_card">
+                      <img src={card_img} alt="" />
+                    </div>
+                    <h3 className="mt-4 text-xl font-semibold">
+                      {track.tarckName}
+                    </h3>
+                    <p className="mt-2 text-gray-600">{track.description}</p>
+                  </div>
+                </Link>
               </SwiperSlide>
             ))}
           </Swiper>

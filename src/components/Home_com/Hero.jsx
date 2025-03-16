@@ -38,7 +38,7 @@ function Hero() {
               transition={{ duration: 0.5, delay: 0.4 }}
               className="flex flex-wrap gap-4 mt-8 text-center"
             >
-              <Link to="/choosetrack/1">
+              <Link to="/choosetrack">
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}

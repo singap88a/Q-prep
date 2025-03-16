@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
 import card_img from "../../../assets/ChooseTrack/Card-img.png";
+import { ClipLoader } from "react-spinners"; // استيراد مكون التحميل
 
 const TrackDetails = () => {
   const { trackId } = useParams();
   const location = useLocation();
-
 
   const [trackDetails, setTrackDetails] = useState([]);
   const [error, setError] = useState(null);
@@ -30,7 +30,7 @@ const TrackDetails = () => {
         }
 
         const data = await response.json();
-        console.log("Track Data:" , data)
+        console.log("Track Data:", data);
         setTrackDetails(data[0]); // Assuming the API returns an array
       } catch (error) {
         setError(error.message);
@@ -43,7 +43,11 @@ const TrackDetails = () => {
   }, [trackId]);
 
   if (loading) {
-    return <div className="mt-10 text-center">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center py-20">
+        <ClipLoader color="#4A90E2" size={50} /> {/* تأثير التحميل */}
+      </div>
+    );
   }
 
   if (error) {

@@ -75,12 +75,14 @@ function Approuting() {
         <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
           <Route path="/test_your_level" element={<Test_your_level />} />
         </Route>
-
-        <Route
-          path="/saved_questions"
-          element={<Saved_questions savedQuestions={savedQuestions} />}
-        />
-
+{/* ///////// */}
+        <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
+          <Route
+            path="/saved_questions"
+            element={<Saved_questions savedQuestions={savedQuestions} />}
+          />
+        </Route>
+{/* ///// */}
         <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
           <Route path="/profile" element={<Profile />} />
         </Route>
