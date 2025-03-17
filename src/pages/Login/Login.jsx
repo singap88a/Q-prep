@@ -7,12 +7,12 @@ import Google from "../../assets/home-img/google.png";
 import Facebook from "../../assets/home-img/facebook.png";
 import Apple from "../../assets/home-img/apple.png";
 
-function Login({ setIsLoggedIn }) {
+function Login({ setIsLoggedIn, setUserRole }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(null); // حالة لإدارة الأخطاء
-  const [success, setSuccess] = useState(null); // حالة لإدارة الرسائل الناجحة
-  const [loading, setLoading] = useState(false); // حالة لإدارة التحميل
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const validateEmail = (email) => {
@@ -23,21 +23,19 @@ function Login({ setIsLoggedIn }) {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    // التحقق من أن جميع الحقول مملوءة
     if (!email || !password) {
       setError("Please fill in all fields");
       return;
     }
 
-    // التحقق من صحة البريد الإلكتروني
     if (!validateEmail(email)) {
       setError("Please enter a valid email address");
       return;
     }
 
-    setLoading(true); // بدء التحميل
-    setError(null); // إعادة تعيين حالة الخطأ
-    setSuccess(null); // إعادة تعيين حالة النجاح
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
 
     try {
       const response = await fetch(
@@ -57,27 +55,31 @@ function Login({ setIsLoggedIn }) {
       const data = await response.json();
       console.log("Response data:", data);
 
-      // التحقق من نجاح الطلب
       if (!response.ok) {
         throw new Error(data.message || "Login failed");
       }
 
-      // حفظ التوكن في localStorage
       localStorage.setItem("token", data.token);
+      setUserRole(data.role); // تعيين دور المستخدم
 
-      // عرض رسالة نجاح
-      setSuccess("Login successful! Redirecting to home...");
-      setIsLoggedIn(true);
-
-      // الانتقال إلى الصفحة الرئيسية بعد تأخير بسيط
-      setTimeout(() => {
-        navigate("/");
-      }, 2000);
+      if (data.role === "admin") {
+        setSuccess("Login successful! Redirecting to admin panel...");
+        setIsLoggedIn(true);
+        setTimeout(() => {
+          navigate("/admin");
+        }, 2000);
+      } else {
+        setSuccess("Login successful! Redirecting to home...");
+        setIsLoggedIn(true);
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
+      }
     } catch (error) {
       console.error("Error:", error);
       setError(error.message || "Login failed. Please try again.");
     } finally {
-      setLoading(false); // إيقاف التحميل
+      setLoading(false);
     }
   };
 
@@ -97,7 +99,6 @@ function Login({ setIsLoggedIn }) {
             </h1>
             <p className="mb-6 text-primary">Login now!</p>
 
-            {/* عرض رسائل الخطأ والنجاح */}
             {error && (
               <div className="p-3 mb-4 text-red-700 bg-red-100 border border-red-400 rounded-lg">
                 {error}
@@ -109,9 +110,7 @@ function Login({ setIsLoggedIn }) {
               </div>
             )}
 
-            {/* نموذج تسجيل الدخول */}
             <form onSubmit={handleLogin} className="space-y-4">
-              {/* حقل البريد الإلكتروني */}
               <div>
                 <label
                   htmlFor="email"
@@ -129,7 +128,6 @@ function Login({ setIsLoggedIn }) {
                 />
               </div>
 
-              {/* حقل كلمة المرور */}
               <div>
                 <label
                   htmlFor="password"
@@ -147,17 +145,15 @@ function Login({ setIsLoggedIn }) {
                 />
               </div>
 
-              {/* زر تسجيل الدخول */}
               <button
                 type="submit"
                 className="w-full py-2 text-white transition rounded-lg bg-secondary hover:bg-purple-700"
-                disabled={loading} // تعطيل الزر أثناء التحميل
+                disabled={loading}
               >
                 {loading ? "Logging in..." : "Login"}
               </button>
             </form>
 
-            {/* تسجيل الدخول عبر وسائل التواصل الاجتماعي */}
             <p className="mt-6 text-center text-primary">Login with</p>
             <div className="flex justify-center gap-10 mt-4">
               <img

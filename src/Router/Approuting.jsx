@@ -1,5 +1,10 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useState, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  // Outlet,
+} from "react-router-dom";
+import { useState, useEffect, Suspense, lazy } from "react";
 import Login from "../pages/Login/Login";
 import Sign_up from "../pages/Sign_up/Sign_up";
 import Home from "../pages/Home/Home";
@@ -9,9 +14,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Newsletter from "../components/Newsletter";
 import ChooseYourTrack from "../pages/ChooseTrack/ChooseYourTrack";
-// import ChooseLanguage from "../pages/ChooseTrack/ChooseLanguage/ChooseLanguage";
 import ChooseYourLevel from "../pages/ChooseTrack/ChooseYourLevel/ChooseYourLevel";
-// import Questions from "../pages/Questions/Questions";
 import Add_question from "../pages/Add_question/Add_question";
 import Test_your_level from "../pages/Test_your_level/Test_your_level";
 import Saved_questions from "../pages/Saved_questions/Saved_questions";
@@ -25,20 +28,30 @@ import Beginer from "../components/ChooseYourtrack/ChooseYourLevel/Beginer";
 import Intermediate from "../components/ChooseYourtrack/ChooseYourLevel/Intermediate";
 import Advanced from "../components/ChooseYourtrack/ChooseYourLevel/Advanced";
 import ProtectRouting from "./ProtectRouting";
+// import Admin from "../pages/admin/Admin";
+import FrameworkDashboard from "../components/admin/FrameworkDashboard";
 
+// Lazy Loading for better performance
+const LazyAdmin = lazy(() => import("../pages/admin/Admin"));
 
 function Approuting() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    return JSON.parse(localStorage.getItem("isLoggedIn"))
+    return JSON.parse(localStorage.getItem("isLoggedIn"));
   });
 
-  // حالة الأسئلة المحفوظة
+  const [userRole, setUserRole] = useState(() => {
+    return localStorage.getItem("role");
+  });
+
   const [savedQuestions, setSavedQuestions] = useState([]);
 
-  // تحديث localStorage عند تغيير حالة تسجيل الدخول
   useEffect(() => {
     localStorage.setItem("isLoggedIn", JSON.stringify(isLoggedIn));
   }, [isLoggedIn]);
+
+  useEffect(() => {
+    localStorage.setItem("role", userRole);
+  }, [userRole]);
 
   return (
     <Router>
@@ -54,50 +67,89 @@ function Approuting() {
         <Route path="/about" element={<About />} />
         <Route path="/choosetrack" element={<ChooseYourTrack />} />
 
-        {/* auth */}
+        {/* Auth Routes */}
         <Route
           path="/login"
-          element={<Login setIsLoggedIn={setIsLoggedIn} />}
+          element={
+            <Login setIsLoggedIn={setIsLoggedIn} setUserRole={setUserRole} />
+          }
         />
         <Route
           path="/sign-up"
-          element={<Sign_up setIsLoggedIn={setIsLoggedIn} />}
+          element={
+            <Sign_up setIsLoggedIn={setIsLoggedIn} setUserRole={setUserRole} />
+          }
         />
 
-        {/* ChooseYourLanguage */}
-        {/* <Route path="/choosetrack/lang" element={<ChooseLanguage />} /> */}
-        {/* <Route path="/choosetrack/lang/level" element={<ChooseYourLevel />} /> */}
+        {/* Admin Route */}
+        <Route
+          element={<ProtectRouting isLoggedIn={isLoggedIn} role={userRole} />}
+        >
+          <Route
+            path="/admin"
+            element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <LazyAdmin />
+              </Suspense>
+            }
+          />
+        </Route>
+        <Route
+          path="/frameworks/:mainTrackId"
+          element={<FrameworkDashboard />}
+        />
 
-        {/* ////// Questions //////// */}
-        {/* <Route path="/questions" element={ <Questions savedQuestions={savedQuestions} setSavedQuestions={setSavedQuestions} />} /> */}
-        <Route path="/add_question" element={<Add_question />} />
-
+        <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
+          <Route path="/add_question" element={<Add_question />} />
+        </Route>
+        {/* Other Routes */}
         <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
           <Route path="/test_your_level" element={<Test_your_level />} />
         </Route>
-{/* ///////// */}
+
         <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
           <Route
             path="/saved_questions"
             element={<Saved_questions savedQuestions={savedQuestions} />}
           />
         </Route>
-{/* ///// */}
-        <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
-          <Route path="/profile" element={<Profile />} />
-        </Route>
-
-        {/* Community */}
+        <Route path="/profile" element={<Profile />} />
         <Route path="/community" element={<Community_1 />} />
         <Route path="/community_2" element={<Community_2 />} />
         <Route path="/choosetrack/track/:trackId" element={<TrackDetails />} />
-        <Route path="/choosetrack/track/:trackId/level" element={<ChooseYourLevel />} />
-        {/* <Route path="/choosetrack/track/:trackId/level/questions" element={ <Questions savedQuestions={savedQuestions} setSavedQuestions={setSavedQuestions} />} /> */}
-        <Route path="/choosetrack/track/:trackId/level/beginer" element={<Beginer savedQuestions={savedQuestions} setSavedQuestions={setSavedQuestions} />} />
-        <Route path="/choosetrack/track/:trackId/level/Intermediate" element={<Intermediate savedQuestions={savedQuestions} setSavedQuestions={setSavedQuestions} />} />
-        <Route path="/choosetrack/track/:trackId/level/advanced" element={<Advanced savedQuestions={savedQuestions} setSavedQuestions={setSavedQuestions} />} />
+        <Route
+          path="/choosetrack/track/:trackId/level"
+          element={<ChooseYourLevel />}
+        />
+        <Route
+          path="/choosetrack/track/:trackId/level/beginer"
+          element={
+            <Beginer
+              savedQuestions={savedQuestions}
+              setSavedQuestions={setSavedQuestions}
+            />
+          }
+        />
+        <Route
+          path="/choosetrack/track/:trackId/level/Intermediate"
+          element={
+            <Intermediate
+              savedQuestions={savedQuestions}
+              setSavedQuestions={setSavedQuestions}
+            />
+          }
+        />
+        <Route
+          path="/choosetrack/track/:trackId/level/advanced"
+          element={
+            <Advanced
+              savedQuestions={savedQuestions}
+              setSavedQuestions={setSavedQuestions}
+            />
+          }
+        />
 
-        {/* Error */}
+        {/* Error Route */}
         <Route path="*" element={<ErrorPage />} />
       </Routes>
       <Newsletter />
@@ -106,4 +158,4 @@ function Approuting() {
   );
 }
 
-export default Approuting; // يمكنك تغيير الاسم هنا إذا أردت
+export default Approuting;
