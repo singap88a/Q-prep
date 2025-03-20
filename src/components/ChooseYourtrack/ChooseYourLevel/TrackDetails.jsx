@@ -7,7 +7,7 @@ const TrackDetails = () => {
   const { trackId } = useParams();
   const location = useLocation();
 
-  const [trackDetails, setTrackDetails] = useState([]);
+  const [trackDetails, setTrackDetails] = useState([]); // تخزين جميع البيانات
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -31,7 +31,7 @@ const TrackDetails = () => {
 
         const data = await response.json();
         console.log("Track Data:", data);
-        setTrackDetails(data[0]); // Assuming the API returns an array
+        setTrackDetails(data); // تخزين جميع البيانات
       } catch (error) {
         setError(error.message);
       } finally {
@@ -58,29 +58,32 @@ const TrackDetails = () => {
     );
   }
 
-  if (!trackDetails || !trackDetails.frameworkName) {
+  if (!trackDetails || trackDetails.length === 0) {
     return <div className="mt-10 text-center">Data Not Found</div>;
   }
 
   return (
     <div className="container p-4 mx-auto">
       <div className="grid grid-cols-1 gap-10 my-10 lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2">
-        <Link
-          to={`${location.pathname}/level`}
-          state={{
-            frameworkId: trackDetails.frameworkId,
-            frameworkName: trackDetails.frameworkName,
-          }}
-          className="cursor-pointer track card"
-        >
-          <div className="">
-            <div className="bg_card">
-              <img src={card_img} alt="" className="m-auto" />
+        {trackDetails.map((track) => (
+          <Link
+            key={track.frameworkId}
+            to={`${location.pathname}/level`}
+            state={{
+              frameworkId: track.frameworkId,
+              frameworkName: track.frameworkName,
+            }}
+            className="cursor-pointer track card"
+          >
+            <div className="">
+              <div className="bg_card">
+                <img src={card_img} alt="" className="m-auto" />
+              </div>
+              <h3 className="">{track.frameworkName}</h3>
+              <p className="">{track.description}</p>
             </div>
-            <h3 className="">{trackDetails.frameworkName} </h3>
-            <p className="">{trackDetails.description} </p>
-          </div>
-        </Link>
+          </Link>
+        ))}
       </div>
     </div>
   );

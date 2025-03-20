@@ -30,6 +30,8 @@ import Advanced from "../components/ChooseYourtrack/ChooseYourLevel/Advanced";
 import ProtectRouting from "./ProtectRouting";
 // import Admin from "../pages/admin/Admin";
 import FrameworkDashboard from "../components/admin/FrameworkDashboard";
+import TestYourLevel from "../components/admin/TestYourLevel";
+import ManageQuestions from "../components/admin/ManageQuestions";
 
 // Lazy Loading for better performance
 const LazyAdmin = lazy(() => import("../pages/admin/Admin"));
@@ -150,6 +152,15 @@ function Approuting() {
         />
 
         {/* Error Route */}
+        <Route
+          path="/test-your-level/:frameworkId"
+          element={<TestYourLevel />}
+        />
+        <Route
+          path="/manage-questions/:frameworkId"
+          element={<ManageQuestions />}
+        />
+
         <Route path="*" element={<ErrorPage />} />
       </Routes>
       <Newsletter />
