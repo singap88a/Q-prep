@@ -4,7 +4,14 @@ import axios from "axios";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { FaEllipsisV, FaTimes, FaEdit, FaTrash, FaQuestionCircle, FaLevelUpAlt } from "react-icons/fa";
+import {
+  FaEllipsisV,
+  FaTimes,
+  FaEdit,
+  FaTrash,
+  FaQuestionCircle,
+  FaLevelUpAlt,
+} from "react-icons/fa";
 
 const FrameworkDashboard = () => {
   const { mainTrackId } = useParams(); // الحصول على الـ mainTrackId من الرابط
@@ -192,22 +199,42 @@ const FrameworkDashboard = () => {
             <input
               type="text"
               placeholder="Name"
-              value={editFramework.frameworkId ? editFramework.frameworkName : newFramework.frameworkName}
+              value={
+                editFramework.frameworkId
+                  ? editFramework.frameworkName
+                  : newFramework.frameworkName
+              }
               onChange={(e) =>
                 editFramework.frameworkId
-                  ? setEditFramework({ ...editFramework, frameworkName: e.target.value })
-                  : setNewFramework({ ...newFramework, frameworkName: e.target.value })
+                  ? setEditFramework({
+                      ...editFramework,
+                      frameworkName: e.target.value,
+                    })
+                  : setNewFramework({
+                      ...newFramework,
+                      frameworkName: e.target.value,
+                    })
               }
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <input
               type="text"
               placeholder="Description"
-              value={editFramework.frameworkId ? editFramework.description : newFramework.description}
+              value={
+                editFramework.frameworkId
+                  ? editFramework.description
+                  : newFramework.description
+              }
               onChange={(e) =>
                 editFramework.frameworkId
-                  ? setEditFramework({ ...editFramework, description: e.target.value })
-                  : setNewFramework({ ...newFramework, description: e.target.value })
+                  ? setEditFramework({
+                      ...editFramework,
+                      description: e.target.value,
+                    })
+                  : setNewFramework({
+                      ...newFramework,
+                      description: e.target.value,
+                    })
               }
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -215,21 +242,38 @@ const FrameworkDashboard = () => {
               type="file"
               onChange={(e) =>
                 editFramework.frameworkId
-                  ? setEditFramework({ ...editFramework, photo: e.target.files[0] })
-                  : setNewFramework({ ...newFramework, photo: e.target.files[0] })
+                  ? setEditFramework({
+                      ...editFramework,
+                      photo: e.target.files[0],
+                    })
+                  : setNewFramework({
+                      ...newFramework,
+                      photo: e.target.files[0],
+                    })
               }
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <div className="flex gap-2">
               <button
-                onClick={editFramework.frameworkId ? updateFramework : addFramework}
+                onClick={
+                  editFramework.frameworkId ? updateFramework : addFramework
+                }
                 className="flex-1 p-3 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                {editFramework.frameworkId ? "Update Framework" : "Add Framework"}
+                {editFramework.frameworkId
+                  ? "Update Framework"
+                  : "Add Framework"}
               </button>
               {editFramework.frameworkId && (
                 <button
-                  onClick={() => setEditFramework({ frameworkId: null, frameworkName: "", description: "", photo: null })}
+                  onClick={() =>
+                    setEditFramework({
+                      frameworkId: null,
+                      frameworkName: "",
+                      description: "",
+                      photo: null,
+                    })
+                  }
                   className="flex-1 p-3 text-white bg-gray-500 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
                 >
                   Cancel Edit
@@ -261,7 +305,7 @@ const FrameworkDashboard = () => {
                       <p className="text-gray-600">{framework.description}</p>
                       {framework.photo && (
                         <img
-                          src={`https://questionprep.azurewebsites.net/FrameworkPhoto/${framework.photo}`}
+                          src={`https://questionprep.azurewebsites.net/TrackandFrameworkPhoto/${framework.photo}`}
                           alt={framework.frameworkName}
                           className="w-20 h-20 mt-2 rounded-lg"
                         />
@@ -272,7 +316,11 @@ const FrameworkDashboard = () => {
                         onClick={() => toggleActions(framework.frameworkId)}
                         className="p-2 text-gray-600 hover:text-gray-800"
                       >
-                        {showActions === framework.frameworkId ? <FaTimes /> : <FaEllipsisV />}
+                        {showActions === framework.frameworkId ? (
+                          <FaTimes />
+                        ) : (
+                          <FaEllipsisV />
+                        )}
                       </button>
                       {showActions === framework.frameworkId && (
                         <div className="absolute right-0 z-10 w-48 mt-2 bg-white rounded-lg shadow-lg">
@@ -287,22 +335,31 @@ const FrameworkDashboard = () => {
                             <FaEdit className="mr-2" /> Edit
                           </button>
                           <button
-                            onClick={() => deleteFramework(framework.frameworkId)}
+                            onClick={() =>
+                              deleteFramework(framework.frameworkId)
+                            }
                             className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-100"
                           >
                             <FaTrash className="mr-2" /> Delete
                           </button>
                           <button
-                            onClick={() => handleTestYourLevel(framework.frameworkId)}
+                            onClick={() =>
+                              handleTestYourLevel(framework.frameworkId)
+                            }
                             className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-100"
                           >
                             <FaLevelUpAlt className="mr-2" /> Test Your Level
                           </button>
                           <button
-                            onClick={() => navigate(`/manage-questions/${framework.frameworkId}`)}
+                            onClick={() =>
+                              navigate(
+                                `/manage-questions/${framework.frameworkId}`
+                              )
+                            }
                             className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-100"
                           >
-                            <FaQuestionCircle className="mr-2" /> Manage Questions
+                            <FaQuestionCircle className="mr-2" /> Manage
+                            Questions
                           </button>
                         </div>
                       )}

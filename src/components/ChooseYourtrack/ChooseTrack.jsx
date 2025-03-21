@@ -80,15 +80,15 @@ function ChooseTrack() {
               <div className="bg_card">
                 {track.photo ? (
                   <img
-                    src={`https://questionprep.azurewebsites.net/TrackPhoto/${track.photo}`}
+                    src={`https://questionprep.azurewebsites.net/TrackandFrameworkPhoto/${track.photo}`}
                     alt={track.tarckName}
-                    className="object-cover w-full h-full"
+                    className="object-cover w-full h-full rounded-lg"
                   />
                 ) : (
                   <img
                     src="https://via.placeholder.com/150" // صورة افتراضية إذا لم تكن هناك صورة
                     alt="Placeholder"
-                    className="object-cover w-full h-full"
+                    className="object-cover w-full h-full "
                   />
                 )}
               </div>

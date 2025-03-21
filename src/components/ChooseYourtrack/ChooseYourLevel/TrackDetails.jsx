@@ -78,9 +78,9 @@ const TrackDetails = () => {
               <div className="bg_card">
                 {track.photo ? (
                   <img
-                    src={`https://questionprep.azurewebsites.net/FrameworkPhoto/${track.photo}`}
+                    src={`https://questionprep.azurewebsites.net/TrackandFrameworkPhoto/${track.photo}`}
                     alt={track.frameworkName}
-                    className="object-cover w-full h-full"
+                    className="object-cover w-full h-full rounded-lg"
                   />
                 ) : (
                   <img

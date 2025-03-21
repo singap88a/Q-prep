@@ -97,7 +97,9 @@ const MainTrackDashboard = () => {
       );
 
       if (isNameExists) {
-        toast.error("This Track Name already exists. Please choose a different name.");
+        toast.error(
+          "This Track Name already exists. Please choose a different name."
+        );
         return;
       }
 
@@ -125,7 +127,7 @@ const MainTrackDashboard = () => {
       });
       fetchTracks();
       toast.success("Track updated successfully!");
-      window.scrollTo({ top: 0, behavior: "smooth" }); // التمرير لأعلى
+      window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to top
     } catch (error) {
       console.error("Error updating track:", error);
       toast.error("Failed to update track. Please try again.");
@@ -156,7 +158,7 @@ const MainTrackDashboard = () => {
     setShowActions(showActions === trackId ? null : trackId);
   };
 
-  // إغلاق الأزرار عند الضغط خارجها
+  // Close actions when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (showActions && !e.target.closest(".actions-container")) {
@@ -186,7 +188,9 @@ const MainTrackDashboard = () => {
             <input
               type="text"
               placeholder="Name"
-              value={editTrack.trackId ? editTrack.tarckName : newTrack.tarckName}
+              value={
+                editTrack.trackId ? editTrack.tarckName : newTrack.tarckName
+              }
               onChange={(e) =>
                 editTrack.trackId
                   ? setEditTrack({ ...editTrack, tarckName: e.target.value })
@@ -197,7 +201,9 @@ const MainTrackDashboard = () => {
             <input
               type="text"
               placeholder="Description"
-              value={editTrack.trackId ? editTrack.description : newTrack.description}
+              value={
+                editTrack.trackId ? editTrack.description : newTrack.description
+              }
               onChange={(e) =>
                 editTrack.trackId
                   ? setEditTrack({ ...editTrack, description: e.target.value })
@@ -223,7 +229,14 @@ const MainTrackDashboard = () => {
               </button>
               {editTrack.trackId && (
                 <button
-                  onClick={() => setEditTrack({ trackId: null, tarckName: "", description: "", photo: null })}
+                  onClick={() =>
+                    setEditTrack({
+                      trackId: null,
+                      tarckName: "",
+                      description: "",
+                      photo: null,
+                    })
+                  }
                   className="flex-1 p-3 text-white bg-gray-500 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
                 >
                   Cancel Edit
@@ -255,7 +268,7 @@ const MainTrackDashboard = () => {
                       <p className="text-gray-600">{track.description}</p>
                       {track.photo && (
                         <img
-                          src={`https://questionprep.azurewebsites.net/TrackPhoto/${track.photo}`}
+                          src={`https://questionprep.azurewebsites.net/TrackandFrameworkPhoto/${track.photo}`}
                           alt={track.tarckName}
                           className="w-20 h-20 mt-2 rounded-lg"
                         />
@@ -266,7 +279,11 @@ const MainTrackDashboard = () => {
                         onClick={() => toggleActions(track.trackId)}
                         className="p-2 text-gray-600 hover:text-gray-800"
                       >
-                        {showActions === track.trackId ? <FaTimes /> : <FaEllipsisV />}
+                        {showActions === track.trackId ? (
+                          <FaTimes />
+                        ) : (
+                          <FaEllipsisV />
+                        )}
                       </button>
                       {showActions === track.trackId && (
                         <div className="absolute right-0 z-10 w-48 mt-2 bg-white rounded-lg shadow-lg">
@@ -274,7 +291,7 @@ const MainTrackDashboard = () => {
                             onClick={() => {
                               setEditTrack(track);
                               setShowActions(null);
-                              window.scrollTo({ top: 0, behavior: "smooth" }); // التمرير لأعلى
+                              window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to top
                             }}
                             className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-100"
                           >
