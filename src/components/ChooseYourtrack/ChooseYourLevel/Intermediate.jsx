@@ -4,12 +4,11 @@ import { useEffect, useState } from "react";
 import { FaChevronDown, FaChevronUp, FaStar, FaCheck } from "react-icons/fa";
 import { ClipLoader } from "react-spinners"; // استيراد مكون التحميل
 
-function Intermediate({ savedQuestions, setSavedQuestions }) {
+function Intermediate({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
     const [intermediateQuestions, setIntermediateQuestions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [activeIndex, setActiveIndex] = useState(null);
-    const [isSaved, setIsSaved] = useState({}); // حالة محلية لتتبع ما إذا كان السؤال محفوظًا
 
     const location = useLocation();
     const { frameworkId, frameworkName } = location.state || {
@@ -50,13 +49,48 @@ function Intermediate({ savedQuestions, setSavedQuestions }) {
         fetchData();
     }, [frameworkId]);
 
+    const fetchSavedQuestions = async () => {
+        try {
+            if (!token) return;
+
+            const response = await fetch("https://questionprep.azurewebsites.net/api/Save/GetSaveQuestions", {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch saved questions");
+            }
+
+            const data = await response.json();
+            console.log("setSavedQuestions", data);
+            setSavedQuestions(data);
+            // تحديث `isSaved` لكل سؤال محفوظ
+            // تعيين `isSaved` افتراضيًا إلى `false` لكل سؤال
+            // const defaultSavedStatus = {};
+            // data.forEach((q) => {
+            //     defaultSavedStatus[q.id] = true;
+            // });
+            // setIsSaved(defaultSavedStatus);
+
+        } catch (error) {
+            console.error("Error fetching saved questions:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchSavedQuestions();
+    }, []);
+
     const toggleAnswer = (index) => {
         setActiveIndex((prevIndex) => (prevIndex === index ? null : index));
     };
 
     const handleSaveQuestion = async (faq) => {
-        // التحقق من أن السؤال غير محفوظ مسبقًا
-        if (!isSaved[faq.questionId]) {
+        console.log("isSaved[faq.id]", isSaved[faq.id])
+        if (!isSaved[faq.id]) {
             try {
                 const response = await fetch("https://questionprep.azurewebsites.net/api/Save/AddtoSave", {
                     method: "POST",
@@ -65,7 +99,7 @@ function Intermediate({ savedQuestions, setSavedQuestions }) {
                         Authorization: `Bearer ${token}`,
                     },
                     body: JSON.stringify({
-                        questionId: faq.questionId,
+                        id: faq.id,
                         question: faq.questions,
                         answer: faq.answers,
                     }),
@@ -76,15 +110,27 @@ function Intermediate({ savedQuestions, setSavedQuestions }) {
                 }
 
                 const savedQuestion = await response.json();
-                setSavedQuestions([...savedQuestions, savedQuestion]); // تحديث قائمة الأسئلة المحفوظة
-                setIsSaved((prev) => ({ ...prev, [faq.questionId]: true })); // تحديث حالة الحفظ
+                // console.log("savedQuestion click", savedQuestion);
+                // setSavedQuestions([...savedQuestions, savedQuestion]); 
+                setSavedQuestions((prev) => [...prev, savedQuestion]); // تحديث القائمة
+                setIsSaved((prev) => [...prev, faq.id]);
+
                 alert("Question saved successfully!");
             } catch (error) {
                 console.error("Error saving question:", error);
-                alert("Failed to save question. Please try again.");
+                alert("This Question Is Aready Saved!");
             }
         }
+        fetchSavedQuestions();
     };
+
+
+    useEffect(() => {
+        const savedIds = savedQuestions.map((q) => q.id);
+        setIsSaved(savedIds);
+    }, [savedQuestions]);
+
+
 
     if (loading) {
         return (
@@ -136,27 +182,31 @@ function Intermediate({ savedQuestions, setSavedQuestions }) {
             <div className="max-w-4xl mx-auto">
                 <div className="grid gap-4 py-6">
                     {intermediateQuestions.map((faq, index) => (
-                        <div
-                            key={index} // استخدام index كـ key
-                            className="p-4 bg-white border rounded-lg shadow-md"
-                        >
-                            <button
+                        <div key={index} className="p-4 bg-white border rounded-lg shadow-md">
+                            <a
                                 onClick={() => toggleAnswer(index)}
                                 className="flex items-center justify-between w-full text-left"
                                 aria-expanded={activeIndex === index}
                             >
                                 <span className="text-lg font-semibold">{faq.questions}</span>
+
                                 <div className="flex items-center gap-4">
                                     <button
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             handleSaveQuestion(faq);
                                         }}
-                                        aria-label={isSaved[faq.questionId] ? "Unsave question" : "Save question"}
+                                        aria-label={isSaved[faq.id] ? "Unsave question" : "Save question"}
+
                                         className="text-xl text-gray-500 hover:text-primary"
-                                        disabled={isSaved[faq.questionId]} // تعطيل الزر إذا كان السؤال محفوظًا
+                                        disabled={isSaved.includes(faq.id)}
+
                                     >
-                                        {isSaved[faq.questionId] ? <FaCheck /> : <FaStar />}
+                                        {/* {savedQuestions.some((saved) => isSaved[saved.id]) ? <FaCheck /> : <FaStar />} */}
+                                        {isSaved.includes(faq.id) ? <FaCheck /> : <FaStar />}
+
+                                        {/* {isSaved[faq.id] ? <FaCheck /> : <FaStar />} */}
+
                                     </button>
                                     {activeIndex === index ? (
                                         <FaChevronUp className="text-secondary" />
@@ -164,9 +214,9 @@ function Intermediate({ savedQuestions, setSavedQuestions }) {
                                         <FaChevronDown className="text-secondary" />
                                     )}
                                 </div>
-                            </button>
+                            </a>
                             {activeIndex === index && (
-                                <p className="mt-3 text-gray-600">{faq.answers || "No answer available."}</p>
+                                <p className="mt-3 text-gray-600">{faq.answers}</p>
                             )}
                         </div>
                     ))}

@@ -7,9 +7,11 @@ import userImage from "../assets/user.png";
 function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
   const [isOpen, setIsOpen] = useState(false);
   const [hasShadow, setHasShadow] = useState(false);
-  const [isBookmarkClicked, setIsBookmarkClicked] = useState(false); 
-  const location = useLocation();  
+  const [isBookmarkClicked, setIsBookmarkClicked] = useState(false);
+  const location = useLocation();
   const navigate = useNavigate();
+
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,9 +23,9 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
     };
   }, []);
 
-   useEffect(() => {
-    setIsBookmarkClicked(false);  
-  }, [location.pathname]);  
+  useEffect(() => {
+    setIsBookmarkClicked(false);
+  }, [location.pathname]);
 
   const closeMenu = () => {
     setIsOpen(false);
@@ -31,15 +33,31 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
 
   const goToSavedQuestions = () => {
     navigate("/saved_questions", { state: { savedQuestions } });
-    setIsBookmarkClicked(true);  
+    setIsBookmarkClicked(true);
   };
+
+  const logOut = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+    navigate("/login");
+  }
+
+  useEffect(() => {
+    const hasLoggedOut = sessionStorage.getItem("hasLoggedOut");
+
+    if (!hasLoggedOut) {
+      localStorage.removeItem("token");
+      setIsLoggedIn(false);
+      sessionStorage.setItem("hasLoggedOut", "true");
+    }
+  }, []);
+
 
   return (
     <div>
       <nav
-        className={`text-black fixed top-0 left-0 w-full z-50 transition-shadow duration-300 font-bold ${
-          hasShadow ? "bg-white shadow-md shadow-[#4627757c]" : ""
-        }`}
+        className={`text-black fixed top-0 left-0 w-full z-50 transition-shadow duration-300 font-bold ${hasShadow ? "bg-white shadow-md shadow-[#4627757c]" : ""
+          }`}
       >
         <div className="container relative flex items-center justify-between h-16">
           {/* Logo */}
@@ -60,11 +78,10 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
               <Link
                 key={link.to}
                 to={link.to}
-                className={`hover:text-secondary px-2 relative ${
-                  location.pathname === link.to
-                    ? "text-secondary after:content-[''] after:absolute after:right-0 after:bottom-[-2px] after:w-[35%] after:h-[2.41px] after:bg-secondary before:content-[''] before:absolute before:left-0 before:top-0 before:w-[35%] before:h-[2.50px] before:bg-secondary "
-                    : ""
-                }`}
+                className={`hover:text-secondary px-2 relative ${location.pathname === link.to
+                  ? "text-secondary after:content-[''] after:absolute after:right-0 after:bottom-[-2px] after:w-[35%] after:h-[2.41px] after:bg-secondary before:content-[''] before:absolute before:left-0 before:top-0 before:w-[35%] before:h-[2.50px] before:bg-secondary "
+                  : ""
+                  }`}
               >
                 {link.text}
               </Link>
@@ -77,9 +94,8 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
               <div className="absolute flex items-center gap-3 space-x-2 md:right-5 top-3 right-20">
                 <button
                   onClick={goToSavedQuestions}
-                  className={`text-2xl font-semibold  ${
-                    isBookmarkClicked ? "text-primary " : " "
-                  }`}
+                  className={`text-2xl font-semibold  ${isBookmarkClicked ? "text-primary " : " "
+                    }`}
                 >
                   <i className="fa-regular fa-bookmark"></i>
                 </button>
@@ -91,7 +107,7 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
                   />
                 </Link>
                 <button
-                  onClick={() => setIsLoggedIn(false)}
+                  onClick={logOut}
                   className="hidden px-4 py-1 text-red-600 border-2 border-red-600 rounded-md md:flex"
                 >
                   Logout

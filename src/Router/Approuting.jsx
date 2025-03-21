@@ -44,6 +44,7 @@ function Approuting() {
   });
 
   const [savedQuestions, setSavedQuestions] = useState([]);
+  const [isSaved, setIsSaved] = useState([]);
 
   useEffect(() => {
     localStorage.setItem("isLoggedIn", JSON.stringify(isLoggedIn));
@@ -110,23 +111,37 @@ function Approuting() {
         <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
           <Route
             path="/saved_questions"
-            element={<Saved_questions savedQuestions={savedQuestions} />}
+            element={<Saved_questions
+              savedQuestions={savedQuestions}
+              setSavedQuestions={setSavedQuestions}
+              isSaved={isSaved} 
+              setIsSaved={setIsSaved}
+              />}
           />
         </Route>
-        <Route path="/profile" element={<Profile />} />
+
+        <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
+          <Route path="/profile" element={<Profile />} />
+        </Route>
+
+
         <Route path="/community" element={<Community_1 />} />
         <Route path="/community_2" element={<Community_2 />} />
         <Route path="/choosetrack/track/:trackId" element={<TrackDetails />} />
+
         <Route
           path="/choosetrack/track/:trackId/level"
           element={<ChooseYourLevel />}
         />
+
         <Route
           path="/choosetrack/track/:trackId/level/beginer"
           element={
             <Beginer
               savedQuestions={savedQuestions}
               setSavedQuestions={setSavedQuestions}
+              isSaved={isSaved}
+              setIsSaved={setIsSaved}
             />
           }
         />
@@ -136,6 +151,8 @@ function Approuting() {
             <Intermediate
               savedQuestions={savedQuestions}
               setSavedQuestions={setSavedQuestions}
+              isSaved={isSaved}
+              setIsSaved={setIsSaved}
             />
           }
         />
@@ -145,6 +162,8 @@ function Approuting() {
             <Advanced
               savedQuestions={savedQuestions}
               setSavedQuestions={setSavedQuestions}
+              isSaved={isSaved}
+              setIsSaved={setIsSaved}
             />
           }
         />

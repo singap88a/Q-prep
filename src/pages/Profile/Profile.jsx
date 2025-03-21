@@ -18,63 +18,101 @@ function Profile() {
   const [address, setAddress] = useState("");
   const [location, setLocation] = useState("Egypt");
   const [profileImage, setProfileImage] = useState(userImage);
+  // const [preview, setPreview] = useState(null);
+
+  console.log("profileImage:", profileImage)
 
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const [token, setToken] = useState(localStorage.getItem("token"));
 
-  useEffect(() => {
-    const GetUserFunc = async () => {
-      if (!token) return;
-      try {
-        if (!token) {
-          throw new Error("No Token found");
-        }
-        const response = await fetch(`https://questionprep.azurewebsites.net/api/Account/GetUser`,
-          {
-            method: 'GET',
-            mode: "cors",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`,
-            },
-          }
-        );
-        if (!response.ok) {
-          throw new Error(`Failed to fetch user: ${response.status}`);
-        }
-        const data = await response.json();
-
-        setOriginalData(data);
-
-        setFirstName(data.firstName);
-        setLastName(data.lastName);
-        setEmail(data.email);
-        setAddress(data.address);
-        setLocation(data.location);
-        setDob(data.birthDay);
-        setPhone(data.phoneNamber);
-        setProfileImage(data.urlPhoto);
-        console.log("GetUser Data:", data);
-      } catch (error) {
-        console.error("Error fetching user:", error.message);
-        setError(error.message);
-      } finally {
-        setLoading(false);
+  const GetUserFunc = async () => {
+    if (!token) return;
+    try {
+      if (!token) {
+        throw new Error("No Token found");
       }
-    };
+      const response = await fetch(`https://questionprep.azurewebsites.net/api/Account/GetUser`,
+        {
+          method: 'GET',
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`Failed to fetch user: ${response.status}`);
+      }
+      const data = await response.json();
 
+      setOriginalData(data);
+
+      setFirstName(data.firstName);
+      setLastName(data.lastName);
+      setEmail(data.email);
+      setAddress(data.address);
+      setLocation(data.location);
+      setDob(data.birthDay);
+      setPhone(data.phoneNamber);
+      setProfileImage(data.urlPhoto);
+      console.log("GetUser Data:", data);
+    } catch (error) {
+      console.error("Error fetching user:", error.message);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Get User Data
+  useEffect(() => {
     GetUserFunc();
   }, []);
 
+  const baseUrl = "/ProfilePhoto";
+
+
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file || !(file instanceof Blob)) {
+      console.error("file Error");
+      return;
+    }
+    setProfileImage(file); // store file in state
+  };
+
+  // Previwe
+  // useEffect(() => {
+  //   if (!profileImage || !(profileImage instanceof Blob)) {
+  //     setPreview(null);
+  //     return;
+  //   }
+
+  //   const objectUrl = URL.createObjectURL(profileImage);
+  //   setPreview(objectUrl);
+
+  //   return () => {
+  //     URL.revokeObjectURL(objectUrl);
+  //   };
+  // }, [profileImage]);
 
   // Save Changes
-  const handleSave = async () => {
+  
+  
+  const handleSave = async (event) => {
 
     if (!token) { throw new Error("Token Not found") };
 
+
     setLoading(true);
+
+    if (!profileImage) {
+      alert("لم يتم اختيار أي صورة!");
+      return;
+    }
 
     const formData = new FormData();
     formData.append("firstName", firstName);
@@ -85,9 +123,7 @@ function Profile() {
     formData.append("address", address);
     formData.append("location", location);
 
-    if (profileImage && profileImage !== userImage) {
-      formData.append("urlPhoto", profileImage);
-    }
+    formData.append("urlPhoto", profileImage);
 
     console.log("Updated Profile Data:", formData);
     try {
@@ -106,33 +142,21 @@ function Profile() {
         throw new Error(`Failed to edit profile: ${response.status} - ${errorText}`);
       }
 
+      const data = await response.json();
+      console.log("EditData", data)
+
       console.log("Profile edited successfully");
       setIsEditMode(false);
     } catch (error) {
       console.error("Error editing profile:", error.message);
+
       setError(error.message);
     } finally {
       setLoading(false);
     }
   }
 
-
-  // Reset
-  const handleReset = () => {
-    // if (originalData) {
-    //   setFirstName(originalData.firstName);
-    //   setLastName(originalData.lastName);
-    //   setEmail(originalData.email);
-    //   setAddress(originalData.address || "Cairo");
-    //   setLocation(originalData.location || "Egypt");
-    //   setDob(originalData.dob || "");
-    //   setPhone(originalData.phone || "000000");
-    //   setProfileImage(originalData.profileImage || userImage);
-    // }
-    setIsEditMode(false);
-  }
-
-  // const handleImageUpload = (event) => {
+  // const handleImageUpload = async (event) => {
   //   const file = event.target.files[0];
   //   if (file) {
   //     const reader = new FileReader();
@@ -141,7 +165,65 @@ function Profile() {
   //     };
   //     reader.readAsDataURL(file);
   //   }
+
+  //   const Image = event.target.files[0];
+
+  //   if (Image) {
+
+  //     const formData = new FormData();
+  //     formData.append("urlPhoto", Image)
+
+  //     try {
+  //       const res = await fetch(`https://questionprep.azurewebsites.net/api/Account/EditUser`, {
+  //         method: "PUT",
+  //         mode: "cors",
+  //         headers: {
+  //           "Authorization": `Bearer ${token}`,
+  //         },
+  //         body: formData,
+  //       });
+  //       console.log("Response Status:", res.status);
+  //       console.log("Response Headers:", res.headers);
+
+  //       const data = await res.json();
+  //       console.log("Edited User Data:", data);
+  //       setProfileImage(data.urlPhoto)
+
+
+  //       console.log("Profile image updated inside:", profileImage);
+
+  //     } catch (error) {
+  //       console.log("Error Uploading Image:", error);
+  //     }
+  //   }
+
   // };
+
+  /////////////////////////////////////
+
+
+  // const handleImageUpload = async (event) => {
+  //   const file = event.target.files[0];
+  //   console.log("file", file)
+  //   if (!file) return;
+
+  //   setProfileImage(file);
+
+  //   // const reader = new FileReader();
+  //   // console.log(reader)
+  //   // reader.onloadend = () => {
+  //   //   setProfileImage(reader.result);
+  //   // };
+  //   // reader.readAsDataURL(file);
+  // };
+
+  // Reset
+  
+  const handleReset = () => {
+    
+    setIsEditMode(false);
+    GetUserFunc();
+  }
 
 
   const fadeIn = {
@@ -155,7 +237,6 @@ function Profile() {
   };
 
 
-
   return (
     <motion.div
       initial="hidden"
@@ -167,24 +248,30 @@ function Profile() {
         <i className="text-2xl font-bold cursor-pointer fa-solid fa-chevron-left text-primary"></i>
         <motion.img
           src={profileImage}
-          alt="Photo not load"
+          key={profileImage}
+          alt="Profile"
           className="w-20 h-20 rounded-full"
           whileHover={{ scale: 1.1 }} // Scale up on hover
           transition={{ type: "spring", stiffness: 300 }}
         />
-        <motion.label
-          whileHover={{ scale: 1.05 }} // Slight scale on hover
-          whileTap={{ scale: 0.95 }} // Slight scale on click
-          className="relative z-10 px-2 py-1 overflow-hidden font-bold text-white border-2 rounded-md cursor-pointer md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary"
-        >
-          <input
-            type="file"
-            className="hidden"
-            // onChange={handleImageUpload}
-            disabled={!isEditMode}
-          />
-          Edit your photo
-        </motion.label>
+        {isEditMode &&
+          <motion.label
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3, delay: 0.2 }}
+            className="relative z-10 px-2 py-1 overflow-hidden font-bold text-white border-2 rounded-md cursor-pointer md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary "
+          >
+            <input
+              type="file"
+              className="hidden"
+              accept="image/*"
+              onChange={handleImageUpload}
+              disabled={!isEditMode}
+            />
+            Edit your photo
+          </motion.label>
+        }
       </div>
 
       <form onSubmit={(e) => e.preventDefault()}>
@@ -345,6 +432,7 @@ function Profile() {
                 >
                   Discard changes
                 </motion.button>
+
                 <motion.button
                   type="button"
                   onClick={handleSave}

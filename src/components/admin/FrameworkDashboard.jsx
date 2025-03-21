@@ -3,13 +3,13 @@ import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 
 const FrameworkDashboard = () => {
-  const { mainTrackId } = useParams(); // الحصول على الـ mainTrackId من الرابط
+  const { mainTrackId } = useParams(); 
   const navigate = useNavigate();
   const [frameworks, setFrameworks] = useState([]);
   const [newFramework, setNewFramework] = useState({ frameworkName: '', description: '', photo: null });
   const [editFramework, setEditFramework] = useState({ frameworkId: null, frameworkName: '', description: '', photo: null });
   const [token, setToken] = useState(localStorage.getItem('token') || '');
-  const [loading, setLoading] = useState(false); // حالة التحميل
+  const [loading, setLoading] = useState(false); 
 
   useEffect(() => {
     if (token && mainTrackId) {
@@ -30,7 +30,7 @@ const FrameworkDashboard = () => {
       console.error('Error fetching frameworks:', error);
       alert('Failed to fetch frameworks. Please try again.');
     } finally {
-      setLoading(false); // انتهاء التحميل
+      setLoading(false);
     }
   };
 

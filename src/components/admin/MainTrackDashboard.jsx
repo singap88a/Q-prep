@@ -1,4 +1,4 @@
-import   { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
@@ -36,7 +36,8 @@ const MainTrackDashboard = () => {
         formData.append('Photo', newTrack.photo);
       }
 
-      const response = await axios.post('https://questionprep.azurewebsites.net/api/MainTrack/AddMainTrack', formData, {
+      const response = await axios.post('https://questionprep.azurewebsites.net/api/MainTrack/AddMainTrack',
+        formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
