@@ -243,7 +243,6 @@ const MainTrackDashboard = () => {
           ) : (
             <ul className="space-y-4">
               {tracks.map((track) => (
-                 
                 <li
                   key={track.trackId}
                   className="p-4 border border-gray-200 rounded-lg hover:shadow-md"
@@ -254,6 +253,13 @@ const MainTrackDashboard = () => {
                         {track.tarckName}
                       </h3>
                       <p className="text-gray-600">{track.description}</p>
+                      {track.photo && (
+                        <img
+                          src={`https://questionprep.azurewebsites.net/TrackPhoto/${track.photo}`}
+                          alt={track.tarckName}
+                          className="w-20 h-20 mt-2 rounded-lg"
+                        />
+                      )}
                     </div>
                     <div className="relative actions-container">
                       <button

@@ -7,8 +7,9 @@ import userImage from "../assets/user.png";
 function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
   const [isOpen, setIsOpen] = useState(false);
   const [hasShadow, setHasShadow] = useState(false);
-  const [isBookmarkClicked, setIsBookmarkClicked] = useState(false); 
-  const location = useLocation();  
+  const [isBookmarkClicked, setIsBookmarkClicked] = useState(false);
+  const [profileImage, setProfileImage] = useState(userImage); // حالة لتخزين صورة المستخدم
+  const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,9 +22,36 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
     };
   }, []);
 
-   useEffect(() => {
-    setIsBookmarkClicked(false);  
-  }, [location.pathname]);  
+  useEffect(() => {
+    setIsBookmarkClicked(false);
+  }, [location.pathname]);
+
+  // جلب صورة المستخدم عند تسجيل الدخول
+  useEffect(() => {
+    if (isLoggedIn) {
+      const token = localStorage.getItem("token");
+      if (token) {
+        fetch("https://questionprep.azurewebsites.net/api/Account/GetUser", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.urlPhoto) {
+              setProfileImage(
+                `https://questionprep.azurewebsites.net/ProfilePhoto/${data.urlPhoto}`
+              );
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching user profile:", error);
+          });
+      }
+    }
+  }, [isLoggedIn]);
 
   const closeMenu = () => {
     setIsOpen(false);
@@ -31,7 +59,7 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
 
   const goToSavedQuestions = () => {
     navigate("/saved_questions", { state: { savedQuestions } });
-    setIsBookmarkClicked(true);  
+    setIsBookmarkClicked(true);
   };
 
   return (
@@ -85,7 +113,7 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
                 </button>
                 <Link to="/profile">
                   <img
-                    src={userImage}
+                    src={profileImage} // استخدام صورة المستخدم من الحالة
                     alt="User"
                     className="w-10 h-10 rounded-full"
                   />

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
-import card_img from "../../../assets/ChooseTrack/Card-img.png";
 import { ClipLoader } from "react-spinners"; // استيراد مكون التحميل
 
 const TrackDetails = () => {
@@ -77,7 +76,19 @@ const TrackDetails = () => {
           >
             <div className="">
               <div className="bg_card">
-                <img src={card_img} alt="" className="m-auto" />
+                {track.photo ? (
+                  <img
+                    src={`https://questionprep.azurewebsites.net/FrameworkPhoto/${track.photo}`}
+                    alt={track.frameworkName}
+                    className="object-cover w-full h-full"
+                  />
+                ) : (
+                  <img
+                    src="https://via.placeholder.com/150" // صورة افتراضية إذا لم تكن هناك صورة
+                    alt="Placeholder"
+                    className="object-cover w-full h-full"
+                  />
+                )}
               </div>
               <h3 className="">{track.frameworkName}</h3>
               <p className="">{track.description}</p>

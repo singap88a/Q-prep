@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import PhoneInput from "react-phone-input-2";
@@ -5,10 +6,7 @@ import "react-phone-input-2/lib/style.css";
 import userImage from "../../assets/user.png";
 
 function Profile() {
-
   const [originalData, setOriginalData] = useState(null);
-
-
   const [isEditMode, setIsEditMode] = useState(false);
   const [phone, setPhone] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -18,10 +16,8 @@ function Profile() {
   const [address, setAddress] = useState("");
   const [location, setLocation] = useState("Egypt");
   const [profileImage, setProfileImage] = useState(userImage);
-
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-
   const [token, setToken] = useState(localStorage.getItem("token"));
 
   useEffect(() => {
@@ -31,13 +27,14 @@ function Profile() {
         if (!token) {
           throw new Error("No Token found");
         }
-        const response = await fetch(`https://questionprep.azurewebsites.net/api/Account/GetUser`,
+        const response = await fetch(
+          `https://questionprep.azurewebsites.net/api/Account/GetUser`,
           {
-            method: 'GET',
+            method: "GET",
             mode: "cors",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`,
+              Authorization: `Bearer ${token}`,
             },
           }
         );
@@ -55,7 +52,11 @@ function Profile() {
         setLocation(data.location);
         setDob(data.birthDay);
         setPhone(data.phoneNamber);
-        setProfileImage(data.urlPhoto);
+        setProfileImage(
+          data.urlPhoto
+            ? `https://questionprep.azurewebsites.net/ProfilePhoto/${data.urlPhoto}`
+            : userImage
+        );
         console.log("GetUser Data:", data);
       } catch (error) {
         console.error("Error fetching user:", error.message);
@@ -66,13 +67,13 @@ function Profile() {
     };
 
     GetUserFunc();
-  }, []);
-
+  }, [token]);
 
   // Save Changes
   const handleSave = async () => {
-
-    if (!token) { throw new Error("Token Not found") };
+    if (!token) {
+      throw new Error("Token Not found");
+    }
 
     setLoading(true);
 
@@ -85,18 +86,21 @@ function Profile() {
     formData.append("address", address);
     formData.append("location", location);
 
-    if (profileImage && profileImage !== userImage) {
-      formData.append("urlPhoto", profileImage);
+    // إضافة الصورة إذا تم تحميلها
+    const fileInput = document.querySelector('input[type="file"]');
+    if (fileInput && fileInput.files[0]) {
+      formData.append("Photo", fileInput.files[0]);
     }
 
     console.log("Updated Profile Data:", formData);
     try {
-      const response = await fetch(`https://questionprep.azurewebsites.net/api/Account/EditUser`,
+      const response = await fetch(
+        `https://questionprep.azurewebsites.net/api/Account/EditUser`,
         {
-          method: 'PUT',
+          method: "PUT",
           mode: "cors",
           headers: {
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
           body: formData,
         }
@@ -106,6 +110,13 @@ function Profile() {
         throw new Error(`Failed to edit profile: ${response.status} - ${errorText}`);
       }
 
+      const data = await response.json();
+      setProfileImage(
+        data.urlPhoto
+          ? `https://questionprep.azurewebsites.net/ProfilePhoto/${data.urlPhoto}`
+          : userImage
+      );
+
       console.log("Profile edited successfully");
       setIsEditMode(false);
     } catch (error) {
@@ -114,35 +125,37 @@ function Profile() {
     } finally {
       setLoading(false);
     }
-  }
-
+  };
 
   // Reset
   const handleReset = () => {
-    // if (originalData) {
-    //   setFirstName(originalData.firstName);
-    //   setLastName(originalData.lastName);
-    //   setEmail(originalData.email);
-    //   setAddress(originalData.address || "Cairo");
-    //   setLocation(originalData.location || "Egypt");
-    //   setDob(originalData.dob || "");
-    //   setPhone(originalData.phone || "000000");
-    //   setProfileImage(originalData.profileImage || userImage);
-    // }
+    if (originalData) {
+      setFirstName(originalData.firstName);
+      setLastName(originalData.lastName);
+      setEmail(originalData.email);
+      setAddress(originalData.address);
+      setLocation(originalData.location);
+      setDob(originalData.birthDay);
+      setPhone(originalData.phoneNamber);
+      setProfileImage(
+        originalData.urlPhoto
+          ? `https://questionprep.azurewebsites.net/ProfilePhoto/${originalData.urlPhoto}`
+          : userImage
+      );
+    }
     setIsEditMode(false);
-  }
+  };
 
-  // const handleImageUpload = (event) => {
-  //   const file = event.target.files[0];
-  //   if (file) {
-  //     const reader = new FileReader();
-  //     reader.onloadend = () => {
-  //       setProfileImage(reader.result);
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
-
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const fadeIn = {
     hidden: { opacity: 0 },
@@ -153,8 +166,6 @@ function Profile() {
     hidden: { x: -100, opacity: 0 },
     visible: { x: 0, opacity: 1, transition: { duration: 0.5 } },
   };
-
-
 
   return (
     <motion.div
@@ -169,18 +180,18 @@ function Profile() {
           src={profileImage}
           alt="Photo not load"
           className="w-20 h-20 rounded-full"
-          whileHover={{ scale: 1.1 }} // Scale up on hover
+          whileHover={{ scale: 1.1 }}
           transition={{ type: "spring", stiffness: 300 }}
         />
         <motion.label
-          whileHover={{ scale: 1.05 }} // Slight scale on hover
-          whileTap={{ scale: 0.95 }} // Slight scale on click
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           className="relative z-10 px-2 py-1 overflow-hidden font-bold text-white border-2 rounded-md cursor-pointer md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary"
         >
           <input
             type="file"
             className="hidden"
-            // onChange={handleImageUpload}
+            onChange={handleImageUpload}
             disabled={!isEditMode}
           />
           Edit your photo
@@ -189,10 +200,7 @@ function Profile() {
 
       <form onSubmit={(e) => e.preventDefault()}>
         <div className="block gap-20 my-8 md:flex sm:flex lg:flex">
-          <motion.div
-            variants={slideIn}
-            className="flex flex-col gap-2"
-          >
+          <motion.div variants={slideIn} className="flex flex-col gap-2">
             <label htmlFor="firstName" className="font-semibold text-secondary">
               First name
             </label>
@@ -207,10 +215,7 @@ function Profile() {
               required
             />
           </motion.div>
-          <motion.div
-            variants={slideIn}
-            className="flex flex-col gap-2"
-          >
+          <motion.div variants={slideIn} className="flex flex-col gap-2">
             <label htmlFor="lastName" className="font-semibold text-secondary">
               Last name
             </label>
@@ -228,10 +233,7 @@ function Profile() {
         </div>
 
         <div className="grid grid-cols-1 gap-5 mb-8 md:gap-20 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-2">
-          <motion.div
-            variants={slideIn}
-            className="flex flex-col gap-2"
-          >
+          <motion.div variants={slideIn} className="flex flex-col gap-2">
             <label htmlFor="email" className="font-semibold text-secondary">
               Email
             </label>
@@ -246,10 +248,7 @@ function Profile() {
               required
             />
           </motion.div>
-          <motion.div
-            variants={slideIn}
-            className="flex flex-col gap-2"
-          >
+          <motion.div variants={slideIn} className="flex flex-col gap-2">
             <label htmlFor="address" className="font-semibold text-secondary">
               Address
             </label>
@@ -267,10 +266,7 @@ function Profile() {
         </div>
 
         <div className="grid grid-cols-1 gap-5 mb-8 md:gap-20 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2">
-          <motion.div
-            variants={slideIn}
-            className="flex flex-col gap-2"
-          >
+          <motion.div variants={slideIn} className="flex flex-col gap-2">
             <label htmlFor="phone" className="font-semibold text-secondary">
               Phone number
             </label>
@@ -284,10 +280,7 @@ function Profile() {
               required
             />
           </motion.div>
-          <motion.div
-            variants={slideIn}
-            className="flex flex-col gap-2"
-          >
+          <motion.div variants={slideIn} className="flex flex-col gap-2">
             <label htmlFor="dob" className="font-semibold text-secondary">
               Date of birth
             </label>
@@ -301,10 +294,7 @@ function Profile() {
               required
             />
           </motion.div>
-          <motion.div
-            variants={slideIn}
-            className="flex flex-col gap-2"
-          >
+          <motion.div variants={slideIn} className="flex flex-col gap-2">
             <label htmlFor="location" className="font-semibold text-secondary">
               Location
             </label>

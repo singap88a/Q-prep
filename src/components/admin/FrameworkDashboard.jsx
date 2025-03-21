@@ -7,7 +7,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { FaEllipsisV, FaTimes, FaEdit, FaTrash, FaQuestionCircle, FaLevelUpAlt } from "react-icons/fa";
 
 const FrameworkDashboard = () => {
- 
   const { mainTrackId } = useParams(); // الحصول على الـ mainTrackId من الرابط
   const navigate = useNavigate();
   const [frameworks, setFrameworks] = useState([]);
@@ -250,7 +249,7 @@ const FrameworkDashboard = () => {
           ) : (
             <ul className="space-y-4">
               {frameworks.map((framework) => (
-                 <li
+                <li
                   key={framework.frameworkId}
                   className="p-4 border border-gray-200 rounded-lg hover:shadow-md"
                 >
@@ -262,8 +261,8 @@ const FrameworkDashboard = () => {
                       <p className="text-gray-600">{framework.description}</p>
                       {framework.photo && (
                         <img
-                          src={`https://questionprep.azurewebsites.net/${framework.photo}`}
-                          alt="Framework"
+                          src={`https://questionprep.azurewebsites.net/FrameworkPhoto/${framework.photo}`}
+                          alt={framework.frameworkName}
                           className="w-20 h-20 mt-2 rounded-lg"
                         />
                       )}

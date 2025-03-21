@@ -6,7 +6,6 @@ import "swiper/css/navigation";
 import "swiper/css/scrollbar";
 import { Autoplay, Scrollbar } from "swiper/modules";
 import { Link } from "react-router-dom";
-import card_img from "../../assets/ChooseTrack/Card-img.png";
 import { ClipLoader } from "react-spinners"; // استيراد تأثير التحميل
 
 const Available_Tracks = () => {
@@ -81,7 +80,19 @@ const Available_Tracks = () => {
                 <Link to={`/choosetrack/track/${track.trackId}`}> {/* ربط الكارد بالتفاصيل */}
                   <div className="p-4 bg-white rounded-lg shadow-md card">
                     <div className="bg_card">
-                      <img src={card_img} alt="" />
+                      {track.photo ? (
+                        <img
+                          src={`https://questionprep.azurewebsites.net/TrackPhoto/${track.photo}`}
+                          alt={track.tarckName}
+                          className="object-cover w-full h-full rounded-lg"
+                        />
+                      ) : (
+                        <img
+                          src="https://via.placeholder.com/150" // صورة افتراضية إذا لم تكن هناك صورة
+                          alt="Placeholder"
+                          className="object-cover w-full h-full"
+                        />
+                      )}
                     </div>
                     <h3 className="mt-4 text-xl font-semibold">
                       {track.tarckName}
