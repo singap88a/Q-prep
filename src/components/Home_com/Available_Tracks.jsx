@@ -6,16 +6,15 @@ import "swiper/css/navigation";
 import "swiper/css/scrollbar";
 import { Autoplay, Scrollbar } from "swiper/modules";
 import { Link } from "react-router-dom";
-import card_img from "../../assets/ChooseTrack/Card-img.png";
-import { ClipLoader } from "react-spinners";
+import { ClipLoader } from "react-spinners"; // استيراد تأثير التحميل
 
 const Available_Tracks = () => {
-  const [tracks, setTracks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [tracks, setTracks] = useState([]); // حالة لتخزين البيانات
+  const [loading, setLoading] = useState(true); // حالة لإدارة التحميل
+  const [error, setError] = useState(null); // حالة لإدارة الأخطاء
 
   useEffect(() => {
-    
+    // جلب البيانات من الـ API
     const fetchData = async () => {
       try {
         const response = await fetch(
@@ -25,11 +24,11 @@ const Available_Tracks = () => {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        setTracks(data); 
+        setTracks(data); // تحديث الحالة بالبيانات
       } catch (error) {
-        setError(error.message); 
+        setError(error.message); // في حالة حدوث خطأ
       } finally {
-        setLoading(false); 
+        setLoading(false); // إيقاف التحميل
       }
     };
 
@@ -39,13 +38,13 @@ const Available_Tracks = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <ClipLoader color="#4A90E2" size={50} />
+        <ClipLoader color="#4A90E2" size={50} /> {/* تأثير التحميل */}
       </div>
     );
   }
 
   if (error) {
-    return <div className="py-10 text-center text-red-500">Error: {error}</div>; 
+    return <div className="py-10 text-center text-red-500">Error: {error}</div>; // عرض رسالة خطأ
   }
 
   return (
@@ -78,10 +77,22 @@ const Available_Tracks = () => {
           >
             {tracks.map((track) => (
               <SwiperSlide key={track.trackId} className="px-1 pt-6 group pb-11">
-                <Link to={`/choosetrack/track/${track.trackId}`}> 
+                <Link to={`/choosetrack/track/${track.trackId}`}> {/* ربط الكارد بالتفاصيل */}
                   <div className="p-4 bg-white rounded-lg shadow-md card">
                     <div className="bg_card">
-                      <img src={card_img} alt="" />
+                      {track.photo ? (
+                        <img
+                          src={`https://questionprep.azurewebsites.net/TrackandFrameworkPhoto/${track.photo}`}
+                          alt={track.tarckName}
+                          className="object-cover w-full h-full rounded-lg"
+                        />
+                      ) : (
+                        <img
+                          src="https://via.placeholder.com/150" // صورة افتراضية إذا لم تكن هناك صورة
+                          alt="Placeholder"
+                          className="object-cover w-full h-full"
+                        />
+                      )}
                     </div>
                     <h3 className="mt-4 text-xl font-semibold">
                       {track.tarckName}

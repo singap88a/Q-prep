@@ -8,6 +8,9 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
   const [isOpen, setIsOpen] = useState(false);
   const [hasShadow, setHasShadow] = useState(false);
   const [isBookmarkClicked, setIsBookmarkClicked] = useState(false);
+
+  const [profileImage, setProfileImage] = useState(userImage); // حالة لتخزين صورة المستخدم
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -26,6 +29,34 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
   useEffect(() => {
     setIsBookmarkClicked(false);
   }, [location.pathname]);
+
+  // جلب صورة المستخدم عند تسجيل الدخول
+  useEffect(() => {
+    if (isLoggedIn) {
+      const token = localStorage.getItem("token");
+      if (token) {
+        fetch("https://questionprep.azurewebsites.net/api/Account/GetUser", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.urlPhoto) {
+              setProfileImage(
+                `https://questionprep.azurewebsites.net/ProfilePhoto/${data.urlPhoto}`
+              );
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching user profile:", error);
+          });
+      }
+    }
+  }, [isLoggedIn]);
+
 
   const closeMenu = () => {
     setIsOpen(false);
@@ -101,17 +132,19 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
                 </button>
                 <Link to="/profile">
                   <img
-                    src={userImage}
+                    src={profileImage} // استخدام صورة المستخدم من الحالة
                     alt="User"
                     className="w-10 h-10 rounded-full"
                   />
                 </Link>
-                <button
+
+                {/* <button
                   onClick={logOut}
                   className="hidden px-4 py-1 text-red-600 border-2 border-red-600 rounded-md md:flex"
                 >
                   Logout
-                </button>
+                </button> */}
+
               </div>
             ) : (
               <div className="hidden gap-4 md:flex">
@@ -185,15 +218,16 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
               ))}
               <div className="flex gap-5 py-5 ml-5">
                 {isLoggedIn ? (
-                  <button
-                    onClick={() => {
-                      setIsLoggedIn(false);
-                      closeMenu();
-                    }}
-                    className="px-4 py-1 text-red-600 border-2 border-red-600 rounded-md"
-                  >
-                    Logout
-                  </button>
+                  // <button
+                  //   onClick={() => {
+                  //     setIsLoggedIn(false);
+                  //     closeMenu();
+                  //   }}
+                  //   className="px-4 py-1 text-red-600 border-2 border-red-600 rounded-md"
+                  // >
+                  //   Logout
+                  // </button>
+                  <></>
                 ) : (
                   <>
                     <Link

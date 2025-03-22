@@ -1,12 +1,9 @@
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import card_img from "../../assets/ChooseTrack/Card-img.png";
 import { Link } from "react-router-dom";
 
-
 function ChooseTrack() {
-
   const [tracksData, setTracksData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -47,16 +44,7 @@ function ChooseTrack() {
   const totalPages = Math.ceil(filteredTracks.length / cardsPerPage);
 
   return (
-
-
-
-
-
     <div className="container">
-
-
-
-
       <div className="flex flex-col items-center justify-center headTitle">
         <h1 className="text-2xl font-bold text-center text-transparent bg-gradient-to-r from-primary via-slate-600 to-secondary bg-clip-text md:text-4xl sm:text-3xl">
           Choose Your Learning Track
@@ -66,7 +54,6 @@ function ChooseTrack() {
         </p>
       </div>
 
-      
       <div className="relative w-full max-w-lg mx-auto mt-5 mb-6">
         <FontAwesomeIcon
           icon={faSearch}
@@ -89,10 +76,22 @@ function ChooseTrack() {
               to={`/choosetrack/track/${track.trackId}`}
               key={track.trackId}
               className="card"
+              state={{ tarckName: track.tarckName }}
             >
-
               <div className="bg_card">
-                <img src={card_img} alt="" />
+                {track.photo ? (
+                  <img
+                    src={`https://questionprep.azurewebsites.net/TrackandFrameworkPhoto/${track.photo}`}
+                    alt={track.tarckName}
+                    className="object-cover w-full h-full rounded-lg"
+                  />
+                ) : (
+                  <img
+                    src="https://via.placeholder.com/150" // صورة افتراضية إذا لم تكن هناك صورة
+                    alt="Placeholder"
+                    className="object-cover w-full h-full "
+                  />
+                )}
               </div>
               <h3 className="">{track.tarckName}</h3>
               <p className="">{track.description}</p>
@@ -118,8 +117,8 @@ function ChooseTrack() {
           <button
             key={index}
             className={`px-4 py-2 mx-1 rounded-lg ${currentPage === index + 1
-              ? "bg-secondary text-white"
-              : "bg-gray-200 hover:bg-gray-300"
+                ? "bg-secondary text-white"
+                : "bg-gray-200 hover:bg-gray-300"
               }`}
             onClick={() => setCurrentPage(index + 1)}
           >

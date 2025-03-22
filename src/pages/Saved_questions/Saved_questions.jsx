@@ -90,6 +90,11 @@ function Saved_questions({ isSaved, setIsSaved }) {
     const isQuestionSaved = (faq) => isSaved.includes(faq.id);
 
 
+    // const ClearSavedQuestion = () => {
+
+    // }
+
+
     if (loading) {
         return (
             <div className="flex items-center justify-center py-20">

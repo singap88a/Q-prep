@@ -44,10 +44,17 @@
   height: 90px;
   padding: 5px;
 }
-.card img, .Levels img {
+  .Levels img {
   margin: auto;
   width: 75px;
   align-items: center;
+}
+.card img{
+  margin: auto;
+  width: 62px;
+  height: 65px;
+  align-items: center;
+  margin-top: 7px;
 }
 
 .card h3, .Levels h3 {
