@@ -1,23 +1,54 @@
 import { useState } from "react";
+import axios from "axios";
+import { useParams, useLocation } from "react-router-dom"; // استيراد useParams و useLocation
 
 function Add_question() {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [message, setMessage] = useState("");
 
-  const handleSubmit = () => {
+  // الحصول على frameworkId من الرابط أو حالة التنقل
+  const { frameworkId } = useParams(); // إذا كان frameworkId جزءًا من الرابط
+  const location = useLocation(); // إذا كان frameworkId جزءًا من حالة التنقل
+  const resolvedFrameworkId = frameworkId || location.state?.frameworkId;
+
+  const handleSubmit = async () => {
     if (!question.trim() || !answer.trim()) {
       alert("Please fill out both fields.");
       return;
     }
 
-    console.log("Question:", question);
-    console.log("Answer:", answer);
+    if (!resolvedFrameworkId) {
+      alert("Framework ID is missing.");
+      return;
+    }
 
-    setQuestion("");
-    setAnswer("");
-    setMessage("Question added successfully!");
-    setTimeout(() => setMessage(""), 4000);
+    try {
+      const response = await axios.post(
+        "https://questionprep.azurewebsites.net/api/Request/AddQuestionRequest",
+        {
+          frameworkId: resolvedFrameworkId, // استخدام frameworkId بدلاً من frameworkName
+          questions: question,
+          answers: answer,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setQuestion("");
+        setAnswer("");
+        setMessage("Question added successfully!");
+        setTimeout(() => setMessage(""), 4000);
+      }
+    } catch (error) {
+      console.error("Error adding question:", error);
+      setMessage("Failed to add question.");
+    }
   };
 
   return (
@@ -55,8 +86,7 @@ function Add_question() {
             Submit
           </button>
           {message && (
-            /* From Uiverse.io by hoshikawamaki */
-            <div className="   flex w-[30%]    overflow-hidden bg-white border-2 shadow-lg   rounded-xl border-[#66cd70] mt-5  absolute  top-12 right-24 ">
+            <div className="flex w-[30%] overflow-hidden bg-white border-2 shadow-lg rounded-xl border-[#66cd70] mt-5 absolute top-12 right-24">
               <svg width="16" height="75" xmlns="http://www.w3.org/2000/svg">
                 <path
                   d="M 8 0 

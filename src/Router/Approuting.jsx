@@ -32,7 +32,8 @@ import ProtectRouting from "./ProtectRouting";
 import FrameworkDashboard from "../components/admin/FrameworkDashboard";
 import TestYourLevel from "../components/admin/TestYourLevel";
 import ManageQuestions from "../components/admin/ManageQuestions";
-
+ import RequestQuestionId from "../components/admin/RequestQuestionId";
+ 
 // Lazy Loading for better performance
 const LazyAdmin = lazy(() => import("../pages/admin/Admin"));
 
@@ -94,6 +95,7 @@ function Approuting() {
                 <LazyAdmin />
               </Suspense>
             }
+            
           />
         </Route>
         <Route
@@ -160,6 +162,7 @@ function Approuting() {
           path="/manage-questions/:frameworkId"
           element={<ManageQuestions />}
         />
+         <Route path="/requestQuestionId" element={<RequestQuestionId />} />
 
         <Route path="*" element={<ErrorPage />} />
       </Routes>

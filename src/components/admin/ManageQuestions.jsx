@@ -9,7 +9,11 @@ import { FaEllipsisV, FaTimes, FaEdit, FaTrash } from "react-icons/fa";
 const ManageQuestions = () => {
   const { frameworkId } = useParams();
   const navigate = useNavigate();
-  const [questions, setQuestions] = useState([]);
+  const [questionsByLevel, setQuestionsByLevel] = useState({
+    beginner: [],
+    intermediate: [],
+    advanced: [],
+  });
   const [newQuestion, setNewQuestion] = useState({ questions: "", answers: "" });
   const [editQuestion, setEditQuestion] = useState({ questionId: null, questions: "", answers: "" });
   const [level, setLevel] = useState("Q_BeginnerLevel"); // مستوى السؤال (مبتدئ، متوسط، متقدم)
@@ -26,15 +30,23 @@ const ManageQuestions = () => {
   const fetchQuestions = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `https://questionprep.azurewebsites.net/api/Questions/Q_BeginnerLevel/${frameworkId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setQuestions(response.data);
+      const [beginnerResponse, intermediateResponse, advancedResponse] = await Promise.all([
+        axios.get(`https://questionprep.azurewebsites.net/api/Questions/Q_BeginnerLevel/${frameworkId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        axios.get(`https://questionprep.azurewebsites.net/api/Questions/Q_IntermediateLevel/${frameworkId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        axios.get(`https://questionprep.azurewebsites.net/api/Questions/Q_AdvancedLevel/${frameworkId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ]);
+
+      setQuestionsByLevel({
+        beginner: beginnerResponse.data,
+        intermediate: intermediateResponse.data,
+        advanced: advancedResponse.data,
+      });
     } catch (error) {
       console.error("Error fetching questions:", error);
       toast.error("Failed to fetch questions. Please try again.");
@@ -48,9 +60,9 @@ const ManageQuestions = () => {
       toast.error("Please fill all fields (Question and Answer).");
       return;
     }
-
+  
     try {
-      const response = await axios.post(
+      await axios.post(
         `https://questionprep.azurewebsites.net/api/Questions/AddQuestionFromAdmin/${level}`,
         {
           frameworkId: frameworkId, // إضافة frameworkId هنا
@@ -64,8 +76,10 @@ const ManageQuestions = () => {
           },
         }
       );
-
-      setQuestions([...questions, response.data]);
+  
+      // إعادة جلب الأسئلة بعد الإضافة
+      fetchQuestions();
+  
       setNewQuestion({ questions: "", answers: "" });
       toast.success("Question added successfully!");
     } catch (error) {
@@ -105,7 +119,7 @@ const ManageQuestions = () => {
     }
   };
 
-  const deleteQuestion = async (questionId) => {
+  const deleteQuestion = async (questionId, level) => {
     if (window.confirm("Are you sure you want to delete this question?")) {
       try {
         await axios.delete(
@@ -116,7 +130,13 @@ const ManageQuestions = () => {
             },
           }
         );
-        setQuestions(questions.filter((question) => question.questionId !== questionId));
+
+        // تحديث الأسئلة للمستوى المحدد
+        setQuestionsByLevel((prev) => ({
+          ...prev,
+          [level]: prev[level].filter((question) => question.questionId !== questionId),
+        }));
+
         toast.success("Question deleted successfully!");
       } catch (error) {
         console.error("Error deleting question:", error);
@@ -220,46 +240,136 @@ const ManageQuestions = () => {
           {loading ? (
             <p>Loading...</p>
           ) : (
-            <ul className="space-y-4">
-              {questions.map((question) => (
-                <li key={question.questionId} className="p-4 border border-gray-200 rounded-lg hover:shadow-md">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-800">{question.questions}</h3>
-                      <p className="text-gray-600">{question.answers}</p>
+            <>
+              {/* Beginner Questions */}
+              <h3 className="mb-2 text-lg font-semibold text-gray-800">Beginner Questions</h3>
+              <ul className="mb-6 space-y-4">
+                {questionsByLevel.beginner.map((question) => (
+                  <li key={question.questionId} className="p-4 border border-gray-200 rounded-lg hover:shadow-md">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-800">{question.questions}</h3>
+                        <p className="text-gray-600">{question.answers}</p>
+                      </div>
+                      <div className="relative actions-container">
+                        <button
+                          onClick={() => toggleActions(question.questionId)}
+                          className="p-2 text-gray-600 hover:text-gray-800"
+                        >
+                          {showActions === question.questionId ? <FaTimes /> : <FaEllipsisV />}
+                        </button>
+                        {showActions === question.questionId && (
+                          <div className="absolute right-0 z-10 w-48 mt-2 bg-white rounded-lg shadow-lg">
+                            <button
+                              onClick={() => {
+                                setEditQuestion(question);
+                                setShowActions(null);
+                                window.scrollTo({ top: 0, behavior: "smooth" }); // التمرير لأعلى
+                              }}
+                              className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-100"
+                            >
+                              <FaEdit className="mr-2" /> Edit
+                            </button>
+                            <button
+                              onClick={() => deleteQuestion(question.questionId, "beginner")}
+                              className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-100"
+                            >
+                              <FaTrash className="mr-2" /> Delete
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    <div className="relative actions-container">
-                      <button
-                        onClick={() => toggleActions(question.questionId)}
-                        className="p-2 text-gray-600 hover:text-gray-800"
-                      >
-                        {showActions === question.questionId ? <FaTimes /> : <FaEllipsisV />}
-                      </button>
-                      {showActions === question.questionId && (
-                        <div className="absolute right-0 z-10 w-48 mt-2 bg-white rounded-lg shadow-lg">
-                          <button
-                            onClick={() => {
-                              setEditQuestion(question);
-                              setShowActions(null);
-                              window.scrollTo({ top: 0, behavior: "smooth" }); // التمرير لأعلى
-                            }}
-                            className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-100"
-                          >
-                            <FaEdit className="mr-2" /> Edit
-                          </button>
-                          <button
-                            onClick={() => deleteQuestion(question.questionId)}
-                            className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-100"
-                          >
-                            <FaTrash className="mr-2" /> Delete
-                          </button>
-                        </div>
-                      )}
+                  </li>
+                ))}
+              </ul>
+
+              {/* Intermediate Questions */}
+              <h3 className="mb-2 text-lg font-semibold text-gray-800">Intermediate Questions</h3>
+              <ul className="mb-6 space-y-4">
+                {questionsByLevel.intermediate.map((question) => (
+                  <li key={question.questionId} className="p-4 border border-gray-200 rounded-lg hover:shadow-md">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-800">{question.questions}</h3>
+                        <p className="text-gray-600">{question.answers}</p>
+                      </div>
+                      <div className="relative actions-container">
+                        <button
+                          onClick={() => toggleActions(question.questionId)}
+                          className="p-2 text-gray-600 hover:text-gray-800"
+                        >
+                          {showActions === question.questionId ? <FaTimes /> : <FaEllipsisV />}
+                        </button>
+                        {showActions === question.questionId && (
+                          <div className="absolute right-0 z-10 w-48 mt-2 bg-white rounded-lg shadow-lg">
+                            <button
+                              onClick={() => {
+                                setEditQuestion(question);
+                                setShowActions(null);
+                                window.scrollTo({ top: 0, behavior: "smooth" }); // التمرير لأعلى
+                              }}
+                              className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-100"
+                            >
+                              <FaEdit className="mr-2" /> Edit
+                            </button>
+                            <button
+                              onClick={() => deleteQuestion(question.questionId, "intermediate")}
+                              className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-100"
+                            >
+                              <FaTrash className="mr-2" /> Delete
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
+                  </li>
+                ))}
+              </ul>
+
+              {/* Advanced Questions */}
+              <h3 className="mb-2 text-lg font-semibold text-gray-800">Advanced Questions</h3>
+              <ul className="space-y-4">
+                {questionsByLevel.advanced.map((question) => (
+                  <li key={question.questionId} className="p-4 border border-gray-200 rounded-lg hover:shadow-md">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-800">{question.questions}</h3>
+                        <p className="text-gray-600">{question.answers}</p>
+                      </div>
+                      <div className="relative actions-container">
+                        <button
+                          onClick={() => toggleActions(question.questionId)}
+                          className="p-2 text-gray-600 hover:text-gray-800"
+                        >
+                          {showActions === question.questionId ? <FaTimes /> : <FaEllipsisV />}
+                        </button>
+                        {showActions === question.questionId && (
+                          <div className="absolute right-0 z-10 w-48 mt-2 bg-white rounded-lg shadow-lg">
+                            <button
+                              onClick={() => {
+                                setEditQuestion(question);
+                                setShowActions(null);
+                                window.scrollTo({ top: 0, behavior: "smooth" }); // التمرير لأعلى
+                              }}
+                              className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-100"
+                            >
+                              <FaEdit className="mr-2" /> Edit
+                            </button>
+                            <button
+                              onClick={() => deleteQuestion(question.questionId, "advanced")}
+                              className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-100"
+                            >
+                              <FaTrash className="mr-2" /> Delete
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </>
           )}
         </div>
       </div>

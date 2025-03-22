@@ -110,9 +110,12 @@ function Beginner({ savedQuestions, setSavedQuestions }) {
                     <h2 className="text-xl text-gray-600">{beginnerQuestions[0]?.levelName}</h2>
                 </div>
                 <Link
+                                      state={{ frameworkId  }}
+
                     to="/add_question"
                     className="flex items-center gap-2 px-4 py-2 font-bold text-white transition-all duration-300 rounded-full bg-secondary hover:bg-primary"
                 >
+
                     <span className="text-xl">+</span>
                     <span>Add Question</span>
                 </Link>
