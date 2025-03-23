@@ -76,6 +76,7 @@ function ChooseTrack() {
               to={`/choosetrack/track/${track.trackId}`}
               key={track.trackId}
               className="card"
+              state={{ tarckName: track.tarckName }}
             >
               <div className="bg_card">
                 {track.photo ? (
@@ -115,11 +116,10 @@ function ChooseTrack() {
         {Array.from({ length: totalPages }, (_, index) => (
           <button
             key={index}
-            className={`px-4 py-2 mx-1 rounded-lg ${
-              currentPage === index + 1
+            className={`px-4 py-2 mx-1 rounded-lg ${currentPage === index + 1
                 ? "bg-secondary text-white"
                 : "bg-gray-200 hover:bg-gray-300"
-            }`}
+              }`}
             onClick={() => setCurrentPage(index + 1)}
           >
             {index + 1}

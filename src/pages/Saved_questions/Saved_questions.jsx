@@ -1,47 +1,51 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
-import { ClipLoader } from "react-spinners"; // استيراد مكون التحميل
+import { ClipLoader } from "react-spinners";
 
-function Saved_questions() {
+function Saved_questions({ isSaved, setIsSaved }) {
     const navigate = useNavigate();
-    const [savedQuestions, setSavedQuestions] = useState([]); // حالة محلية
+    const [savedQuestions, setSavedQuestions] = useState([]);
     const [activeIndex, setActiveIndex] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     const token = localStorage.getItem("token");
 
-    useEffect(() => {
-        const fetchSavedQuestions = async () => {
-            try {
-                if (!token) {
-                    throw new Error("No token found. Please log in.");
-                }
-
-                const response = await fetch("https://questionprep.azurewebsites.net/api/Save/GetSaveQuestions", {
-                    method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-
-                if (!response.ok) {
-                    throw new Error("Failed to fetch saved questions");
-                }
-
-                const data = await response.json();
-                setSavedQuestions(data); // تحديث الحالة المحلية
-            } catch (error) {
-                setError(error.message);
-                console.error("Error fetching saved questions:", error);
-            } finally {
-                setLoading(false);
+    const fetchSavedQuestions = async () => {
+        try {
+            if (!token) {
+                throw new Error("No token found. Please log in.");
             }
-        };
 
+            const response = await fetch("https://questionprep.azurewebsites.net/api/Save/GetSaveQuestions", {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch saved questions");
+            }
+
+            const data = await response.json();
+            setSavedQuestions(data);
+
+            // تحديث `isSaved` ليحتوي فقط على الـ ID للأسئلة المحفوظة
+            const savedIds = data.map((q) => q.id);
+            setIsSaved(savedIds);
+
+        } catch (error) {
+            setError(error.message);
+            console.error("Error fetching saved questions:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+    useEffect(() => {
         fetchSavedQuestions();
-    }, [token]); // إزالة setSavedQuestions من dependencies
+    }, [token]);
 
     const toggleAnswer = (index) => {
         setActiveIndex((prevIndex) => (prevIndex === index ? null : index));
@@ -68,23 +72,33 @@ function Saved_questions() {
                 }
 
                 const updatedSavedQuestions = savedQuestions.filter(
-                    (saved) => saved.id !== faq.id // استخدم saved.id بدلًا من saved.questionId
+                    (saved) => saved.id !== faq.id
                 );
-                setSavedQuestions(updatedSavedQuestions); // تحديث الحالة المحلية
+                setSavedQuestions(updatedSavedQuestions);
+
+                setIsSaved((prev) => prev.filter((id) => id !== faq.id));
+
+
+
             } catch (error) {
                 console.error("Error deleting question:", error);
             }
         }
+        fetchSavedQuestions();
     };
 
-    const isQuestionSaved = (faq) => {
-        return savedQuestions.some((saved) => saved.id === faq.id); // استخدم saved.id بدلًا من saved.questionId
-    };
+    const isQuestionSaved = (faq) => isSaved.includes(faq.id);
+
+
+    // const ClearSavedQuestion = () => {
+
+    // }
+
 
     if (loading) {
         return (
             <div className="flex items-center justify-center py-20">
-                <ClipLoader color="#4A90E2" size={50} /> {/* تأثير التحميل */}
+                <ClipLoader color="#4A90E2" size={50} />
             </div>
         );
     }
@@ -124,9 +138,8 @@ function Saved_questions() {
                                     {faq.question}
                                     <div className="flex gap-8">
                                         <i
-                                            className={`cursor-pointer fa-regular fa-bookmark ${
-                                                isQuestionSaved(faq) ? "text-primary font-bold" : ""
-                                            }`}
+                                            className={`cursor-pointer fa-regular fa-bookmark ${isQuestionSaved(faq) ? "text-primary font-bold" : ""
+                                                }`}
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 handleSaveQuestion(faq);

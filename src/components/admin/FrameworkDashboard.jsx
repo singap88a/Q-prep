@@ -49,6 +49,7 @@ const FrameworkDashboard = () => {
           },
         }
       );
+      console.log(response.data);
       setFrameworks(response.data);
     } catch (error) {
       console.error("Error fetching frameworks:", error);
@@ -207,13 +208,13 @@ const FrameworkDashboard = () => {
               onChange={(e) =>
                 editFramework.frameworkId
                   ? setEditFramework({
-                      ...editFramework,
-                      frameworkName: e.target.value,
-                    })
+                    ...editFramework,
+                    frameworkName: e.target.value,
+                  })
                   : setNewFramework({
-                      ...newFramework,
-                      frameworkName: e.target.value,
-                    })
+                    ...newFramework,
+                    frameworkName: e.target.value,
+                  })
               }
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -228,13 +229,13 @@ const FrameworkDashboard = () => {
               onChange={(e) =>
                 editFramework.frameworkId
                   ? setEditFramework({
-                      ...editFramework,
-                      description: e.target.value,
-                    })
+                    ...editFramework,
+                    description: e.target.value,
+                  })
                   : setNewFramework({
-                      ...newFramework,
-                      description: e.target.value,
-                    })
+                    ...newFramework,
+                    description: e.target.value,
+                  })
               }
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -243,13 +244,13 @@ const FrameworkDashboard = () => {
               onChange={(e) =>
                 editFramework.frameworkId
                   ? setEditFramework({
-                      ...editFramework,
-                      photo: e.target.files[0],
-                    })
+                    ...editFramework,
+                    photo: e.target.files[0],
+                  })
                   : setNewFramework({
-                      ...newFramework,
-                      photo: e.target.files[0],
-                    })
+                    ...newFramework,
+                    photo: e.target.files[0],
+                  })
               }
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />

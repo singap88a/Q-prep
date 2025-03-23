@@ -24,11 +24,7 @@ const MainTrackDashboard = () => {
   const [showActions, setShowActions] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (token) {
-      fetchTracks();
-    }
-  }, [token]);
+
 
   const fetchTracks = async () => {
     setLoading(true);
@@ -41,6 +37,7 @@ const MainTrackDashboard = () => {
           },
         }
       );
+      console.log("GetMainTrack", response.data)
       setTracks(response.data);
     } catch (error) {
       console.error("Error fetching tracks:", error);
@@ -49,6 +46,12 @@ const MainTrackDashboard = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (token) {
+      fetchTracks();
+    }
+  }, [token]);
 
   const addTrack = async () => {
     if (!newTrack.tarckName || !newTrack.description) {

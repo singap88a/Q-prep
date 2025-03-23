@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Lottie from "lottie-react";
 import Login_animation from "../../../public/animations/Login_animation.json";
@@ -14,6 +14,7 @@ function Login({ setIsLoggedIn, setUserRole }) {
   const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
 
   const validateEmail = (email) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -60,7 +61,8 @@ function Login({ setIsLoggedIn, setUserRole }) {
       }
 
       localStorage.setItem("token", data.token);
-      setUserRole(data.role); // تعيين دور المستخدم
+
+      setUserRole(data.role);
 
       if (data.role === "admin") {
         setSuccess("Login successful! Redirecting to admin panel...");

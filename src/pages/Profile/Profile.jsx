@@ -4,8 +4,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import userImage from "../../assets/user.png";
+import LogOut from "../../components/LogOut";
 
-function Profile() {
+function Profile({ setIsLoggedIn }) {
   const [originalData, setOriginalData] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [phone, setPhone] = useState("");
@@ -20,52 +21,51 @@ function Profile() {
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(localStorage.getItem("token"));
 
-  useEffect(() => {
-    const GetUserFunc = async () => {
-      if (!token) return;
-      try {
-        if (!token) {
-          throw new Error("No Token found");
-        }
-        const response = await fetch(
-          `https://questionprep.azurewebsites.net/api/Account/GetUser`,
-          {
-            method: "GET",
-            mode: "cors",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        if (!response.ok) {
-          throw new Error(`Failed to fetch user: ${response.status}`);
-        }
-        const data = await response.json();
-
-        setOriginalData(data);
-
-        setFirstName(data.firstName);
-        setLastName(data.lastName);
-        setEmail(data.email);
-        setAddress(data.address);
-        setLocation(data.location);
-        setDob(data.birthDay);
-        setPhone(data.phoneNamber);
-        setProfileImage(
-          data.urlPhoto
-            ? `https://questionprep.azurewebsites.net/ProfilePhoto/${data.urlPhoto}`
-            : userImage
-        );
-        console.log("GetUser Data:", data);
-      } catch (error) {
-        console.error("Error fetching user:", error.message);
-        setError(error.message);
-      } finally {
-        setLoading(false);
+  const GetUserFunc = async () => {
+    if (!token) return;
+    try {
+      if (!token) {
+        throw new Error("No Token found");
       }
-    };
+      const response = await fetch(
+        `https://questionprep.azurewebsites.net/api/Account/GetUser`,
+        {
+          method: "GET",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`Failed to fetch user: ${response.status}`);
+      }
+      const data = await response.json();
 
+      setOriginalData(data);
+
+      setFirstName(data.firstName);
+      setLastName(data.lastName);
+      setEmail(data.email);
+      setAddress(data.address);
+      setLocation(data.location);
+      setDob(data.birthDay);
+      setPhone(data.phoneNamber);
+      setProfileImage(
+        data.urlPhoto
+          ? `https://questionprep.azurewebsites.net/ProfilePhoto/${data.urlPhoto}`
+          : userImage
+      );
+      console.log("GetUser Data:", data);
+    } catch (error) {
+      console.error("Error fetching user:", error.message);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
     GetUserFunc();
   }, [token]);
 
@@ -86,7 +86,7 @@ function Profile() {
     formData.append("address", address);
     formData.append("location", location);
 
-    // إضافة الصورة إذا تم تحميلها
+
     const fileInput = document.querySelector('input[type="file"]');
     if (fileInput && fileInput.files[0]) {
       formData.append("Photo", fileInput.files[0]);
@@ -128,21 +128,22 @@ function Profile() {
   };
 
   // Reset
-  const handleReset = () => {
-    if (originalData) {
-      setFirstName(originalData.firstName);
-      setLastName(originalData.lastName);
-      setEmail(originalData.email);
-      setAddress(originalData.address);
-      setLocation(originalData.location);
-      setDob(originalData.birthDay);
-      setPhone(originalData.phoneNamber);
-      setProfileImage(
-        originalData.urlPhoto
-          ? `https://questionprep.azurewebsites.net/ProfilePhoto/${originalData.urlPhoto}`
-          : userImage
-      );
-    }
+  const DiscardChanges = () => {
+    // if (originalData) {
+    //   setFirstName(originalData.firstName);
+    //   setLastName(originalData.lastName);
+    //   setEmail(originalData.email);
+    //   setAddress(originalData.address);
+    //   setLocation(originalData.location);
+    //   setDob(originalData.birthDay);
+    //   setPhone(originalData.phoneNamber);
+    //   setProfileImage(
+    //     originalData.urlPhoto
+    //       ? `https://questionprep.azurewebsites.net/ProfilePhoto/${originalData.urlPhoto}`
+    //       : userImage
+    //   );
+    // }
+    GetUserFunc();
     setIsEditMode(false);
   };
 
@@ -151,9 +152,9 @@ function Profile() {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setProfileImage(reader.result);
+        setProfileImage(reader.result);  // reader.result is [Base64]
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(file); //readAsDataURL read img as a [URL]
     }
   };
 
@@ -183,19 +184,24 @@ function Profile() {
           whileHover={{ scale: 1.1 }}
           transition={{ type: "spring", stiffness: 300 }}
         />
-        <motion.label
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="relative z-10 px-2 py-1 overflow-hidden font-bold text-white border-2 rounded-md cursor-pointer md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary"
-        >
-          <input
-            type="file"
-            className="hidden"
-            onChange={handleImageUpload}
-            disabled={!isEditMode}
-          />
-          Edit your photo
-        </motion.label>
+        {isEditMode &&
+          <motion.label
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0, transition: { delay: 0.5 } }}
+            exit={{ opacity: 0, y: -20, transition: { delay: 0.5 } }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="relative z-10 px-2 mx-2 py-1 overflow-hidden font-bold text-white border-2 rounded-md cursor-pointer md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary"
+          >
+            <input
+              type="file"
+              className="hidden"
+              onChange={handleImageUpload}
+              disabled={!isEditMode}
+            />
+            Edit photo
+          </motion.label>
+        }
       </div>
 
       <form onSubmit={(e) => e.preventDefault()}>
@@ -328,7 +334,7 @@ function Profile() {
               >
                 <motion.button
                   type="button"
-                  onClick={handleReset}
+                  onClick={DiscardChanges}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="relative px-2 py-1 overflow-hidden font-bold border-2 rounded-md md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-secondary before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 text-secondary hover:text-white"
@@ -361,6 +367,9 @@ function Profile() {
               </motion.button>
             )}
           </AnimatePresence>
+
+          {/* Logout */}
+          <LogOut setIsLoggedIn={setIsLoggedIn} />
         </div>
       </form>
     </motion.div>

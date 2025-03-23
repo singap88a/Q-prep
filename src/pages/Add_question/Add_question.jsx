@@ -1,11 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
-import { useParams, useLocation } from "react-router-dom"; // استيراد useParams و useLocation
+import { useParams, useLocation } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Add_question() {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
-  const [message, setMessage] = useState("");
 
   // الحصول على frameworkId من الرابط أو حالة التنقل
   const { frameworkId } = useParams(); // إذا كان frameworkId جزءًا من الرابط
@@ -14,12 +15,12 @@ function Add_question() {
 
   const handleSubmit = async () => {
     if (!question.trim() || !answer.trim()) {
-      alert("Please fill out both fields.");
+      toast.error("Please fill out both fields.");
       return;
     }
 
     if (!resolvedFrameworkId) {
-      alert("Framework ID is missing.");
+      toast.error("Framework ID is missing.");
       return;
     }
 
@@ -42,12 +43,11 @@ function Add_question() {
       if (response.status === 200) {
         setQuestion("");
         setAnswer("");
-        setMessage("Question added successfully!");
-        setTimeout(() => setMessage(""), 4000);
+        toast.success("Question added successfully!");
       }
     } catch (error) {
       console.error("Error adding question:", error);
-      setMessage("Failed to add question.");
+      toast.error("Failed to add question.");
     }
   };
 
@@ -67,16 +67,16 @@ function Add_question() {
         <input
           className="w-full p-4 mb-4 border-[3px] rounded-[10px] focus:outline-none focus:ring-2 focus:ring-primary focus:border-none border-secondary"
           type="text"
-          placeholder="Write the right answer"
-          value={answer}
-          onChange={(e) => setAnswer(e.target.value)}
+          placeholder="Write your question"
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
         />
         <textarea
           className="w-full p-4 mb-4 border-[3px] rounded-[10px] focus:outline-none focus:ring-2 focus:ring-primary focus:border-none border-secondary"
-          placeholder="Write your question"
+          placeholder="Write the right answer"
           rows="4"
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
+          value={answer}
+          onChange={(e) => setAnswer(e.target.value)}
         ></textarea>
         <div className="">
           <button
@@ -85,51 +85,9 @@ function Add_question() {
           >
             Submit
           </button>
-          {message && (
-            <div className="flex w-[30%] overflow-hidden bg-white border-2 shadow-lg rounded-xl border-[#66cd70] mt-5 absolute top-12 right-24">
-              <svg width="16" height="75" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M 8 0 
-               Q 4 4.8, 8 9.6 
-               T 8 19.2 
-               Q 4 24, 8 28.8 
-               T 8 38.4 
-               Q 4 43.2, 8 48 
-               T 8 57.6 
-               Q 4 62.4, 8 67.2 
-               T 8 76.8 
-               Q 4 81.6, 8 86.4 
-               T 8 96 
-               L 0 96 
-               L 0 0 
-               Z"
-                  fill="#66cd70"
-                  stroke="#66cd70"
-                ></path>
-              </svg>
-              <div className="mx-2.5 overflow-hidden w-full">
-                <p className="mt-1.5 text-xl font-bold text-[#66cd70] leading-8 mr-3 overflow-hidden text-ellipsis whitespace-nowrap">
-                  {message}
-                </p>
-                <p className="overflow-hidden leading-5 break-all text-zinc-400 max-h-10">
-                  The question is reviewed before publishing
-                </p>
-              </div>
-              <button className="w-16 cursor-pointer focus:outline-none text-[#66cd70]">
-                <svg
-                  className="w-7 h-7"
-                  fill="none"
-                  stroke="mediumseagreen"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M5 13l4 4L19 7"></path>
-                </svg>
-              </button>
-            </div>
-          )}
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }

@@ -10,6 +10,9 @@ const TrackDetails = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const { tarckName } = location.state || {};
+  console.log(tarckName);
+
   useEffect(() => {
     const fetchTrackDetails = async () => {
       try {
@@ -63,6 +66,18 @@ const TrackDetails = () => {
 
   return (
     <div className="container p-4 mx-auto">
+      {/* Header */}
+      <div className="headRight">
+        <div className="flex gap-3">
+          <i className="text-2xl font-bold fa-solid fa-chevron-left text-primary"></i>
+          <h1 className="text-2xl font-bold">{tarckName}</h1>
+        </div>
+        <h1 className="text-sm text-gray-600 md:text-xl ms-6">
+          Choose the framework
+        </h1>
+      </div>
+
+      {/* Tracks */}
       <div className="grid grid-cols-1 gap-10 my-10 lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2">
         {trackDetails.map((track) => (
           <Link
@@ -84,7 +99,7 @@ const TrackDetails = () => {
                   />
                 ) : (
                   <img
-                    src="https://via.placeholder.com/150" // صورة افتراضية إذا لم تكن هناك صورة
+                    src="https://via.placeholder.com/150"
                     alt="Placeholder"
                     className="object-cover w-full h-full"
                   />

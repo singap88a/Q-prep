@@ -30,7 +30,7 @@ const ChooseLanguage_Com = () => {
               <h1 className="text-2xl font-bold">{frameworkName}</h1>
             </div>
             <h1 className="text-sm text-gray-600 md:text-xl ms-6">
-              Choose the framework
+              Choose Your Level
             </h1>
           </div>
           <Link to="/test_your_level"  state={{ frameworkId, frameworkName }}>

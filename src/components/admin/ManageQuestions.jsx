@@ -214,11 +214,10 @@ const ManageQuestions = () => {
             <div className="flex gap-2">
               <button
                 onClick={editQuestion.questionId ? updateQuestion : addQuestion}
-                className={`flex-1 p-3 text-white rounded-lg focus:outline-none focus:ring-2 ${
-                  editQuestion.questionId
+                className={`flex-1 p-3 text-white rounded-lg focus:outline-none focus:ring-2 ${editQuestion.questionId
                     ? "bg-green-500 hover:bg-green-600 focus:ring-green-500"
                     : "bg-blue-500 hover:bg-blue-600 focus:ring-blue-500"
-                }`}
+                  }`}
               >
                 {editQuestion.questionId ? "Update Question" : "Add Question"}
               </button>

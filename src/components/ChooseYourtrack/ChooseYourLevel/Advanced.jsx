@@ -4,15 +4,16 @@ import { useEffect, useState } from "react";
 import { FaChevronDown, FaChevronUp, FaStar, FaCheck } from "react-icons/fa";
 import { ClipLoader } from "react-spinners"; // استيراد مكون التحميل
 
-function Advanced({ savedQuestions, setSavedQuestions }) {
+function Advanced({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
+    console.log("Isaved: ", isSaved)
     const [advancedQuestions, setAdvancedQuestions] = useState([]);
+    console.log("AdvancedQuestions: ", advancedQuestions)
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [activeIndex, setActiveIndex] = useState(null);
-    const [isSaved, setIsSaved] = useState({}); // حالة محلية لتتبع ما إذا كان السؤال محفوظًا
 
     const location = useLocation();
-    const { frameworkId, frameworkName } = location.state || {}; 
+    const { frameworkId, frameworkName } = location.state || {};
 
     const token = localStorage.getItem("token"); // Assuming the token is stored in localStorage
 
@@ -38,41 +39,93 @@ function Advanced({ savedQuestions, setSavedQuestions }) {
         fetchData();
     }, [frameworkId]);
 
+    const fetchSavedQuestions = async () => {
+        try {
+            if (!token) return;
+
+            const response = await fetch("https://questionprep.azurewebsites.net/api/Save/GetSaveQuestions", {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch saved questions");
+            }
+
+            const data = await response.json();
+            console.log("setSavedQuestions", data);
+            setSavedQuestions(data);
+
+
+        } catch (error) {
+            console.error("Error fetching saved questions:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchSavedQuestions();
+    }, []);
+
     const toggleAnswer = (index) => {
         setActiveIndex((prevIndex) => (prevIndex === index ? null : index));
     };
 
     const handleSaveQuestion = async (faq) => {
-        // التحقق من أن السؤال غير محفوظ مسبقًا
-        if (!isSaved[faq.questionId]) {
-            try {
-                const response = await fetch("https://questionprep.azurewebsites.net/api/Save/AddtoSave", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({
-                        questionId: faq.questionId,
-                        question: faq.questions,
-                        answer: faq.answers,
-                    }),
-                });
+        // console.log("isSaved[faq.id]" , !isSaved[faq.id])
+        // if (!isSaved[faq.id]) {
+        try {
+            const response = await fetch("https://questionprep.azurewebsites.net/api/Save/AddtoSave", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    id: faq.id,
+                    question: faq.questions,
+                    answer: faq.answers,
+                }),
+            });
 
-                if (!response.ok) {
-                    throw new Error("Failed to save question");
-                }
-
-                const savedQuestion = await response.json();
-                setSavedQuestions([...savedQuestions, savedQuestion]); // تحديث قائمة الأسئلة المحفوظة
-                setIsSaved((prev) => ({ ...prev, [faq.questionId]: true })); // تحديث حالة الحفظ
-                alert("Question saved successfully!");
-            } catch (error) {
-                console.error("Error saving question:", error);
-                alert("Failed to save question. Please try again.");
+            if (!response.ok) {
+                throw new Error("Failed to save question");
             }
+
+            const savedQuestion = await response.json();
+            // console.log("savedQuestion click", savedQuestion);
+            // setSavedQuestions([...savedQuestions, savedQuestion]); 
+            setSavedQuestions((prev) => [...prev, savedQuestion]); // تحديث القائمة
+            setIsSaved((prev) => [...prev, faq.id]);
+
+
+
+            alert("Question saved successfully!");
+        } catch (error) {
+            console.error("Error saving question:", error);
+            alert("This Question Is Aready Saved!");
         }
+        // }
+        fetchSavedQuestions();
     };
+
+    // useEffect(() => {
+    //     const defaultSavedStatus = {};
+    //     savedQuestions.forEach((q) => {
+    //         defaultSavedStatus[q.id] = true;
+    //     });
+    //     setIsSaved(defaultSavedStatus);
+    // }, [savedQuestions]);
+
+    useEffect(() => {
+        const savedIds = savedQuestions.map((q) => q.id);
+        setIsSaved(savedIds);
+    }, [savedQuestions]);
+
+
+
+
 
     if (loading) {
         return (
@@ -120,7 +173,7 @@ function Advanced({ savedQuestions, setSavedQuestions }) {
             </div>
 
             {/* Questions List */}
-            <div className="max-w-4xl mx-auto">
+            {/* <div className="max-w-4xl mx-auto">
                 <div className="grid gap-4 py-6">
                     {advancedQuestions.map((faq, index) => (
                         <div
@@ -152,6 +205,49 @@ function Advanced({ savedQuestions, setSavedQuestions }) {
                                     )}
                                 </div>
                             </button>
+                            {activeIndex === index && (
+                                <p className="mt-3 text-gray-600">{faq.answers}</p>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            </div> */}
+            <div className="max-w-4xl mx-auto">
+                <div className="grid gap-4 py-6">
+                    {advancedQuestions.map((faq, index) => (
+                        <div key={index} className="p-4 bg-white border rounded-lg shadow-md">
+                            <a
+                                onClick={() => toggleAnswer(index)}
+                                className="flex items-center justify-between w-full text-left"
+                                aria-expanded={activeIndex === index}
+                            >
+                                <span className="text-lg font-semibold">{faq.questions}</span>
+
+                                <div className="flex items-center gap-4">
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleSaveQuestion(faq);
+                                        }}
+                                        aria-label={isSaved[faq.id] ? "Unsave question" : "Save question"}
+
+                                        className="text-xl text-gray-500 hover:text-primary"
+                                        disabled={isSaved.includes(faq.id)}
+
+                                    >
+                                        {/* {savedQuestions.some((saved) => isSaved.includes(saved.id)) ? <FaCheck /> : <FaStar />} */}
+                                        {isSaved.includes(faq.id) ? <FaCheck /> : <FaStar />}
+
+                                        {/* {isSaved[faq.id] ? <FaCheck /> : <FaStar />} */}
+
+                                    </button>
+                                    {activeIndex === index ? (
+                                        <FaChevronUp className="text-secondary" />
+                                    ) : (
+                                        <FaChevronDown className="text-secondary" />
+                                    )}
+                                </div>
+                            </a>
                             {activeIndex === index && (
                                 <p className="mt-3 text-gray-600">{faq.answers}</p>
                             )}
