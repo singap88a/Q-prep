@@ -1,4 +1,13 @@
+import {   useLocation } from "react-router-dom";
+
 function Newsletter() {
+
+  const location = useLocation();
+
+  // إذا كان المسار الحالي يبدأ ب /admin لا تعرض الفوتر
+  if (location.pathname.startsWith("/admin")) {
+    return null;
+  }
   return (
     <div className="flex justify-between w-full px-5 py-3 sm:px-10 bg-primary">
       <div className="container flex flex-col items-center gap-6 sm:flex-row">

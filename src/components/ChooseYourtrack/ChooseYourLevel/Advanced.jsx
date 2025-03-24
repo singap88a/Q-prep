@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { FaChevronDown, FaChevronUp, FaStar, FaCheck } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp, FaStar, FaCheck ,FaChevronLeft} from "react-icons/fa";
 import { ClipLoader } from "react-spinners"; // استيراد مكون التحميل
 
 function Advanced({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
@@ -154,11 +154,11 @@ function Advanced({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
       {/* Header */}
       <div className="flex items-center justify-between py-6">
         <div className="flex items-center gap-3">
-          <Link to="/" className="text-2xl font-bold text-primary">
-            <FaChevronDown />
-          </Link>
-          <h1 className="text-2xl font-bold">{frameworkName}</h1>
-          <h2 className="text-xl text-gray-600">
+           <FaChevronLeft className="text-2xl font-bold text-primary"/>
+           <h1 className="text-2xl font-bold">{frameworkName}</h1>
+          <FaChevronLeft className="text-2xl font-bold text-primary"/>
+
+          <h2 className="text-2xl text-gray-600 ">
             {advancedQuestions[0]?.levelName}
           </h2>
         </div>
