@@ -8,10 +8,11 @@ function Add_question() {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
 
-  // الحصول على frameworkId من الرابط أو حالة التنقل
+  // الحصول على frameworkId و frameworkName من الرابط أو حالة التنقل
   const { frameworkId } = useParams(); // إذا كان frameworkId جزءًا من الرابط
   const location = useLocation(); // إذا كان frameworkId جزءًا من حالة التنقل
   const resolvedFrameworkId = frameworkId || location.state?.frameworkId;
+  const frameworkName = location.state?.frameworkName; // الحصول على اسم الفريم ورك
 
   const handleSubmit = async () => {
     if (!question.trim() || !answer.trim()) {
@@ -56,7 +57,7 @@ function Add_question() {
       <div className="flex gap-3">
         <div className="flex items-center justify-center gap-3">
           <i className="text-2xl font-bold fa-solid fa-chevron-left text-primary"></i>
-          <h1> Front-end</h1>
+          <h1>{frameworkName}</h1> {/* عرض اسم الفريم ورك هنا */}
         </div>
         <div className="flex items-center justify-center gap-3">
           <i className="text-2xl font-bold fa-solid fa-chevron-left text-primary"></i>

@@ -189,8 +189,7 @@ const ManageQuestions = () => {
               <option value="Q_IntermediateLevel">Intermediate</option>
               <option value="Q_AdvancedLevel">Advanced</option>
             </select>
-            <input
-              type="text"
+            <textarea
               placeholder="Question"
               value={editQuestion.questionId ? editQuestion.questions : newQuestion.questions}
               onChange={(e) =>
@@ -199,9 +198,9 @@ const ManageQuestions = () => {
                   : setNewQuestion({ ...newQuestion, questions: e.target.value })
               }
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              rows={3}
             />
-            <input
-              type="text"
+            <textarea
               placeholder="Answer"
               value={editQuestion.questionId ? editQuestion.answers : newQuestion.answers}
               onChange={(e) =>
@@ -210,6 +209,7 @@ const ManageQuestions = () => {
                   : setNewQuestion({ ...newQuestion, answers: e.target.value })
               }
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              rows={5}
             />
             <div className="flex gap-2">
               <button
@@ -248,7 +248,7 @@ const ManageQuestions = () => {
                     <div className="flex items-center justify-between">
                       <div>
                         <h3 className="text-lg font-semibold text-gray-800">{question.questions}</h3>
-                        <p className="text-gray-600">{question.answers}</p>
+                        <p className="text-gray-600 whitespace-pre-wrap">{question.answers}</p>
                       </div>
                       <div className="relative actions-container">
                         <button
@@ -291,7 +291,7 @@ const ManageQuestions = () => {
                     <div className="flex items-center justify-between">
                       <div>
                         <h3 className="text-lg font-semibold text-gray-800">{question.questions}</h3>
-                        <p className="text-gray-600">{question.answers}</p>
+                        <p className="text-gray-600 whitespace-pre-wrap">{question.answers}</p>
                       </div>
                       <div className="relative actions-container">
                         <button
@@ -334,7 +334,7 @@ const ManageQuestions = () => {
                     <div className="flex items-center justify-between">
                       <div>
                         <h3 className="text-lg font-semibold text-gray-800">{question.questions}</h3>
-                        <p className="text-gray-600">{question.answers}</p>
+                        <p className="text-gray-600 whitespace-pre-wrap">{question.answers}</p>
                       </div>
                       <div className="relative actions-container">
                         <button

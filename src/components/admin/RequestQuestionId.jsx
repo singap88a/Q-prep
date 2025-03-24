@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { ClipLoader } from "react-spinners"; // استيراد Spinner
+import { ClipLoader } from "react-spinners";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function RequestQuestionId() {
   const [requests, setRequests] = useState([]);
@@ -33,7 +35,7 @@ function RequestQuestionId() {
   const handleAccept = async (requestId) => {
     const selectedLevel = selectedLevels[requestId];
     if (!selectedLevel) {
-      alert("Please select a level before accepting the question.");
+      toast.error("Please select a level before accepting the question.");
       return;
     }
 
@@ -51,18 +53,14 @@ function RequestQuestionId() {
       );
 
       if (response.status === 200) {
-        alert("Question accepted successfully!");
-        setAcceptedRequests((prev) => ({
-          ...prev,
-          [requestId]: true,
-        }));
-        setRequests((prevRequests) =>
-          prevRequests.filter((req) => req.requestId !== requestId)
-        );
+        toast.success("Question accepted successfully!");
+        
+        // Call the delete API after accepting the question
+        await handleDelete(requestId);
       }
     } catch (error) {
       console.error("Error accepting question:", error);
-      alert("Failed to accept question. Please check the level and try again.");
+      toast.error("Failed to accept question. Please check the level and try again.");
     }
   };
 
@@ -78,13 +76,14 @@ function RequestQuestionId() {
       );
 
       if (response.status === 200) {
-        alert("Question deleted successfully!");
+        toast.success("Question deleted successfully!");
         setRequests((prevRequests) =>
           prevRequests.filter((req) => req.requestId !== requestId)
         );
       }
     } catch (error) {
       console.error("Error deleting question:", error);
+      toast.error("Failed to delete question.");
     }
   };
 
@@ -95,7 +94,6 @@ function RequestQuestionId() {
     }));
   };
 
-  
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -105,7 +103,9 @@ function RequestQuestionId() {
   }
 
   return (
-    <div className="container p-4 py-10">
+    <div className="py-10">
+         <div className="container p-4 py-10">
+      <ToastContainer />
       <h1 className="mb-6 text-2xl font-bold">Request QuestionId</h1>
       <div className="space-y-4">
         {requests.map((request) => {
@@ -125,7 +125,7 @@ function RequestQuestionId() {
                 </div>
               </div>
               <p className="mb-2"><strong>Question:</strong> {request.questions}</p>
-              <p className="mb-2"><strong>Answer:</strong> {request.answers}</p>
+              <p className="mb-2 whitespace-pre-wrap"><strong>Answer:</strong> {request.answers}</p>
               <p className="text-sm text-gray-500">
                 <strong>Date:</strong> {new Date(request.dateRequest).toLocaleDateString()}
               </p>
@@ -160,7 +160,9 @@ function RequestQuestionId() {
           );
         })}
       </div>
+    </div> 
     </div>
+
   );
 }
 
