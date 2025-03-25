@@ -66,15 +66,13 @@ function Advanced({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
 
     useEffect(() => {
         fetchSavedQuestions();
-    }, []);
+    },[]);
 
     const toggleAnswer = (index) => {
         setActiveIndex((prevIndex) => (prevIndex === index ? null : index));
     };
 
     const handleSaveQuestion = async (faq) => {
-        // console.log("isSaved[faq.id]" , !isSaved[faq.id])
-        // if (!isSaved[faq.id]) {
         try {
             const response = await fetch("https://questionprep.azurewebsites.net/api/Save/AddtoSave", {
                 method: "POST",
@@ -83,7 +81,7 @@ function Advanced({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
                     Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                    id: faq.id,
+                    id: faq.questionId,
                     question: faq.questions,
                     answer: faq.answers,
                 }),
@@ -94,8 +92,6 @@ function Advanced({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
             }
 
             const savedQuestion = await response.json();
-            // console.log("savedQuestion click", savedQuestion);
-            // setSavedQuestions([...savedQuestions, savedQuestion]); 
             setSavedQuestions((prev) => [...prev, savedQuestion]); // تحديث القائمة
             setIsSaved((prev) => [...prev, faq.id]);
 
@@ -109,14 +105,6 @@ function Advanced({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
         // }
         fetchSavedQuestions();
     };
-
-    // useEffect(() => {
-    //     const defaultSavedStatus = {};
-    //     savedQuestions.forEach((q) => {
-    //         defaultSavedStatus[q.id] = true;
-    //     });
-    //     setIsSaved(defaultSavedStatus);
-    // }, [savedQuestions]);
 
     useEffect(() => {
         const savedIds = savedQuestions.map((q) => q.id);
@@ -228,14 +216,14 @@ function Advanced({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
                                             e.stopPropagation();
                                             handleSaveQuestion(faq);
                                         }}
-                                        aria-label={isSaved[faq.id] ? "Unsave question" : "Save question"}
+                                        aria-label={isSaved[faq.questionId] ? "Unsave question" : "Save question"}
 
                                         className="text-xl text-gray-500 hover:text-primary"
-                                        disabled={isSaved.includes(faq.id)}
+                                        disabled={isSaved.includes(faq.questionId)}
 
                                     >
                                         {/* {savedQuestions.some((saved) => isSaved.includes(saved.id)) ? <FaCheck /> : <FaStar />} */}
-                                        {isSaved.includes(faq.id) ? <FaCheck /> : <FaStar />}
+                                        {isSaved.includes(faq.questionId) ? <FaCheck /> : <FaStar />}
 
                                         {/* {isSaved[faq.id] ? <FaCheck /> : <FaStar />} */}
 

@@ -29,7 +29,6 @@ function Sign_up({ setIsLoggedIn }) {
   const handleSignUp = async (e) => {
     e.preventDefault();
 
-    // التحقق من أن جميع الحقول مملوءة
     if (!name || !email || !password) {
       setError("Please fill in all fields");
       return;
@@ -41,7 +40,6 @@ function Sign_up({ setIsLoggedIn }) {
       return;
     }
 
-    // التحقق من قوة كلمة المرور
     if (!validatePassword(password)) {
       setError("Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character");
       return;
@@ -52,7 +50,6 @@ function Sign_up({ setIsLoggedIn }) {
     setSuccess(null);
 
     try {
-      // إرسال طلب POST إلى الـ API
       const response = await fetch("https://questionprep.azurewebsites.net/api/Authenticate/Register",
         {
           method: "POST",
@@ -73,16 +70,13 @@ function Sign_up({ setIsLoggedIn }) {
         ? await response.json()
         : await response.text();
 
-      // تسجيل حالة الاستجابة وبياناتها
       console.log("Response status:", response.status);
       console.log("Response data:", data);
 
-      // التحقق من نجاح الطلب
       if (!response.ok) {
         throw new Error(data.message || "Registration failed");
       }
 
-      // إذا نجح التسجيل
       setSuccess("Registration successful! Redirecting to login...");
       setIsLoggedIn(true);
       setTimeout(() => {
@@ -112,7 +106,6 @@ function Sign_up({ setIsLoggedIn }) {
             </h1>
             <p className="mb-6 text-primary">Register your account</p>
 
-            {/* عرض رسائل الخطأ والنجاح */}
             {error && (
               <div className="p-3 mb-4 text-red-700 bg-red-100 border border-red-400 rounded-lg">
                 {error}

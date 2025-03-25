@@ -6,21 +6,20 @@ import { ClipLoader } from "react-spinners"; // استيراد مكون التح
 
 function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
 
+
+
     const [beginnerQuestions, setBeginnerQuestions] = useState([]);
     console.log("beginnerQuestions", beginnerQuestions);
 
-    const [activeIndex, setActiveIndex] = useState(null);
-    // const [isSaved, setIsSaved] = useState({});
-    console.log("isSaved", isSaved);
-
+    console.log("Isaved: ", isSaved)
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [activeIndex, setActiveIndex] = useState(null);
 
     const location = useLocation();
-    const { frameworkId, frameworkName } = location.state || {}; // Fallback to empty object
+    const { frameworkId, frameworkName } = location.state || {};
 
     const token = localStorage.getItem("token"); // Assuming the token is stored in localStorage
-
 
     useEffect(() => {
         const fetchData = async () => {
@@ -29,7 +28,7 @@ function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
                     `https://questionprep.azurewebsites.net/api/Questions/Q_BeginnerLevel/${frameworkId}`
                 );
                 if (!response.ok) {
-                    throw new Error("Failed to fetch beginner questions");
+                    throw new Error("Failed to fetch advanced questions");
                 }
                 const data = await response.json();
                 setBeginnerQuestions(data);
@@ -62,13 +61,7 @@ function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
             const data = await response.json();
             console.log("setSavedQuestions", data);
             setSavedQuestions(data);
-            // تحديث `isSaved` لكل سؤال محفوظ
-            // تعيين `isSaved` افتراضيًا إلى `false` لكل سؤال
-            // const defaultSavedStatus = {};
-            // data.forEach((q) => {
-            //     defaultSavedStatus[q.id] = true;
-            // });
-            // setIsSaved(defaultSavedStatus);
+
 
         } catch (error) {
             console.error("Error fetching saved questions:", error);
@@ -83,48 +76,47 @@ function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
         setActiveIndex((prevIndex) => (prevIndex === index ? null : index));
     };
 
-
     const handleSaveQuestion = async (faq) => {
-        if (!isSaved[faq.id]) {
-            try {
-                const response = await fetch("https://questionprep.azurewebsites.net/api/Save/AddtoSave", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({
-                        id: faq.id,
-                        question: faq.questions,
-                        answer: faq.answers,
-                    }),
-                });
+        try {
+            const response = await fetch("https://questionprep.azurewebsites.net/api/Save/AddtoSave", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    id: faq.questionId,
+                    question: faq.questions,
+                    answer: faq.answers,
+                }),
+            });
 
-                if (!response.ok) {
-                    throw new Error("Failed to save question");
-                }
-
-                const savedQuestion = await response.json();
-                // console.log("savedQuestion click", savedQuestion);
-                // setSavedQuestions([...savedQuestions, savedQuestion]); 
-                setSavedQuestions((prev) => [...prev, savedQuestion]); // تحديث القائمة
-                setIsSaved((prev) => ({ ...prev, [faq.id]: true })); // تحديث حالة الحفظ
-                alert("Question saved successfully!");
-            } catch (error) {
-                console.error("Error saving question:", error);
-                alert("This Question Is Aready Saved!");
+            if (!response.ok) {
+                throw new Error("Failed to save question");
             }
+
+            const savedQuestion = await response.json();
+            setSavedQuestions((prev) => [...prev, savedQuestion]); // تحديث القائمة
+            setIsSaved((prev) => [...prev, faq.id]);
+
+
+
+            alert("Question saved successfully!");
+        } catch (error) {
+            console.error("Error saving question:", error);
+            alert("This Question Is Aready Saved!");
         }
+        // }
         fetchSavedQuestions();
     };
 
     useEffect(() => {
-        const defaultSavedStatus = {};
-        savedQuestions.forEach((q) => {
-            defaultSavedStatus[q.id] = true;
-        });
-        setIsSaved(defaultSavedStatus);
+        const savedIds = savedQuestions.map((q) => q.id);
+        setIsSaved(savedIds);
     }, [savedQuestions]);
+
+
+
 
 
     if (loading) {
@@ -146,10 +138,12 @@ function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
     if (!beginnerQuestions.length) {
         return (
             <div className="flex items-center justify-center h-screen text-gray-600">
-                <p className="text-xl">No beginner questions found.</p>
+                <p className="text-xl">No advanced questions found.</p>
             </div>
         );
     }
+
+
 
     return (
         <div className="container px-4 mx-auto">
@@ -189,13 +183,13 @@ function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
                                             e.stopPropagation();
                                             handleSaveQuestion(faq);
                                         }}
-                                        aria-label={isSaved[faq.id] ? "Unsave question" : "Save question"}
+                                        // aria-label={isSaved[faq.questionId] ? "Unsave question" : "Save question"}
 
                                         className="text-xl text-gray-500 hover:text-primary"
-                                        disabled={isSaved[faq.id]}
+                                        disabled={isSaved.includes(faq.questionId)}
                                     >
                                         {/* {savedQuestions.some((saved) => isSaved[saved.id]) ? <FaCheck /> : <FaStar />} */}
-                                        {isSaved[faq.id] ? <FaCheck /> : <FaStar />}
+                                        {isSaved.includes(faq.questionId) ? <FaCheck /> : <FaStar />}
 
                                     </button>
                                     {activeIndex === index ? (

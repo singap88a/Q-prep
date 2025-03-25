@@ -51,11 +51,11 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
             }
           })
           .catch((error) => {
-            console.error("Error fetching user profile:", error);
+            console.error("Error fetching user profile:", error); 
           });
       }
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, profileImage]);
 
 
   const closeMenu = () => {

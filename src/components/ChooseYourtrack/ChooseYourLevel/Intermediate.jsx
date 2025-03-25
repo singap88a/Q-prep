@@ -67,13 +67,7 @@ function Intermediate({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }
             const data = await response.json();
             console.log("setSavedQuestions", data);
             setSavedQuestions(data);
-            // تحديث `isSaved` لكل سؤال محفوظ
-            // تعيين `isSaved` افتراضيًا إلى `false` لكل سؤال
-            // const defaultSavedStatus = {};
-            // data.forEach((q) => {
-            //     defaultSavedStatus[q.id] = true;
-            // });
-            // setIsSaved(defaultSavedStatus);
+
 
         } catch (error) {
             console.error("Error fetching saved questions:", error);
@@ -89,41 +83,37 @@ function Intermediate({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }
     };
 
     const handleSaveQuestion = async (faq) => {
-        console.log("isSaved[faq.id]", isSaved[faq.id])
-        if (!isSaved[faq.id]) {
-            try {
-                const response = await fetch("https://questionprep.azurewebsites.net/api/Save/AddtoSave", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({
-                        id: faq.id,
-                        question: faq.questions,
-                        answer: faq.answers,
-                    }),
-                });
+        try {
+            const response = await fetch("https://questionprep.azurewebsites.net/api/Save/AddtoSave", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    id: faq.questionId,
+                    question: faq.questions,
+                    answer: faq.answers,
+                }),
+            });
 
-                if (!response.ok) {
-                    throw new Error("Failed to save question");
-                }
-
-                const savedQuestion = await response.json();
-                // console.log("savedQuestion click", savedQuestion);
-                // setSavedQuestions([...savedQuestions, savedQuestion]); 
-                setSavedQuestions((prev) => [...prev, savedQuestion]); // تحديث القائمة
-                setIsSaved((prev) => [...prev, faq.id]);
-
-                alert("Question saved successfully!");
-            } catch (error) {
-                console.error("Error saving question:", error);
-                alert("This Question Is Aready Saved!");
+            if (!response.ok) {
+                throw new Error("Failed to save question");
             }
+
+            const savedQuestion = await response.json();
+            setSavedQuestions((prev) => [...prev, savedQuestion]); 
+            setIsSaved((prev) => [...prev, faq.id]);
+
+
+            alert("Question saved successfully!");
+        } catch (error) {
+            console.error("Error saving question:", error);
+            alert("This Question Is Aready Saved!");
         }
+        // }
         fetchSavedQuestions();
     };
-
 
     useEffect(() => {
         const savedIds = savedQuestions.map((q) => q.id);
@@ -147,6 +137,7 @@ function Intermediate({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }
             </div>
         );
     }
+
 
     if (!intermediateQuestions.length) {
         return (
@@ -196,14 +187,14 @@ function Intermediate({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }
                                             e.stopPropagation();
                                             handleSaveQuestion(faq);
                                         }}
-                                        aria-label={isSaved[faq.id] ? "Unsave question" : "Save question"}
+                                        // aria-label={isSaved[faq.questionId] ? "Unsave question" : "Save question"}
 
                                         className="text-xl text-gray-500 hover:text-primary"
-                                        disabled={isSaved.includes(faq.id)}
+                                        disabled={isSaved.includes(faq.questionId)}
 
                                     >
                                         {/* {savedQuestions.some((saved) => isSaved[saved.id]) ? <FaCheck /> : <FaStar />} */}
-                                        {isSaved.includes(faq.id) ? <FaCheck /> : <FaStar />}
+                                        {isSaved.includes(faq.questionId) ? <FaCheck /> : <FaStar />}
 
                                         {/* {isSaved[faq.id] ? <FaCheck /> : <FaStar />} */}
 
