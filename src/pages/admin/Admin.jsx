@@ -1,14 +1,20 @@
 
-import MainTrackDashboard from "../../components/admin/MainTrackDashboard"
-
-
-
+import MainTrackDashboard from "../../components/admin/MainTrackDashboard";
+import Sidebar from "../../components/admin/Sidebar";
+ 
 function Admin() {
+ 
+
   return (
-    <div>
-      <MainTrackDashboard />
+    <div className="flex">
+     <Sidebar/>
+
+      {/* المحتوى الرئيسي */}
+      <div className="flex-1 p-4 md:ml-64">
+        <MainTrackDashboard />
+      </div>
     </div>
-  )
+  );
 }
 
-export default Admin
+export default Admin;

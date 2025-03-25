@@ -125,7 +125,7 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
               <div className="absolute flex items-center gap-3 space-x-2 md:right-5 top-3 right-20">
                 <button
                   onClick={goToSavedQuestions}
-                  className={`text-2xl font-semibold  ${isBookmarkClicked ? "text-primary " : " "
+                  className={`text-2xl font-semibold  ${isBookmarkClicked ? "text-primary  " : " "
                     }`}
                 >
                   <i className="fa-regular fa-bookmark"></i>

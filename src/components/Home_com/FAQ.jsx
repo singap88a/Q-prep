@@ -7,32 +7,34 @@ const FAQ = () => {
 
   const faqs = [
     {
-      question: "What is React?",
-      answer: "React is a JavaScript library for building user interfaces.",
-    },
-    {
-      question: "What is Tailwind CSS?",
+      question: "Can I switch my track later?",
       answer:
-        "Tailwind CSS is a utility-first CSS framework for creating custom designs.",
+        "Absolutely! You can change your track anytime from the settings menu, and we'll tailor the questions and resources to your new track.",
     },
     {
-      question: "How do I install React?",
+      question: "Is Q-Prep free to use?",
       answer:
-        "You can install React using npm with the command: npm install react.",
+        "Yes, Q-Prep offers free access to many of its features. However, premium features like mock interviews with the AI chatbot and advanced analytics are available with a subscription.",
     },
     {
-      question: "What is React?",
-      answer: "React is a JavaScript library for building user interfaces.",
-    },
-    {
-      question: "What is Tailwind CSS?",
+      question: "How accurate are the interview questions?",
       answer:
-        "Tailwind CSS is a utility-first CSS framework for creating custom designs.",
+        "Our questions are based on real-life interview experiences shared by users and updated regularly to ensure they remain relevant and accurate.",
     },
     {
-      question: "How do I install React?",
+      question: "What should I do if I forget my password?",
       answer:
-        "You can install React using npm with the command: npm install react.",
+        'You can reset your password by clicking the "Forgot Password?" link on the login page. Follow the instructions sent to your email to create a new password.',
+    },
+    {
+      question: "Can I contribute my own interview questions?",
+      answer:
+        'Yes! We encourage users to share their experiences and questions through the "Contribute" section to help the community grow.',
+    },
+    {
+      question: "Does Q-Prep support all career tracks?",
+      answer:
+        "We cover a wide range of tracks, including technology, business, marketing, and more. If you don’t find your track, let us know, and we’ll consider adding it in the future.",
     },
   ];
 

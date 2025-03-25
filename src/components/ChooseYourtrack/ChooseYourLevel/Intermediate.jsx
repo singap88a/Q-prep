@@ -1,10 +1,15 @@
 /* eslint-disable react/prop-types */
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { FaChevronDown, FaChevronUp, FaStar, FaCheck } from "react-icons/fa";
-import { ClipLoader } from "react-spinners"; // استيراد مكون التحميل
+import { FaChevronDown, FaChevronUp, FaStar, FaCheck, FaChevronLeft } from "react-icons/fa";
+import { ClipLoader } from "react-spinners";
 
-function Intermediate({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
+function Intermediate({
+    savedQuestions,
+    setSavedQuestions,
+    isSaved,
+    setIsSaved,
+}) {
     const [intermediateQuestions, setIntermediateQuestions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -34,9 +39,6 @@ function Intermediate({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }
                     throw new Error("Failed to fetch intermediate questions");
                 }
                 const data = await response.json();
-                if (!Array.isArray(data)) {
-                    throw new Error("Invalid data format received from the server.");
-                }
                 setIntermediateQuestions(data);
             } catch (error) {
                 setError(error.message);
@@ -53,12 +55,15 @@ function Intermediate({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }
         try {
             if (!token) return;
 
-            const response = await fetch("https://questionprep.azurewebsites.net/api/Save/GetSaveQuestions", {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const response = await fetch(
+                "https://questionprep.azurewebsites.net/api/Save/GetSaveQuestions",
+                {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
 
             if (!response.ok) {
                 throw new Error("Failed to fetch saved questions");
@@ -67,8 +72,6 @@ function Intermediate({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }
             const data = await response.json();
             console.log("setSavedQuestions", data);
             setSavedQuestions(data);
-
-
         } catch (error) {
             console.error("Error fetching saved questions:", error);
         }
@@ -83,35 +86,39 @@ function Intermediate({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }
     };
 
     const handleSaveQuestion = async (faq) => {
-        try {
-            const response = await fetch("https://questionprep.azurewebsites.net/api/Save/AddtoSave", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    id: faq.questionId,
-                    question: faq.questions,
-                    answer: faq.answers,
-                }),
-            });
+        console.log("isSaved[faq.id]", isSaved[faq.id]);
+        if (!isSaved[faq.id]) {
+            try {
+                const response = await fetch(
+                    "https://questionprep.azurewebsites.net/api/Save/AddtoSave",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`,
+                        },
+                        body: JSON.stringify({
+                            id: faq.questionId,
+                            question: faq.questions,
+                            answer: faq.answers,
+                        }),
+                    }
+                );
 
-            if (!response.ok) {
-                throw new Error("Failed to save question");
+                if (!response.ok) {
+                    throw new Error("Failed to save question");
+                }
+
+                const savedQuestion = await response.json();
+                setSavedQuestions((prev) => [...prev, savedQuestion]);
+                setIsSaved((prev) => [...prev, faq.id]);
+
+                alert("Question saved successfully!");
+            } catch (error) {
+                console.error("Error saving question:", error);
+                alert("This Question Is Aready Saved!");
             }
-
-            const savedQuestion = await response.json();
-            setSavedQuestions((prev) => [...prev, savedQuestion]); 
-            setIsSaved((prev) => [...prev, faq.id]);
-
-
-            alert("Question saved successfully!");
-        } catch (error) {
-            console.error("Error saving question:", error);
-            alert("This Question Is Aready Saved!");
         }
-        // }
         fetchSavedQuestions();
     };
 
@@ -119,16 +126,6 @@ function Intermediate({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }
         const savedIds = savedQuestions.map((q) => q.id);
         setIsSaved(savedIds);
     }, [savedQuestions]);
-
-
-
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center py-20">
-                <ClipLoader color="#4A90E2" size={50} /> {/* تأثير التحميل */}
-            </div>
-        );
-    }
 
     if (error) {
         return (
@@ -138,11 +135,21 @@ function Intermediate({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }
         );
     }
 
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center py-20">
+                <ClipLoader color="#4A90E2" size={50} />
+            </div>
+        );
+    }
+
 
     if (!intermediateQuestions.length) {
         return (
             <div className="flex items-center justify-center h-screen text-gray-600">
-                <p className="text-xl">No intermediate questions available for this framework.</p>
+                <p className="text-xl">
+                    No intermediate questions available for this framework.
+                </p>
             </div>
         );
     }
@@ -152,15 +159,18 @@ function Intermediate({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }
             {/* Header */}
             <div className="flex items-center justify-between py-6">
                 <div className="flex items-center gap-3">
-                    <Link to="/" className="text-2xl font-bold text-primary">
-                        <FaChevronDown />
-                    </Link>
+
+                    <FaChevronLeft className="text-2xl font-bold text-primary" />
+
                     <h1 className="text-2xl font-bold">{frameworkName}</h1>
-                    <h2 className="text-xl text-gray-600">
+                    <FaChevronLeft className="text-2xl font-bold text-primary" />
+
+                    <h2 className="text-2xl text-gray-600">
                         {intermediateQuestions[0]?.levelName || "Intermediate Level"}
                     </h2>
                 </div>
                 <Link
+                    state={{ frameworkId, frameworkName }} // تمرير frameworkName هنا
                     to="/add_question"
                     className="flex items-center gap-2 px-4 py-2 font-bold text-white transition-all duration-300 rounded-full bg-secondary hover:bg-primary"
                 >
@@ -173,7 +183,10 @@ function Intermediate({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }
             <div className="max-w-4xl mx-auto">
                 <div className="grid gap-4 py-6">
                     {intermediateQuestions.map((faq, index) => (
-                        <div key={index} className="p-4 bg-white border rounded-lg shadow-md">
+                        <div
+                            key={index}
+                            className="p-4 bg-white border rounded-lg shadow-md"
+                        >
                             <a
                                 onClick={() => toggleAnswer(index)}
                                 className="flex items-center justify-between w-full text-left"
@@ -187,16 +200,14 @@ function Intermediate({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }
                                             e.stopPropagation();
                                             handleSaveQuestion(faq);
                                         }}
-                                        // aria-label={isSaved[faq.questionId] ? "Unsave question" : "Save question"}
-
+                                        aria-label={
+                                            isSaved[faq.questionId] ? "Unsave question" : "Save question"
+                                        }
                                         className="text-xl text-gray-500 hover:text-primary"
                                         disabled={isSaved.includes(faq.questionId)}
-
                                     >
                                         {/* {savedQuestions.some((saved) => isSaved[saved.id]) ? <FaCheck /> : <FaStar />} */}
                                         {isSaved.includes(faq.questionId) ? <FaCheck /> : <FaStar />}
-
-                                        {/* {isSaved[faq.id] ? <FaCheck /> : <FaStar />} */}
 
                                     </button>
                                     {activeIndex === index ? (
@@ -207,7 +218,7 @@ function Intermediate({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }
                                 </div>
                             </a>
                             {activeIndex === index && (
-                                <p className="mt-3 text-gray-600">{faq.answers}</p>
+                                <p className="mt-3 text-gray-600 whitespace-pre-wrap">{faq.answers}</p>
                             )}
                         </div>
                     ))}

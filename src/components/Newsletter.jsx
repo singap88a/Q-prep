@@ -1,4 +1,20 @@
+import {   useLocation } from "react-router-dom";
+
 function Newsletter() {
+
+  const location = useLocation();
+
+  const hiddenFooterPaths = [
+    "/admin",
+    "/requestQuestionId",
+    "/frameworks",
+    "/test-your-level",
+    "/manage-questions"
+  ];
+  
+  if (hiddenFooterPaths.some(path => location.pathname.startsWith(path))) {
+    return null;
+  }
   return (
     <div className="flex justify-between w-full px-5 py-3 sm:px-10 bg-primary">
       <div className="container flex flex-col items-center gap-6 sm:flex-row">
