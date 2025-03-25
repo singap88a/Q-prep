@@ -1,9 +1,10 @@
 /* eslint-disable react/prop-types */
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { FaChevronDown, FaChevronUp, FaStar, FaCheck, FaChevronLeft } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp,   FaChevronLeft } from "react-icons/fa";
 import { ClipLoader } from "react-spinners";
-
+import { FaRegBookmark } from "react-icons/fa";
+import { FaBookmark } from "react-icons/fa";
 function Intermediate({
     savedQuestions,
     setSavedQuestions,
@@ -180,12 +181,12 @@ function Intermediate({
             </div>
 
             {/* Questions List */}
-            <div className="max-w-4xl mx-auto">
+            <div className="container max-w-4xl mx-auto">
                 <div className="grid gap-4 py-6">
                     {intermediateQuestions.map((faq, index) => (
                         <div
                             key={index}
-                            className="p-4 bg-white border rounded-lg shadow-md"
+                            className="p-4 bg-[#6BE9D112] border rounded-lg shadow-md"
                         >
                             <a
                                 onClick={() => toggleAnswer(index)}
@@ -207,7 +208,7 @@ function Intermediate({
                                         disabled={isSaved.includes(faq.questionId)}
                                     >
                                         {/* {savedQuestions.some((saved) => isSaved[saved.id]) ? <FaCheck /> : <FaStar />} */}
-                                        {isSaved.includes(faq.questionId) ? <FaCheck /> : <FaStar />}
+                                        {isSaved.includes(faq.questionId) ? <FaBookmark  className="text-primary"/> : <FaRegBookmark className="text-primary"/>}
 
                                     </button>
                                     {activeIndex === index ? (

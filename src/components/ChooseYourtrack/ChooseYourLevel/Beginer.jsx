@@ -4,10 +4,14 @@ import { useEffect, useState } from "react";
 import {
   FaChevronDown,
   FaChevronUp,
-  FaStar,
-  FaCheck,
-  FaChevronLeft,
+  FaChevronLeft
+ 
+ 
 } from "react-icons/fa";
+import { FaRegBookmark } from "react-icons/fa";
+import { FaBookmark } from "react-icons/fa";
+
+
 import { ClipLoader } from "react-spinners"; // استيراد مكون التحميل
 
 function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
@@ -154,11 +158,10 @@ function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
       {/* Header */}
       <div className="flex items-center justify-between py-6">
         <div className="flex items-center gap-3">
-          <Link to="/" className="text-2xl font-bold text-primary">
-            <FaChevronDown />
-          </Link>
-          <h1 className="text-2xl font-bold">{frameworkName}</h1>
-          <h2 className="text-xl text-gray-600">{beginnerQuestions[0]?.levelName}</h2>
+        <FaChevronLeft className="text-2xl font-bold text-primary" />
+               <h1 className="text-2xl font-bold">{frameworkName}</h1>
+               <FaChevronLeft className="text-2xl font-bold text-primary" />
+          <h2 className="text-2xl text-gray-600">{beginnerQuestions[0]?.levelName}</h2>
         </div>
         <Link
           to="/add_question"
@@ -170,10 +173,10 @@ function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
       </div>
 
       {/* Questions List */}
-      <div className="max-w-4xl mx-auto">
+      <div className="container max-w-4xl mx-auto">
         <div className="grid gap-4 py-6">
           {beginnerQuestions.map((faq, index) => (
-            <div key={index} className="p-4 bg-white border rounded-lg shadow-md">
+            <div key={index} className="p-4 bg-[#6BE9D112] border rounded-lg shadow-md">
               <a
                 onClick={() => toggleAnswer(index)}
                 className="flex items-center justify-between w-full text-left"
@@ -193,7 +196,7 @@ function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
                     disabled={isSaved.includes(faq.questionId)}
                   >
                     {/* {savedQuestions.some((saved) => isSaved[saved.id]) ? <FaCheck /> : <FaStar />} */}
-                    {isSaved.includes(faq.questionId) ? <FaCheck /> : <FaStar />}
+                    {isSaved.includes(faq.questionId) ? <FaBookmark  className="text-primary"/> : <FaRegBookmark className="text-primary"/>}
 
                   </button>
                   {activeIndex === index ? (
