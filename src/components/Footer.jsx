@@ -4,11 +4,17 @@ import logo from "../assets/home-img/logo.png";
 function Footer() {
   const location = useLocation();
 
-  // إذا كان المسار الحالي يبدأ ب /admin لا تعرض الفوتر
-  if (location.pathname.startsWith("/admin")) {
+  const hiddenFooterPaths = [
+    "/admin",
+    "/requestQuestionId",
+    "/frameworks",
+    "/test-your-level",
+    "/manage-questions"
+  ];
+  
+  if (hiddenFooterPaths.some(path => location.pathname.startsWith(path))) {
     return null;
   }
-
   return (
     <div>
       <footer className="py-3 bg-bac_bg">

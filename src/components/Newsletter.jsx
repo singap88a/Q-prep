@@ -4,8 +4,15 @@ function Newsletter() {
 
   const location = useLocation();
 
-  // إذا كان المسار الحالي يبدأ ب /admin لا تعرض الفوتر
-  if (location.pathname.startsWith("/admin")) {
+  const hiddenFooterPaths = [
+    "/admin",
+    "/requestQuestionId",
+    "/frameworks",
+    "/test-your-level",
+    "/manage-questions"
+  ];
+  
+  if (hiddenFooterPaths.some(path => location.pathname.startsWith(path))) {
     return null;
   }
   return (

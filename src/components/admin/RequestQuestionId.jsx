@@ -3,6 +3,7 @@ import axios from "axios";
 import { ClipLoader } from "react-spinners";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Sidebar from "./Sidebar";
 
 function RequestQuestionId() {
   const [requests, setRequests] = useState([]);
@@ -103,8 +104,10 @@ function RequestQuestionId() {
   }
 
   return (
-    <div className="py-10">
-         <div className="container p-4 py-10">
+    <div className="flex py-10">
+    <Sidebar/>
+
+    <div className="container flex-1 p-4 py-10 md:ml-64">
       <ToastContainer />
       <h1 className="mb-6 text-2xl font-bold">Request QuestionId</h1>
       <div className="space-y-4">

@@ -32,8 +32,8 @@ import ProtectRouting from "./ProtectRouting";
 import FrameworkDashboard from "../components/admin/FrameworkDashboard";
 import TestYourLevel from "../components/admin/TestYourLevel";
 import ManageQuestions from "../components/admin/ManageQuestions";
- import RequestQuestionId from "../components/admin/RequestQuestionId";
- 
+import RequestQuestionId from "../components/admin/RequestQuestionId";
+
 // Lazy Loading for better performance
 const LazyAdmin = lazy(() => import("../pages/admin/Admin"));
 
@@ -85,20 +85,6 @@ function Approuting() {
           }
         />
 
-        {/* Admin Route */}
-        <Route
-          element={<ProtectRouting isLoggedIn={isLoggedIn} role={userRole} />}
-        >
-          <Route
-            path="/admin"
-            element={
-              <Suspense fallback={<div>Loading...</div>}>
-                <LazyAdmin />
-              </Suspense>
-            }
-            
-          />
-        </Route>
         <Route
           path="/frameworks/:mainTrackId"
           element={<FrameworkDashboard />}
@@ -115,19 +101,23 @@ function Approuting() {
         <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
           <Route
             path="/saved_questions"
-            element={<Saved_questions
-              savedQuestions={savedQuestions}
-              setSavedQuestions={setSavedQuestions}
-              isSaved={isSaved}
-              setIsSaved={setIsSaved}
-            />}
+            element={
+              <Saved_questions
+                savedQuestions={savedQuestions}
+                setSavedQuestions={setSavedQuestions}
+                isSaved={isSaved}
+                setIsSaved={setIsSaved}
+              />
+            }
           />
         </Route>
 
         <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
-          <Route path="/profile" element={<Profile  setIsLoggedIn={setIsLoggedIn}/>} />
+          <Route
+            path="/profile"
+            element={<Profile setIsLoggedIn={setIsLoggedIn} />}
+          />
         </Route>
-
 
         <Route path="/community" element={<Community_1 />} />
         <Route path="/community_2" element={<Community_2 />} />
@@ -171,6 +161,19 @@ function Approuting() {
             />
           }
         />
+        {/* Admin Route start */}
+        <Route
+          element={<ProtectRouting isLoggedIn={isLoggedIn} role={userRole} />}
+        >
+          <Route
+            path="/admin"
+            element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <LazyAdmin />
+              </Suspense>
+            }
+          />
+        </Route>
 
         <Route
           path="/test-your-level/:frameworkId"
@@ -180,8 +183,8 @@ function Approuting() {
           path="/manage-questions/:frameworkId"
           element={<ManageQuestions />}
         />
-         <Route path="/requestQuestionId" element={<RequestQuestionId />} />
-
+        <Route path="/requestQuestionId" element={<RequestQuestionId />} />
+        {/* Admin Route end */}
         {/* Error Route */}
 
         <Route path="*" element={<ErrorPage />} />
