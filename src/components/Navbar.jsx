@@ -75,6 +75,7 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
     }
   };
 
+  // eslint-disable-next-line no-unused-vars
   const logOut = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("bookmarkActive");

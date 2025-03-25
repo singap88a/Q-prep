@@ -33,6 +33,7 @@ import FrameworkDashboard from "../components/admin/FrameworkDashboard";
 import TestYourLevel from "../components/admin/TestYourLevel";
 import ManageQuestions from "../components/admin/ManageQuestions";
 import RequestQuestionId from "../components/admin/RequestQuestionId";
+import GeminiSingap from "../pages/GeminiSingap/GeminiSingap";
 
 // Lazy Loading for better performance
 const LazyAdmin = lazy(() => import("../pages/admin/Admin"));
@@ -186,6 +187,13 @@ function Approuting() {
         <Route path="/requestQuestionId" element={<RequestQuestionId />} />
         {/* Admin Route end */}
         {/* Error Route */}
+        <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
+
+        <Route
+          path="/geminiSingap"
+          element={<GeminiSingap />}
+        />
+                </Route>
 
         <Route path="*" element={<ErrorPage />} />
       </Routes>
