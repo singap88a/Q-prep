@@ -21,6 +21,7 @@ function Profile({ setIsLoggedIn }) {
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(localStorage.getItem("token"));
 
+
   const GetUserFunc = async () => {
     if (!token) return;
     try {
@@ -57,6 +58,8 @@ function Profile({ setIsLoggedIn }) {
           ? `https://questionprep.azurewebsites.net/ProfilePhoto/${data.urlPhoto}`
           : userImage
       );
+
+
       console.log("GetUser Data:", data);
     } catch (error) {
       console.error("Error fetching user:", error.message);

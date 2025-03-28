@@ -21,6 +21,8 @@ function Intermediate({
         frameworkName: "Intermediate Level",
     };
 
+    console.log(isSaved)
+
     const token = localStorage.getItem("token"); // Assuming the token is stored in localStorage
 
     useEffect(() => {
@@ -86,8 +88,8 @@ function Intermediate({
     };
 
     const handleSaveQuestion = async (faq) => {
-        console.log("isSaved[faq.id]", isSaved[faq.id]);
-        if (!isSaved[faq.id]) {
+        console.log("isSaved[faq.id]", isSaved[faq.questionId]);
+        if (!isSaved[faq.questionId]) {
             try {
                 const response = await fetch(
                     "https://questionprep.azurewebsites.net/api/Save/AddtoSave",
@@ -111,7 +113,12 @@ function Intermediate({
 
                 const savedQuestion = await response.json();
                 setSavedQuestions((prev) => [...prev, savedQuestion]);
-                setIsSaved((prev) => [...prev, faq.id]);
+                setIsSaved((prev) => ({
+                    ...prev,
+                    [faq.id]: true,  // ✅ Correct object key usage
+                }));
+
+                // setIsSaved((prev) => [...prev, faq.id]);
 
                 alert("Question saved successfully!");
             } catch (error) {
@@ -123,7 +130,10 @@ function Intermediate({
     };
 
     useEffect(() => {
-        const savedIds = savedQuestions.map((q) => q.id);
+        const savedIds = savedQuestions.reduce((acc, q) => {
+            acc[q.id] = true;  // Store as key-value pair { questionId: true }
+            return acc;
+        }, {});
         setIsSaved(savedIds);
     }, [savedQuestions]);
 
@@ -204,10 +214,10 @@ function Intermediate({
                                             isSaved[faq.questionId] ? "Unsave question" : "Save question"
                                         }
                                         className="text-xl text-gray-500 hover:text-primary"
-                                        disabled={isSaved.includes(faq.questionId)}
+                                        disabled={isSaved[faq.questionId]}
                                     >
                                         {/* {savedQuestions.some((saved) => isSaved[saved.id]) ? <FaCheck /> : <FaStar />} */}
-                                        {isSaved.includes(faq.questionId) ? <FaCheck /> : <FaStar />}
+                                        {isSaved[faq.questionId] ? <FaCheck /> : <FaStar />}
 
                                     </button>
                                     {activeIndex === index ? (

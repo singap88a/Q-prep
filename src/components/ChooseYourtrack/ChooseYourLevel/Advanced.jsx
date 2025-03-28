@@ -5,6 +5,7 @@ import { FaChevronDown, FaChevronUp, FaStar, FaCheck, FaChevronLeft } from "reac
 import { ClipLoader } from "react-spinners"; // استيراد مكون التحميل
 
 function Advanced({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
+  console.log("savedQuestions: ", savedQuestions);
   console.log("Isaved: ", isSaved);
   const [advancedQuestions, setAdvancedQuestions] = useState([]);
   console.log("AdvancedQuestions: ", advancedQuestions);
@@ -57,6 +58,11 @@ function Advanced({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
       const data = await response.json();
       console.log("setSavedQuestions", data);
       setSavedQuestions(data);
+
+      // setIsSaved(data.map((q) => q.id));
+      setIsSaved(data.map((q) => String(q.id)));
+
+
     }
     catch (error) {
       console.error("Error fetching saved questions:", error);
@@ -64,8 +70,10 @@ function Advanced({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
   }
 
   useEffect(() => {
-    fetchSavedQuestions();
-  }, []);
+    if (token) {
+      fetchSavedQuestions();
+    }
+  }, [token]);
 
 
   const handleSaveQuestion = async (faq) => {
@@ -88,8 +96,8 @@ function Advanced({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
       }
 
       const savedQuestion = await response.json();
-      setSavedQuestions((prev) => [...prev, savedQuestion]); // تحديث القائمة
-      setIsSaved((prev) => [...prev, faq.id]);
+      setSavedQuestions((prev) => [...prev, savedQuestion]);
+      setIsSaved((prev) => [...prev, faq.questionId]);
 
 
 
@@ -106,10 +114,11 @@ function Advanced({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
     setActiveIndex((prevIndex) => (prevIndex === index ? null : index));
   };
 
-  useEffect(() => {
-    const savedIds = savedQuestions.map((q) => q.id);
-    setIsSaved(savedIds);
-  }, [savedQuestions]);
+  // useEffect(() => {
+  //   const savedIds = savedQuestions.map((q) => q.id);
+  //   console.log(savedIds);
+  //   setIsSaved(savedIds);
+  // }, [savedQuestions]);
 
   if (loading) {
     return (
@@ -186,10 +195,9 @@ function Advanced({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
                     disabled={isSaved.includes(faq.questionId)}
 
                   >
-                    {/* {savedQuestions.some((saved) => isSaved.includes(saved.id)) ? <FaCheck /> : <FaStar />} */}
                     {isSaved.includes(faq.questionId) ? <FaCheck /> : <FaStar />}
 
-                    {/* {isSaved[faq.id] ? <FaCheck /> : <FaStar />} */}
+                    {/* {isSaved[faq.questionId] ? <FaCheck /> : <FaStar />} */}
 
                   </button>
                   {activeIndex === index ? (

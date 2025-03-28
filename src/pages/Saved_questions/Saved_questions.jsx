@@ -1,16 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useId } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { ClipLoader } from "react-spinners";
 
 function Saved_questions({ isSaved, setIsSaved }) {
+    console.log("isSaved :", isSaved)
     const navigate = useNavigate();
     const [savedQuestions, setSavedQuestions] = useState([]);
+    console.log(savedQuestions)
     const [activeIndex, setActiveIndex] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     const token = localStorage.getItem("token");
+    console.log("token:", token)
 
     const fetchSavedQuestions = async () => {
         try {
@@ -21,6 +24,7 @@ function Saved_questions({ isSaved, setIsSaved }) {
             const response = await fetch("https://questionprep.azurewebsites.net/api/Save/GetSaveQuestions", {
                 method: "GET",
                 headers: {
+                    // "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
             });
@@ -30,9 +34,11 @@ function Saved_questions({ isSaved, setIsSaved }) {
             }
 
             const data = await response.json();
+            console.log("data", data);
             setSavedQuestions(data);
+            // const filteredQuestions = data.filter(q => q.token === token);
 
-            // تحديث `isSaved` ليحتوي فقط على الـ ID للأسئلة المحفوظة
+            // setSavedQuestions(filteredQuestions);
             const savedIds = data.map((q) => q.id);
             setIsSaved(savedIds);
 
@@ -43,8 +49,11 @@ function Saved_questions({ isSaved, setIsSaved }) {
             setLoading(false);
         }
     };
+
     useEffect(() => {
-        fetchSavedQuestions();
+        if (token) {
+            fetchSavedQuestions();
+        }
     }, [token]);
 
     const toggleAnswer = (index) => {
@@ -91,7 +100,6 @@ function Saved_questions({ isSaved, setIsSaved }) {
 
 
     // const ClearSavedQuestion = () => {
-
     // }
 
 
