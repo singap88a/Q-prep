@@ -7,6 +7,8 @@ import "swiper/css/scrollbar";
 import { Autoplay, Scrollbar } from "swiper/modules";
 import { Link } from "react-router-dom";
 import { ClipLoader } from "react-spinners"; // استيراد تأثير التحميل
+import fetchData from "../../services/FetchData";
+
 
 const Available_Tracks = () => {
   const [tracks, setTracks] = useState([]); // حالة لتخزين البيانات
@@ -34,6 +36,21 @@ const Available_Tracks = () => {
 
     fetchData();
   }, []);
+
+
+  // useEffect(() => {
+  //   const loadTracks = async () => {
+  //     try {
+  //       const data = await fetchData("/MainTrack/GetMainTrack");
+  //       setTracks(data);
+  //     } catch (error) {
+  //       console.error("Error loading tracks:", error);
+  //     }
+  //   };
+
+  //   loadTracks();
+  // }, []);
+
 
   if (loading) {
     return (

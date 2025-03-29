@@ -4,6 +4,7 @@ import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { ClipLoader } from "react-spinners";
 
 function Saved_questions({ isSaved, setIsSaved }) {
+
     console.log("isSaved :", isSaved)
     const navigate = useNavigate();
     const [savedQuestions, setSavedQuestions] = useState([]);
@@ -13,7 +14,7 @@ function Saved_questions({ isSaved, setIsSaved }) {
     const [error, setError] = useState(null);
 
     const token = localStorage.getItem("token");
-    console.log("token:", token)
+
 
     const fetchSavedQuestions = async () => {
         try {
@@ -56,6 +57,7 @@ function Saved_questions({ isSaved, setIsSaved }) {
         }
     }, [token]);
 
+
     const toggleAnswer = (index) => {
         setActiveIndex((prevIndex) => (prevIndex === index ? null : index));
     };
@@ -86,9 +88,6 @@ function Saved_questions({ isSaved, setIsSaved }) {
                 setSavedQuestions(updatedSavedQuestions);
 
                 setIsSaved((prev) => prev.filter((id) => id !== faq.id));
-
-
-
             } catch (error) {
                 console.error("Error deleting question:", error);
             }
@@ -98,10 +97,9 @@ function Saved_questions({ isSaved, setIsSaved }) {
 
     const isQuestionSaved = (faq) => isSaved.includes(faq.id);
 
-
     // const ClearSavedQuestion = () => {
-    // }
 
+    // }
 
     if (loading) {
         return (

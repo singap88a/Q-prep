@@ -33,6 +33,8 @@ import FrameworkDashboard from "../components/admin/FrameworkDashboard";
 import TestYourLevel from "../components/admin/TestYourLevel";
 import ManageQuestions from "../components/admin/ManageQuestions";
 import RequestQuestionId from "../components/admin/RequestQuestionId";
+import GeminiSingap from "../pages/GeminiSingap/GeminiSingap";
+import ChangePassword from "../components/ChangePassword/ChangePassword";
 
 // Lazy Loading for better performance
 const LazyAdmin = lazy(() => import("../pages/admin/Admin"));
@@ -115,7 +117,11 @@ function Approuting() {
         <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
           <Route
             path="/profile"
-            element={<Profile setIsLoggedIn={setIsLoggedIn} />}
+            element={<Profile
+              setIsLoggedIn={setIsLoggedIn}
+              setSavedQuestions={setSavedQuestions}
+              setIsSaved={setIsSaved}
+            />}
           />
         </Route>
 
@@ -156,8 +162,8 @@ function Approuting() {
             <Advanced
               savedQuestions={savedQuestions}
               setSavedQuestions={setSavedQuestions}
-              isSaved={isSaved}
               setIsSaved={setIsSaved}
+              isSaved={isSaved}
             />
           }
         />
@@ -186,6 +192,25 @@ function Approuting() {
         <Route path="/requestQuestionId" element={<RequestQuestionId />} />
         {/* Admin Route end */}
         {/* Error Route */}
+        <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
+
+          <Route
+            path="/geminiSingap"
+            element={<GeminiSingap />}
+          />
+        </Route>
+
+        <Route
+          element={<ProtectRouting isLoggedIn={isLoggedIn} />}
+        >
+          <Route
+            path="/profile/ChangePassword"
+            element={
+              <ChangePassword />
+            }
+          />
+        </Route>
+
 
         <Route path="*" element={<ErrorPage />} />
       </Routes>

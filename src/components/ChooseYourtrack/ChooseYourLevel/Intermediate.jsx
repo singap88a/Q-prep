@@ -1,9 +1,10 @@
 /* eslint-disable react/prop-types */
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { FaChevronDown, FaChevronUp, FaStar, FaCheck, FaChevronLeft } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp, FaChevronLeft } from "react-icons/fa";
 import { ClipLoader } from "react-spinners";
-
+import { FaRegBookmark } from "react-icons/fa";
+import { FaBookmark } from "react-icons/fa";
 function Intermediate({
     savedQuestions,
     setSavedQuestions,
@@ -72,8 +73,12 @@ function Intermediate({
             }
 
             const data = await response.json();
-            console.log("setSavedQuestions", data);
+
             setSavedQuestions(data);
+            console.log("setSavedQuestions", data);
+
+            setIsSaved(data.map((q) => q.questionId));
+
         } catch (error) {
             console.error("Error fetching saved questions:", error);
         }
@@ -89,53 +94,54 @@ function Intermediate({
 
     const handleSaveQuestion = async (faq) => {
         console.log("isSaved[faq.id]", isSaved[faq.questionId]);
-        if (!isSaved[faq.questionId]) {
-            try {
-                const response = await fetch(
-                    "https://questionprep.azurewebsites.net/api/Save/AddtoSave",
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: `Bearer ${token}`,
-                        },
-                        body: JSON.stringify({
-                            id: faq.questionId,
-                            question: faq.questions,
-                            answer: faq.answers,
-                        }),
-                    }
-                );
 
-                if (!response.ok) {
-                    throw new Error("Failed to save question");
+        try {
+            const response = await fetch(
+                "https://questionprep.azurewebsites.net/api/Save/AddtoSave",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        questionId: faq.questionId,
+                        question: faq.questions,
+                        answer: faq.answers,
+                    }),
                 }
+            );
 
-                const savedQuestion = await response.json();
-                setSavedQuestions((prev) => [...prev, savedQuestion]);
-                setIsSaved((prev) => ({
-                    ...prev,
-                    [faq.id]: true,  // ✅ Correct object key usage
-                }));
+            if (!response.ok) {
+                throw new Error("Failed to save question");
+            }
 
-                // setIsSaved((prev) => [...prev, faq.id]);
+            const savedQuestion = await response.json();
+            setSavedQuestions((prev) => [...prev, savedQuestion]);
+            setIsSaved((prev) => [...prev, faq.questionId]);
 
-                alert("Question saved successfully!");
-            } catch (error) {
+
+            toast.success("Question saved successfully!");
+        }
+        catch (error) {
+            if (!token) {
+                toast.error("Please LogIn First (o _ o) !")
+            }
+            else {
                 console.error("Error saving question:", error);
-                alert("This Question Is Aready Saved!");
+                toast.error("This Question Is Aready Saved!");
             }
         }
         fetchSavedQuestions();
     };
 
-    useEffect(() => {
-        const savedIds = savedQuestions.reduce((acc, q) => {
-            acc[q.id] = true;  // Store as key-value pair { questionId: true }
-            return acc;
-        }, {});
-        setIsSaved(savedIds);
-    }, [savedQuestions]);
+    // useEffect(() => {
+    //     const savedIds = savedQuestions.reduce((acc, q) => {
+    //         acc[q.id] = true;  // Store as key-value pair { questionId: true }
+    //         return acc;
+    //     }, {});
+    //     setIsSaved(savedIds);
+    // }, [savedQuestions]);
 
     if (error) {
         return (
@@ -190,12 +196,12 @@ function Intermediate({
             </div>
 
             {/* Questions List */}
-            <div className="max-w-4xl mx-auto">
+            <div className="container max-w-4xl mx-auto">
                 <div className="grid gap-4 py-6">
                     {intermediateQuestions.map((faq, index) => (
                         <div
                             key={index}
-                            className="p-4 bg-white border rounded-lg shadow-md"
+                            className="p-4 bg-[#6BE9D112] border rounded-lg shadow-md"
                         >
                             <a
                                 onClick={() => toggleAnswer(index)}
@@ -217,7 +223,11 @@ function Intermediate({
                                         disabled={isSaved[faq.questionId]}
                                     >
                                         {/* {savedQuestions.some((saved) => isSaved[saved.id]) ? <FaCheck /> : <FaStar />} */}
-                                        {isSaved[faq.questionId] ? <FaCheck /> : <FaStar />}
+
+                                        {/* {isSaved[faq.questionId] ? <FaCheck /> : <FaStar />} */}
+
+                                        {isSaved.includes(faq.questionId) ? <FaBookmark className="text-primary" /> : <FaRegBookmark className="text-primary" />}
+
 
                                     </button>
                                     {activeIndex === index ? (

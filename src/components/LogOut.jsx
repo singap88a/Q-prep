@@ -1,16 +1,18 @@
- import { FaDoorOpen, FaRunning } from 'react-icons/fa';
+import { FaDoorOpen, FaRunning } from 'react-icons/fa';
 import { motion } from "framer-motion";
 
 
 import { useNavigate } from "react-router-dom";
 
 
-const LogOut = ({ setIsLoggedIn }) => {
+const LogOut = ({ setIsLoggedIn, setSavedQuestions, setIsSaved }) => {
 
     const navigate = useNavigate();
 
 
     const logOut = () => {
+        setSavedQuestions([]);
+        setIsSaved([]);
         localStorage.removeItem("token");
         setIsLoggedIn(false);
         navigate("/login");
@@ -24,8 +26,7 @@ const LogOut = ({ setIsLoggedIn }) => {
                 className="relative z-10 px-2 py-1 overflow-hidden font-semibold text-white bg-red-600 border-2 border-red-600 rounded-md md:px-2 isolation-auto before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-red-600 "
             >
                 <div
-                    className='flex items-center justify-center gap-2'
-                    whileHover="hover" >
+                    className='flex items-center justify-center gap-2' >
                     {/* <p>LogOut</p> */}
                     <motion.span className='px-2 text-xl'
                         initial={{ x: 0 }}

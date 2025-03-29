@@ -1,20 +1,20 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { FaBookmark, FaRegBookmark } from "react-icons/fa";
 import logo from "../assets/home-img/logo.png";
 import userImage from "../assets/user.png";
 
 function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
   const [isOpen, setIsOpen] = useState(false);
   const [hasShadow, setHasShadow] = useState(false);
-  const [isBookmarkClicked, setIsBookmarkClicked] = useState(false);
-
-  const [profileImage, setProfileImage] = useState(userImage); // حالة لتخزين صورة المستخدم
+  const [isBookmarkActive, setIsBookmarkActive] = useState(
+    localStorage.getItem("bookmarkActive") === "true"
+  );
+  const [profileImage, setProfileImage] = useState(userImage);
 
   const location = useLocation();
   const navigate = useNavigate();
-
-
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,11 +26,13 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
     };
   }, []);
 
+  // تحديث حالة الإشارة المرجعية عند تغيير المسار
   useEffect(() => {
-    setIsBookmarkClicked(false);
+    const isSavedQuestionsPage = location.pathname === "/saved_questions";
+    setIsBookmarkActive(isSavedQuestionsPage);
+    localStorage.setItem("bookmarkActive", isSavedQuestionsPage.toString());
   }, [location.pathname]);
 
-  // جلب صورة المستخدم عند تسجيل الدخول
   useEffect(() => {
     if (isLoggedIn) {
       const token = localStorage.getItem("token");
@@ -51,44 +53,53 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
             }
           })
           .catch((error) => {
-            console.error("Error fetching user profile:", error); 
+            console.error("Error fetching user profile:", error);
           });
       }
     }
   }, [isLoggedIn, profileImage]);
-
 
   const closeMenu = () => {
     setIsOpen(false);
   };
 
   const goToSavedQuestions = () => {
-    navigate("/saved_questions", { state: { savedQuestions } });
-    setIsBookmarkClicked(true);
+    const newState = !isBookmarkActive;
+    setIsBookmarkActive(newState);
+    localStorage.setItem("bookmarkActive", newState.toString());
+    
+    if (newState) {
+      navigate("/saved_questions", { state: { savedQuestions } });
+    } else {
+      navigate("/");
+    }
   };
 
-  const logOut = () => {
-    localStorage.removeItem("token");
-    setIsLoggedIn(false);
-    navigate("/login");
-  }
+  
+  // const logOut = () => {
+  //   localStorage.removeItem("token");
+  //   localStorage.removeItem("bookmarkActive");
+  //   setIsLoggedIn(false);
+  //   navigate("/login");
+  // };
 
   useEffect(() => {
     const hasLoggedOut = sessionStorage.getItem("hasLoggedOut");
 
     if (!hasLoggedOut) {
       localStorage.removeItem("token");
+      localStorage.removeItem("bookmarkActive");
       setIsLoggedIn(false);
       sessionStorage.setItem("hasLoggedOut", "true");
     }
   }, []);
 
-
   return (
     <div>
       <nav
-        className={`text-black fixed top-0 left-0 w-full z-50 transition-shadow duration-300 font-bold ${hasShadow ? "bg-white shadow-md shadow-[#4627757c]" : ""
-          }`}
+        className={`text-black fixed top-0 left-0 w-full z-50 transition-shadow duration-300 font-bold ${
+          hasShadow ? "bg-white shadow-md shadow-[#4627757c]" : ""
+        }`}
       >
         <div className="container relative flex items-center justify-between h-16">
           {/* Logo */}
@@ -109,10 +120,11 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
               <Link
                 key={link.to}
                 to={link.to}
-                className={`hover:text-secondary px-2 relative ${location.pathname === link.to
-                  ? "text-secondary after:content-[''] after:absolute after:right-0 after:bottom-[-2px] after:w-[35%] after:h-[2.41px] after:bg-secondary before:content-[''] before:absolute before:left-0 before:top-0 before:w-[35%] before:h-[2.50px] before:bg-secondary "
-                  : ""
-                  }`}
+                className={`hover:text-secondary px-2 relative ${
+                  location.pathname === link.to
+                    ? "text-secondary after:content-[''] after:absolute after:right-0 after:bottom-[-2px] after:w-[35%] after:h-[2.41px] after:bg-secondary before:content-[''] before:absolute before:left-0 before:top-0 before:w-[35%] before:h-[2.50px] before:bg-secondary "
+                    : ""
+                }`}
               >
                 {link.text}
               </Link>
@@ -125,26 +137,21 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
               <div className="absolute flex items-center gap-3 space-x-2 md:right-5 top-3 right-20">
                 <button
                   onClick={goToSavedQuestions}
-                  className={`text-2xl font-semibold  ${isBookmarkClicked ? "text-primary  " : " "
-                    }`}
+                  className="text-2xl font-semibold text-primary"
                 >
-                  <i className="fa-regular fa-bookmark"></i>
+                  {isBookmarkActive ? (
+                    <FaBookmark className="text-primary" />
+                  ) : (
+                    <FaRegBookmark className="text-primary" />
+                  )}
                 </button>
                 <Link to="/profile">
                   <img
-                    src={profileImage} // استخدام صورة المستخدم من الحالة
+                    src={profileImage}
                     alt="User"
                     className="w-10 h-10 rounded-full"
                   />
                 </Link>
-
-                {/* <button
-                  onClick={logOut}
-                  className="hidden px-4 py-1 text-red-600 border-2 border-red-600 rounded-md md:flex"
-                >
-                  Logout
-                </button> */}
-
               </div>
             ) : (
               <div className="hidden gap-4 md:flex">
@@ -218,15 +225,6 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
               ))}
               <div className="flex gap-5 py-5 ml-5">
                 {isLoggedIn ? (
-                  // <button
-                  //   onClick={() => {
-                  //     setIsLoggedIn(false);
-                  //     closeMenu();
-                  //   }}
-                  //   className="px-4 py-1 text-red-600 border-2 border-red-600 rounded-md"
-                  // >
-                  //   Logout
-                  // </button>
                   <></>
                 ) : (
                   <>

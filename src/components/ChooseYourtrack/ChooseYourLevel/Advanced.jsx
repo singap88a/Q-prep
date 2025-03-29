@@ -1,11 +1,15 @@
 /* eslint-disable react/prop-types */
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { FaChevronDown, FaChevronUp, FaStar, FaCheck, FaChevronLeft } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp, FaChevronLeft } from "react-icons/fa";
 import { ClipLoader } from "react-spinners"; // استيراد مكون التحميل
+import { FaRegBookmark } from "react-icons/fa";
+import { FaBookmark } from "react-icons/fa";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Advanced({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
-  console.log("savedQuestions: ", savedQuestions);
   console.log("Isaved: ", isSaved);
   const [advancedQuestions, setAdvancedQuestions] = useState([]);
   console.log("AdvancedQuestions: ", advancedQuestions);
@@ -59,9 +63,8 @@ function Advanced({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
       console.log("setSavedQuestions", data);
       setSavedQuestions(data);
 
-      // setIsSaved(data.map((q) => q.id));
-      setIsSaved(data.map((q) => String(q.id)));
-
+      setIsSaved(data.map((q) => q.questionId ));
+      // setIsSaved(data.map((q) => String(q.id)));
 
     }
     catch (error) {
@@ -85,7 +88,7 @@ function Advanced({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          id: faq.questionId,
+          questionId: faq.questionId,
           question: faq.questions,
           answer: faq.answers,
         }),
@@ -100,12 +103,16 @@ function Advanced({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
       setIsSaved((prev) => [...prev, faq.questionId]);
 
 
-
-      alert("Question saved successfully!");
+      toast.success("Question saved successfully!");
     }
     catch (error) {
-      console.error("Error saving question:", error);
-      alert("This Question Is Aready Saved!");
+      if (!token) {
+        toast.error("Please LogIn First (o _ o) !")
+      }
+      else {
+        console.error("Error saving question:", error);
+        toast.error("This Question Is Aready Saved!");
+      }
     }
   }
 
@@ -136,6 +143,7 @@ function Advanced({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
     );
   }
 
+  // if Fetch not Work
   if (!advancedQuestions.length) {
     return (
       <div className="flex items-center justify-center h-screen text-gray-600">
@@ -146,6 +154,8 @@ function Advanced({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
 
   return (
     <div className="container px-4 mx-auto">
+
+      <ToastContainer />
       {/* Header */}
       <div className="flex items-center justify-between py-6">
         <div className="flex items-center gap-3">
@@ -168,12 +178,12 @@ function Advanced({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
       </div>
 
 
-      <div className="max-w-4xl mx-auto">
+      <div className="container max-w-4xl mx-auto">
         <div className="grid gap-4 py-6">
           {advancedQuestions.map((faq, index) => (
             <div
               key={index}
-              className="p-4 bg-white border rounded-lg shadow-md"
+              className="p-4 bg-[#6BE9D112] border rounded-lg shadow-md"
             >
               <a
                 onClick={() => toggleAnswer(index)}
@@ -195,7 +205,10 @@ function Advanced({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
                     disabled={isSaved.includes(faq.questionId)}
 
                   >
-                    {isSaved.includes(faq.questionId) ? <FaCheck /> : <FaStar />}
+                    {/* {isSaved.includes(faq.questionId) ? <FaCheck /> : <FaStar />} */}
+
+                    {isSaved.includes(faq.questionId) ? <FaBookmark className="text-primary" /> : <FaRegBookmark className="text-primary" />}
+
 
                     {/* {isSaved[faq.questionId] ? <FaCheck /> : <FaStar />} */}
 

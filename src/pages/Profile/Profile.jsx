@@ -5,8 +5,10 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import userImage from "../../assets/user.png";
 import LogOut from "../../components/LogOut";
+import { FaKey } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
-function Profile({ setIsLoggedIn }) {
+function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
   const [originalData, setOriginalData] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [phone, setPhone] = useState("");
@@ -20,6 +22,8 @@ function Profile({ setIsLoggedIn }) {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(localStorage.getItem("token"));
+  const [userId, setUserId] = useState(null);
+
 
 
   const GetUserFunc = async () => {
@@ -58,6 +62,8 @@ function Profile({ setIsLoggedIn }) {
           ? `https://questionprep.azurewebsites.net/ProfilePhoto/${data.urlPhoto}`
           : userImage
       );
+      setUserId(data.id);
+
 
 
       console.log("GetUser Data:", data);
@@ -68,6 +74,7 @@ function Profile({ setIsLoggedIn }) {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     GetUserFunc();
   }, [token]);
@@ -130,24 +137,10 @@ function Profile({ setIsLoggedIn }) {
     }
   };
 
-  // Reset
+  // Dicard Changes
   const DiscardChanges = () => {
-    // if (originalData) {
-    //   setFirstName(originalData.firstName);
-    //   setLastName(originalData.lastName);
-    //   setEmail(originalData.email);
-    //   setAddress(originalData.address);
-    //   setLocation(originalData.location);
-    //   setDob(originalData.birthDay);
-    //   setPhone(originalData.phoneNamber);
-    //   setProfileImage(
-    //     originalData.urlPhoto
-    //       ? `https://questionprep.azurewebsites.net/ProfilePhoto/${originalData.urlPhoto}`
-    //       : userImage
-    //   );
-    // }
-    GetUserFunc();
     setIsEditMode(false);
+    GetUserFunc();
   };
 
   const handleImageUpload = (event) => {
@@ -180,31 +173,49 @@ function Profile({ setIsLoggedIn }) {
     >
       <div className="flex items-center gap-3 mb-8">
         <i className="text-2xl font-bold cursor-pointer fa-solid fa-chevron-left text-primary"></i>
-        <motion.img
-          src={profileImage}
-          alt="Photo not load"
-          className="w-20 h-20 rounded-full"
-          whileHover={{ scale: 1.1 }}
-          transition={{ type: "spring", stiffness: 300 }}
-        />
-        {isEditMode &&
-          <motion.label
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0, transition: { delay: 0.5 } }}
-            exit={{ opacity: 0, y: -20, transition: { delay: 0.5 } }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="relative z-10 px-2 mx-2 py-1 overflow-hidden font-bold text-white border-2 rounded-md cursor-pointer md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary"
-          >
-            <input
-              type="file"
-              className="hidden"
-              onChange={handleImageUpload}
-              disabled={!isEditMode}
+        <div className="w-full flex items-center gap-3 justify-between">
+
+          <div className="flex items-center gap-3 ">
+            <motion.img
+              src={profileImage}
+              alt="Photo not load"
+              className="w-20 h-20 rounded-full"
+              whileHover={{ scale: 1.1 }}
+              transition={{ type: "spring", stiffness: 300 }}
             />
-            Edit photo
-          </motion.label>
-        }
+            {isEditMode &&
+              <motion.label
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0, transition: { delay: 0.5 } }}
+                exit={{ opacity: 0, y: -20, transition: { delay: 0.5 } }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="relative z-10 px-2 mx-2 py-1 overflow-hidden font-bold text-white border-2 rounded-md cursor-pointer md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary"
+              >
+                <input
+                  type="file"
+                  className="hidden"
+                  onChange={handleImageUpload}
+                  disabled={!isEditMode}
+                />
+                Edit photo
+              </motion.label>
+            }
+          </div>
+          {isEditMode &&
+            <Link to='ChangePassword'>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0, transition: { delay: 0.5 } }}
+                exit={{ opacity: 0, y: -20, transition: { delay: 0.5 } }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="relative z-10 px-2 mx-2 py-1 overflow-hidden font-bold text-white border-2 rounded-md cursor-pointer md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary ">
+                ChangePassword
+              </motion.div>
+            </Link>
+          }
+        </div>
       </div>
 
       <form onSubmit={(e) => e.preventDefault()}>
@@ -372,7 +383,11 @@ function Profile({ setIsLoggedIn }) {
           </AnimatePresence>
 
           {/* Logout */}
-          <LogOut setIsLoggedIn={setIsLoggedIn} />
+          <LogOut
+            setIsLoggedIn={setIsLoggedIn}
+            setSavedQuestions={setSavedQuestions}
+            setIsSaved={setIsSaved}
+          />
         </div>
       </form>
     </motion.div>

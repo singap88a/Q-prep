@@ -47,15 +47,14 @@ function Hero() {
                   Choose your track now!
                 </motion.div>
               </Link>
-              {/* <Link to="/test_your_level">
+              <Link to="/geminiSingap">
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="relative z-10 px-2 py-2 overflow-hidden font-bold border-2 rounded-md md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-secondary before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 text-secondary hover:text-white"
                 >
-                  Test your level
-                </motion.div>
-              </Link> */}
+Gemini             </motion.div>
+              </Link>
             </motion.div>
           </div>
           <motion.div
