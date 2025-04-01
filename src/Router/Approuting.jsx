@@ -1,3 +1,6 @@
+
+import { UserProvider } from '../Context/UserContext';
+
 import {
   BrowserRouter as Router,
   Routes,
@@ -35,6 +38,7 @@ import ManageQuestions from "../components/admin/ManageQuestions";
 import RequestQuestionId from "../components/admin/RequestQuestionId";
 import GeminiSingap from "../pages/GeminiSingap/GeminiSingap";
 import ChangePassword from "../components/ChangePassword/ChangePassword";
+import Icon_Gemini from "../pages/GeminiSingap/Icon_Gemini";
 
 // Lazy Loading for better performance
 const LazyAdmin = lazy(() => import("../pages/admin/Admin"));
@@ -60,7 +64,9 @@ function Approuting() {
   }, [userRole]);
 
   return (
-    <Router>
+    <UserProvider>
+
+        <Router>
       <ScrollToTop />
       <Navbar
         isLoggedIn={isLoggedIn}
@@ -214,9 +220,13 @@ function Approuting() {
 
         <Route path="*" element={<ErrorPage />} />
       </Routes>
+       <Icon_Gemini /> 
+
       <Newsletter />
       <Footer />
-    </Router>
+    </Router>  
+    </UserProvider>
+
   );
 }
 
