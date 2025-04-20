@@ -35,6 +35,8 @@ import ManageQuestions from "../components/admin/ManageQuestions";
 import RequestQuestionId from "../components/admin/RequestQuestionId";
 import GeminiSingap from "../pages/GeminiSingap/GeminiSingap";
 import ChangePassword from "../components/ChangePassword/ChangePassword";
+import PrivateRouting from "./PrivateRouting";
+import Unauthorized from "../components/Unauthorized/Unauthorized";
 
 // Lazy Loading for better performance
 const LazyAdmin = lazy(() => import("../pages/admin/Admin"));
@@ -167,17 +169,23 @@ function Approuting() {
             />
           }
         />
+
+          {/* Unauthorized Page */}
+        <Route
+          element={<ProtectRouting isLoggedIn={isLoggedIn} />}
+        >
+          <Route path="/Unauthorized" element={<Unauthorized />} />
+        </Route>
+
         {/* Admin Route start */}
         <Route
-          element={<ProtectRouting isLoggedIn={isLoggedIn} role={userRole} />}
+          element={<PrivateRouting />}
         >
-          <Route
-            path="/admin"
-            element={
-              <Suspense fallback={<div>Loading...</div>}>
-                <LazyAdmin />
-              </Suspense>
-            }
+          <Route path="/admin" element={
+            <Suspense fallback={<div>Loading...</div>}>
+              <LazyAdmin />
+            </Suspense>
+          }
           />
         </Route>
 

@@ -7,6 +7,8 @@ import userImage from "../../assets/user.png";
 import LogOut from "../../components/LogOut";
 import { FaKey } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import PrivateRoute from "../../Router/PrivateRouting";
+
 
 function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
   const [originalData, setOriginalData] = useState(null);
@@ -390,6 +392,7 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
           />
         </div>
       </form>
+
     </motion.div>
   );
 }
