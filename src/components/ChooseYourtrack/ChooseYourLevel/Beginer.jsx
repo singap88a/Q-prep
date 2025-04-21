@@ -168,21 +168,24 @@ function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
     <div className="container px-4 mx-auto">
       <ToastContainer />
       {/* Header */}
-      <div className="flex items-center justify-between py-6">
-        <div className="flex items-center gap-3">
-          <FaChevronLeft className="text-2xl font-bold text-primary" />
-          <h1 className="text-2xl font-bold">{frameworkName}</h1>
-          <FaChevronLeft className="text-2xl font-bold text-primary" />
-          <h2 className="text-2xl text-gray-600">{beginnerQuestions[0]?.levelName}</h2>
-        </div>
-        <Link
-          to="/add_question"
-          className="flex items-center gap-2 px-4 py-2 font-bold text-white transition-all duration-300 rounded-full bg-secondary hover:bg-primary"
-        >
-          <span className="text-xl">+</span>
-          <span>Add Question</span>
-        </Link>
-      </div>
+      <div className="flex flex-col gap-4 py-6 md:flex-row md:items-center md:justify-between">
+  <div className="flex items-center gap-3">
+    <FaChevronLeft className="text-2xl font-bold text-primary" />
+    <h1 className="text-2xl font-bold">{frameworkName}</h1>
+    <FaChevronLeft className="text-2xl font-bold text-primary" />
+    <h2 className="text-2xl text-gray-600">{beginnerQuestions[0]?.levelName}</h2>
+  </div>
+
+  <Link
+    state={{ frameworkId, frameworkName }}
+    to="/add_question"
+    className="flex items-center self-start gap-2 px-4 py-2 font-bold text-white transition-all duration-300 rounded-full bg-secondary hover:bg-primary md:self-auto"
+  >
+    <span className="text-xl">+</span>
+    <span>Add Question</span>
+  </Link>
+</div>
+
 
       {/* Questions List */}
       <div className="container max-w-4xl mx-auto">

@@ -14,7 +14,7 @@ function Sidebar() {
       icon: <FaHome />,
     },
 
-    { path: "/admin/users", name: "Users", icon: <FaUsers /> },
+    { path: "/adminusers ", name: "Users", icon: <FaUsers /> },
     { path: "/admin/settings", name: "Settings", icon: <FaCog /> },
   ];
   return (

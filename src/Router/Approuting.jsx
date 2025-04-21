@@ -39,6 +39,7 @@ import RequestQuestionId from "../components/admin/RequestQuestionId";
 import GeminiSingap from "../pages/GeminiSingap/GeminiSingap";
 import ChangePassword from "../components/ChangePassword/ChangePassword";
 import Icon_Gemini from "../pages/GeminiSingap/Icon_Gemini";
+import AdminUsers from '../components/admin/AdminUsers';
 
 // Lazy Loading for better performance
 const LazyAdmin = lazy(() => import("../pages/admin/Admin"));
@@ -196,6 +197,8 @@ function Approuting() {
           element={<ManageQuestions />}
         />
         <Route path="/requestQuestionId" element={<RequestQuestionId />} />
+        <Route path="/adminusers" element={<AdminUsers />} />
+
         {/* Admin Route end */}
         {/* Error Route */}
         <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
