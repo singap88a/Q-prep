@@ -7,7 +7,9 @@ import userImage from "../../assets/user.png";
 import LogOut from "../../components/LogOut";
 import { FaKey } from "react-icons/fa";
 import { Link } from "react-router-dom";
+
 import PrivateRoute from "../../Router/PrivateRouting";
+import { useUser } from "../../Context/UserContext";
 
 
 function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
@@ -25,6 +27,7 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [userId, setUserId] = useState(null);
+  const { setProfileImage: setGlobalProfileImage } = useUser();
 
 
 
@@ -78,17 +81,61 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
   };
 
   useEffect(() => {
-    GetUserFunc();
-  }, [token]);
+    const fetchUserData = async () => {
+      if (!token) return;
+      
+      try {
+        const response = await fetch(
+          `https://questionprep.azurewebsites.net/api/Account/GetUser`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+  
+        if (!response.ok) {
+          throw new Error(`Failed to fetch user: ${response.status}`);
+        }
+  
+        const data = await response.json();
+        setOriginalData(data);
+        setFirstName(data.firstName);
+        setLastName(data.lastName);
+        setEmail(data.email);
+        setAddress(data.address);
+        setLocation(data.location);
+        setDob(data.birthDay);
+        setPhone(data.phoneNamber);
+  
+        const newImage = data.urlPhoto
+          ? `https://questionprep.azurewebsites.net/ProfilePhoto/${data.urlPhoto}`
+          : userImage;
+  
+        setProfileImage(newImage);
+        setGlobalProfileImage(newImage); // تحديث الصورة في الكون텍ست العالمي
+  
+      } catch (error) {
+        console.error("Error fetching user:", error.message);
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchUserData();
+  }, [token, setGlobalProfileImage]); // أضف setGlobalProfileImage إلى dependencies
 
   // Save Changes
   const handleSave = async () => {
     if (!token) {
       throw new Error("Token Not found");
     }
-
+  
     setLoading(true);
-
+  
     const formData = new FormData();
     formData.append("firstName", firstName);
     formData.append("lastName", lastName);
@@ -97,38 +144,39 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
     formData.append("birthDay", dob);
     formData.append("address", address);
     formData.append("location", location);
-
-
+  
     const fileInput = document.querySelector('input[type="file"]');
-    if (fileInput && fileInput.files[0]) {
+    if (fileInput?.files[0]) {
       formData.append("Photo", fileInput.files[0]);
     }
-
-    console.log("Updated Profile Data:", formData);
+  
     try {
       const response = await fetch(
         `https://questionprep.azurewebsites.net/api/Account/EditUser`,
         {
           method: "PUT",
-          mode: "cors",
           headers: {
             Authorization: `Bearer ${token}`,
           },
           body: formData,
         }
       );
+  
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Failed to edit profile: ${response.status} - ${errorText}`);
       }
-
+  
       const data = await response.json();
-      setProfileImage(
-        data.urlPhoto
-          ? `https://questionprep.azurewebsites.net/ProfilePhoto/${data.urlPhoto}`
-          : userImage
-      );
-
+      const newImage = data.urlPhoto
+        ? `https://questionprep.azurewebsites.net/ProfilePhoto/${data.urlPhoto}`
+        : userImage;
+  
+      // تحديث الصورة محلياً وفي الكون텍ست العالمي
+      setProfileImage(newImage);
+      setGlobalProfileImage(newImage);
+      
+      // إظهار رسالة نجاح
       console.log("Profile edited successfully");
       setIsEditMode(false);
     } catch (error) {
@@ -175,7 +223,7 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
     >
       <div className="flex items-center gap-3 mb-8">
         <i className="text-2xl font-bold cursor-pointer fa-solid fa-chevron-left text-primary"></i>
-        <div className="w-full flex items-center gap-3 justify-between">
+        <div className="flex items-center justify-between w-full gap-3">
 
           <div className="flex items-center gap-3 ">
             <motion.img
@@ -192,7 +240,7 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
                 exit={{ opacity: 0, y: -20, transition: { delay: 0.5 } }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="relative z-10 px-2 mx-2 py-1 overflow-hidden font-bold text-white border-2 rounded-md cursor-pointer md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary"
+                className="relative z-10 px-2 py-1 mx-2 overflow-hidden font-bold text-white border-2 rounded-md cursor-pointer md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary"
               >
                 <input
                   type="file"
@@ -212,7 +260,7 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
                 exit={{ opacity: 0, y: -20, transition: { delay: 0.5 } }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="relative z-10 px-2 mx-2 py-1 overflow-hidden font-bold text-white border-2 rounded-md cursor-pointer md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary ">
+                className="relative z-10 px-2 py-1 mx-2 overflow-hidden font-bold text-white border-2 rounded-md cursor-pointer md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary ">
                 ChangePassword
               </motion.div>
             </Link>
