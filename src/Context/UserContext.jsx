@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types */
-// في ملف جديد مثل UserContext.js
 import { createContext, useState, useContext } from 'react';
 
 const UserContext = createContext();
