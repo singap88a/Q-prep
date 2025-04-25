@@ -53,9 +53,10 @@ function Approuting() {
     return JSON.parse(localStorage.getItem("isLoggedIn"));
   });
 
-  const [userRole, setUserRole] = useState(() => {
-    return localStorage.getItem("role");
-  });
+  // const [userRole, setUserRole] = useState(localStorage.getItem("role"));
+  // const [userRole, setUserRole] = useState();
+
+  // console.log("userRole",userRole)
 
   const [savedQuestions, setSavedQuestions] = useState([]);
   const [isSaved, setIsSaved] = useState([]);
@@ -64,58 +65,93 @@ function Approuting() {
     localStorage.setItem("isLoggedIn", JSON.stringify(isLoggedIn));
   }, [isLoggedIn]);
 
-  useEffect(() => {
-    localStorage.setItem("role", userRole);
-  }, [userRole]);
+  // useEffect(() => {
+  //   localStorage.setItem("role", userRole);
+  // }, [userRole]);
+
+
 
   return (
     <UserProvider>
 
-        <Router>
-      <ScrollToTop />
-      <Navbar
-        isLoggedIn={isLoggedIn}
-        setIsLoggedIn={setIsLoggedIn}
-        savedQuestions={savedQuestions}
-      />
-
-      <Routes>
-        <Route index element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/choosetrack" element={<ChooseYourTrack />} />
-
-        {/* Auth Routes */}
-        <Route
-          path="/login"
-          element={
-            <Login setIsLoggedIn={setIsLoggedIn} setUserRole={setUserRole} />
-          }
-        />
-        <Route
-          path="/sign-up"
-          element={
-            <Sign_up setIsLoggedIn={setIsLoggedIn} setUserRole={setUserRole} />
-          }
+      <Router>
+        <ScrollToTop />
+        <Navbar
+          isLoggedIn={isLoggedIn}
+          setIsLoggedIn={setIsLoggedIn}
+          savedQuestions={savedQuestions}
         />
 
-        <Route
-          path="/frameworks/:mainTrackId"
-          element={<FrameworkDashboard />}
-        />
+        <Routes>
+          <Route index element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/choosetrack" element={<ChooseYourTrack />} />
 
-        <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
-          <Route path="/add_question" element={<Add_question />} />
-        </Route>
-        {/* Other Routes */}
-        <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
-          <Route path="/test_your_level" element={<Test_your_level />} />
-        </Route>
-
-        <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
+          {/* Auth Routes */}
           <Route
-            path="/saved_questions"
+            path="/login"
             element={
-              <Saved_questions
+              <Login setIsLoggedIn={setIsLoggedIn} />
+            }
+          />
+          <Route
+            path="/sign-up"
+            element={
+              <Sign_up setIsLoggedIn={setIsLoggedIn} />
+            }
+          />
+
+          <Route
+            path="/frameworks/:mainTrackId"
+            element={<FrameworkDashboard />}
+          />
+
+          <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
+            <Route path="/add_question" element={<Add_question />} />
+          </Route>
+          {/* Other Routes */}
+          <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
+            <Route path="/test_your_level" element={<Test_your_level />} />
+          </Route>
+
+          <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
+            <Route
+              path="/saved_questions"
+              element={
+                <Saved_questions
+                  savedQuestions={savedQuestions}
+                  setSavedQuestions={setSavedQuestions}
+                  isSaved={isSaved}
+                  setIsSaved={setIsSaved}
+                />
+              }
+            />
+          </Route>
+
+          <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
+            <Route
+              path="/profile"
+              element={<Profile
+                setIsLoggedIn={setIsLoggedIn}
+                setSavedQuestions={setSavedQuestions}
+                setIsSaved={setIsSaved}
+              />}
+            />
+          </Route>
+
+          <Route path="/community" element={<Community_1 />} />
+          <Route path="/community_2" element={<Community_2 />} />
+          <Route path="/choosetrack/track/:trackId" element={<TrackDetails />} />
+
+          <Route
+            path="/choosetrack/track/:trackId/level"
+            element={<ChooseYourLevel />}
+          />
+
+          <Route
+            path="/choosetrack/track/:trackId/level/beginer"
+            element={
+              <Beginer
                 savedQuestions={savedQuestions}
                 setSavedQuestions={setSavedQuestions}
                 isSaved={isSaved}
@@ -123,119 +159,95 @@ function Approuting() {
               />
             }
           />
-        </Route>
-
-        <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
           <Route
-            path="/profile"
-            element={<Profile
-              setIsLoggedIn={setIsLoggedIn}
-              setSavedQuestions={setSavedQuestions}
-              setIsSaved={setIsSaved}
-            />}
-          />
-        </Route>
-
-        <Route path="/community" element={<Community_1 />} />
-        <Route path="/community_2" element={<Community_2 />} />
-        <Route path="/choosetrack/track/:trackId" element={<TrackDetails />} />
-
-        <Route
-          path="/choosetrack/track/:trackId/level"
-          element={<ChooseYourLevel />}
-        />
-
-        <Route
-          path="/choosetrack/track/:trackId/level/beginer"
-          element={
-            <Beginer
-              savedQuestions={savedQuestions}
-              setSavedQuestions={setSavedQuestions}
-              isSaved={isSaved}
-              setIsSaved={setIsSaved}
-            />
-          }
-        />
-        <Route
-          path="/choosetrack/track/:trackId/level/Intermediate"
-          element={
-            <Intermediate
-              savedQuestions={savedQuestions}
-              setSavedQuestions={setSavedQuestions}
-              isSaved={isSaved}
-              setIsSaved={setIsSaved}
-            />
-          }
-        />
-        <Route
-          path="/choosetrack/track/:trackId/level/advanced"
-          element={
-            <Advanced
-              savedQuestions={savedQuestions}
-              setSavedQuestions={setSavedQuestions}
-              setIsSaved={setIsSaved}
-              isSaved={isSaved}
-            />
-          }
-        />
-
-          {/* Unauthorized Page */}
-        <Route
-          element={<ProtectRouting isLoggedIn={isLoggedIn} />}
-        >
-          <Route path="/Unauthorized" element={<Unauthorized />} />
-        </Route>
-
-        {/* Admin Route start */}
-        <Route
-          element={<PrivateRouting />}
-        >
-          <Route path="/admin" element={
-            <Suspense fallback={<div>Loading...</div>}>
-              <LazyAdmin />
-            </Suspense>
-          }
-          />
-        </Route>
-
-        <Route
-          path="/test-your-level/:frameworkId"
-          element={<TestYourLevel />}
-        />
-        <Route
-          path="/manage-questions/:frameworkId"
-          element={<ManageQuestions />}
-        />
-        <Route path="/requestQuestionId" element={<RequestQuestionId />} />
-        {/* Admin Route end */}
-        {/* Error Route */}
-        <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
-
-          <Route
-            path="/geminiSingap"
-            element={<GeminiSingap />}
-          />
-        </Route>
-
-        <Route
-          element={<ProtectRouting isLoggedIn={isLoggedIn} />}
-        >
-          <Route
-            path="/profile/ChangePassword"
+            path="/choosetrack/track/:trackId/level/Intermediate"
             element={
-              <ChangePassword />
+              <Intermediate
+                savedQuestions={savedQuestions}
+                setSavedQuestions={setSavedQuestions}
+                isSaved={isSaved}
+                setIsSaved={setIsSaved}
+              />
             }
           />
-        </Route>
+          <Route
+            path="/choosetrack/track/:trackId/level/advanced"
+            element={
+              <Advanced
+                savedQuestions={savedQuestions}
+                setSavedQuestions={setSavedQuestions}
+                setIsSaved={setIsSaved}
+                isSaved={isSaved}
+              />
+            }
+          />
+
+          {/* Unauthorized Page */}
+          <Route
+            element={<ProtectRouting isLoggedIn={isLoggedIn} />}
+          >
+            <Route path="/Unauthorized" element={<Unauthorized />} />
+          </Route>
+
+          {/* Admin Route start */}
+          <Route element={<PrivateRouting />}>
+            <Route path="/admin" element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <LazyAdmin />
+              </Suspense>
+            }
+            />
+          </Route>
+
+          <Route element={<PrivateRouting />}>
+            <Route
+              path="/test-your-level/:frameworkId"
+              element={<TestYourLevel />}
+            />
+          </Route>
+
+          <Route element={<PrivateRouting />}>
+            <Route
+              path="/manage-questions/:frameworkId"
+              element={<ManageQuestions />}
+            />
+          </Route>
+
+          <Route element={<PrivateRouting />}>
+            <Route path="/requestQuestionId" element={<RequestQuestionId />} />
+          </Route>
+
+          {/* Admin Route end */}
+
+          {/* Error Route */}
+          <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
+            <Route
+              path="/geminiSingap"
+              element={<GeminiSingap />}
+            />
+          </Route>
+
+          <Route
+            element={<ProtectRouting isLoggedIn={isLoggedIn} />}
+          >
+            <Route
+              path="/profile/ChangePassword"
+              element={
+                <ChangePassword />
+              }
+            />
+          </Route>
+
+           {/* Error Route End */}
 
 
-        <Route path="*" element={<ErrorPage />} />
-      </Routes>
-       <Icon_Gemini /> 
+          <Route path="*" element={<ErrorPage />} />
+        </Routes>
+        <Icon_Gemini />
 
-      <Newsletter />
-      <Footer />
-    </Router>  
+        <Newsletter />
+        <Footer />
+      </Router>
     </UserProvider>
 
   );

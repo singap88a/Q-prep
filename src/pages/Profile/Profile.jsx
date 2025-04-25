@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 
 import PrivateRoute from "../../Router/PrivateRouting";
 import { useUser } from "../../Context/UserContext";
+import { AuthContext } from "../../components/Auth/AuthContext";
 
 
 function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
@@ -28,6 +29,9 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [userId, setUserId] = useState(null);
   const { setProfileImage: setGlobalProfileImage } = useUser();
+
+  const { userRole } = useContext(AuthContext)
+  console.log(userRole);
 
 
 
@@ -83,7 +87,7 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
   useEffect(() => {
     const fetchUserData = async () => {
       if (!token) return;
-      
+
       try {
         const response = await fetch(
           `https://questionprep.azurewebsites.net/api/Account/GetUser`,
@@ -95,11 +99,11 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
             },
           }
         );
-  
+
         if (!response.ok) {
           throw new Error(`Failed to fetch user: ${response.status}`);
         }
-  
+
         const data = await response.json();
         setOriginalData(data);
         setFirstName(data.firstName);
@@ -109,14 +113,14 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
         setLocation(data.location);
         setDob(data.birthDay);
         setPhone(data.phoneNamber);
-  
+
         const newImage = data.urlPhoto
           ? `https://questionprep.azurewebsites.net/ProfilePhoto/${data.urlPhoto}`
           : userImage;
-  
+
         setProfileImage(newImage);
         setGlobalProfileImage(newImage); // تحديث الصورة في الكون텍ست العالمي
-  
+
       } catch (error) {
         console.error("Error fetching user:", error.message);
         setError(error.message);
@@ -124,7 +128,7 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
         setLoading(false);
       }
     };
-  
+
     fetchUserData();
   }, [token, setGlobalProfileImage]); // أضف setGlobalProfileImage إلى dependencies
 
@@ -133,9 +137,9 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
     if (!token) {
       throw new Error("Token Not found");
     }
-  
+
     setLoading(true);
-  
+
     const formData = new FormData();
     formData.append("firstName", firstName);
     formData.append("lastName", lastName);
@@ -144,12 +148,12 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
     formData.append("birthDay", dob);
     formData.append("address", address);
     formData.append("location", location);
-  
+
     const fileInput = document.querySelector('input[type="file"]');
     if (fileInput?.files[0]) {
       formData.append("Photo", fileInput.files[0]);
     }
-  
+
     try {
       const response = await fetch(
         `https://questionprep.azurewebsites.net/api/Account/EditUser`,
@@ -161,21 +165,21 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
           body: formData,
         }
       );
-  
+
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Failed to edit profile: ${response.status} - ${errorText}`);
       }
-  
+
       const data = await response.json();
       const newImage = data.urlPhoto
         ? `https://questionprep.azurewebsites.net/ProfilePhoto/${data.urlPhoto}`
         : userImage;
-  
+
       // تحديث الصورة محلياً وفي الكون텍ست العالمي
       setProfileImage(newImage);
       setGlobalProfileImage(newImage);
-      
+
       // إظهار رسالة نجاح
       console.log("Profile edited successfully");
       setIsEditMode(false);

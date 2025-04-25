@@ -14,6 +14,7 @@ const LogOut = ({ setIsLoggedIn, setSavedQuestions, setIsSaved }) => {
         setSavedQuestions([]);
         setIsSaved([]);
         localStorage.removeItem("token");
+        localStorage.removeItem("role")
         setIsLoggedIn(false);
         navigate("/login");
     }
