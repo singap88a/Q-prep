@@ -138,7 +138,8 @@ function Approuting() {
         </Route>
 
         <Route path="/community" element={<Community_1 />} />
-        <Route path="/community_2" element={<Community_2 />} />
+         <Route path="/community/:groupId" element={<Community_2 />} />
+
         <Route path="/choosetrack/track/:trackId" element={<TrackDetails />} />
 
         <Route
