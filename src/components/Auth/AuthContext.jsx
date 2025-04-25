@@ -11,9 +11,14 @@ const AuthProvider  = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(() => {
         return JSON.parse(localStorage.getItem("isLoggedIn")) || false;
     });
-    const [userRole, setUserRole] = useState(() => {
-        return localStorage.getItem("role") || null;
-    });
+
+    //   const [userRole, setUserRole] = useState(localStorage.getItem("role"));
+    // console.log("UserROle: " , userRole)
+
+
+    const userRole = JSON.parse(localStorage.getItem("role"));
+    console.log(userRole);
+    // const [userRole, setUserRole] = useState([]);
 
     useEffect(() => {
         if (token) {
@@ -21,25 +26,25 @@ const AuthProvider  = ({ children }) => {
         }
     }, [token]);
 
-    const login = (token, role) => {
-        localStorage.setItem("token", token);
-        localStorage.setItem("isLoggedIn", true);
-        localStorage.setItem("role", role);
+    // const login = (token, userRole) => {
+    //     localStorage.setItem("token", token);
+    //     localStorage.setItem("isLoggedIn", true);
+    //     localStorage.setItem("role", userRole);
 
-        setToken(token);
-        setUserRole(role);
-        setIsLoggedIn(true);
-    };
+    //     setToken(token);
+    //     setUserRole(userRole);
+    //     setIsLoggedIn(true);
+    // };
 
-    const logout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("isLoggedIn");
-        localStorage.removeItem("role");
+    // const logout = () => {
+    //     localStorage.removeItem("token");
+    //     localStorage.removeItem("isLoggedIn");
+    //     localStorage.removeItem("role");
 
-        setToken(null);
-        setUserRole(null);
-        setIsLoggedIn(false);
-    };
+    //     setToken(null);
+    //     setUserRole(null);
+    //     setIsLoggedIn(false);
+    // };
 
 
 
@@ -49,8 +54,6 @@ const AuthProvider  = ({ children }) => {
                 token,
                 isLoggedIn,
                 userRole,
-                login,
-                logout,
             }}
         >
             {children}

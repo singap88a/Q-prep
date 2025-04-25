@@ -37,7 +37,7 @@ const MainTrackDashboard = () => {
           },
         }
       );
-      console.log("GetMainTrack", response.data)
+      // console.log("GetMainTrack", response.data)
       setTracks(response.data);
     } catch (error) {
       console.error("Error fetching tracks:", error);
@@ -77,7 +77,9 @@ const MainTrackDashboard = () => {
           },
         }
       );
+      // to make input Empty
       setNewTrack({ tarckName: "", description: "", photo: null });
+      // to add new track to All Tracks
       setTracks([...tracks, response.data]);
       toast.success("Track added successfully!");
     } catch (error) {
@@ -107,6 +109,7 @@ const MainTrackDashboard = () => {
       }
 
       const formData = new FormData();
+
       if (editTrack.photo) {
         formData.append("Photo", editTrack.photo);
       }
@@ -138,6 +141,7 @@ const MainTrackDashboard = () => {
   };
 
   const deleteTrack = async (trackId) => {
+    // this is from DB
     if (window.confirm("Are you sure you want to delete this track?")) {
       try {
         await axios.delete(
@@ -148,6 +152,7 @@ const MainTrackDashboard = () => {
             },
           }
         );
+        // this From 'UI'
         setTracks(tracks.filter((track) => track.trackId !== trackId));
         toast.success("Track deleted successfully!");
       } catch (error) {

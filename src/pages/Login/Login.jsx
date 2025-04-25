@@ -1,21 +1,29 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Lottie from "lottie-react";
 import Login_animation from "../../../public/animations/Login_animation.json";
 import Google from "../../assets/home-img/google.png";
 import Facebook from "../../assets/home-img/facebook.png";
 import Apple from "../../assets/home-img/apple.png";
+import { AuthContext } from "../../components/Auth/AuthContext";
 
 
 
-function Login({ setIsLoggedIn, setUserRole }) {
+function Login({ setIsLoggedIn }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+
+  // const [userRole, setUserRole] = useState(localStorage.getItem("role"));
+  // const { setUserRole  } = useContext(AuthContext)
+
+
+  // console.log("userRole", userRole)
 
 
   const validateEmail = (email) => {
@@ -64,13 +72,19 @@ function Login({ setIsLoggedIn, setUserRole }) {
 
       localStorage.setItem("token", data.token);
 
-      setUserRole(data.role);
 
-      if (data.role === "admin") {
+      // localStorage.setItem("role", data.roles);
+      localStorage.setItem("role", JSON.stringify(data.roles));
+      // console.log(userRole);
+
+
+
+      // role
+      if (data.roles.includes("Admin")) {
         setSuccess("Login successful! Redirecting to admin panel...");
         setIsLoggedIn(true);
         setTimeout(() => {
-          navigate("/admin");
+          navigate("/");
         }, 2000);
       } else {
         setSuccess("Login successful! Redirecting to home...");
