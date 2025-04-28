@@ -11,7 +11,7 @@ function Community_right() {
   return (
     <div>
       {/* الجزء الأيمن */}
-      <div className="right bg-[#8349db13] basis-1/3 h-[100%] rounded-2xl">
+      <div className="right bg-[#8349db14] basis-1/3 h-[100%] rounded-2xl">
         <div className="px-8 body-right py-7">
           {/* أيقونة للشاشات الصغيرة */}
           <div className="flex justify-end sm:hidden">

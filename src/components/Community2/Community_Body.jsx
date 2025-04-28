@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faSearch,
   faEllipsis,
   faImage,
   faTimes,
@@ -9,100 +9,121 @@ import {
   faShare,
   faCalendarAlt,
   faLink,
+  faVideo,
 } from "@fortawesome/free-solid-svg-icons";
+import { FiPlus } from "react-icons/fi";
+
 import userImage from "../../assets/user.png";
 import axios from "axios";
+import { toast } from "react-toastify";
 import Community_right from "./Community_right";
 
 function CommunityPage() {
+  const { groupId } = useParams();
+  const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedGroup, setSelectedGroup] = useState(null);
-  const [groups, setGroups] = useState([]);
+  const [group, setGroup] = useState(null);
   const [showPostForm, setShowPostForm] = useState(false);
   const [postText, setPostText] = useState("");
   const [postImages, setPostImages] = useState([]);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
+  const [likedPosts, setLikedPosts] = useState(new Set());
+  const [activeTab, setActiveTab] = useState("Text");
+  const [postLink, setPostLink] = useState("");
 
-  // Search state
-  const [searchTerm, setSearchTerm] = useState("");
-  // Pagination state
-  const [currentPage, setCurrentPage] = useState(1);
-  const postsPerPage = 4;
+  // Improved image URL handler
+  const getImageUrl = (photo, type = "group") => {
+    if (!photo) return userImage;
+    if (photo.startsWith("http")) return photo;
 
-  // Fetch groups
+    const baseUrl = "https://questionprep.azurewebsites.net";
+    if (type === "profile") {
+      return `${baseUrl}/ProfilePhoto/${photo}`;
+    } else if (type === "post") {
+      return `${baseUrl}/PostPhotos/${photo}`;
+    } else {
+      return `${baseUrl}/GroupsPhoto/${photo}`;
+    }
+  };
+
+  // Fetch group data and posts
   useEffect(() => {
-    const fetchGroups = async () => {
+    const fetchData = async () => {
+      setLoading(true);
       try {
-        const response = await axios.get(
-          "https://questionprep.azurewebsites.net/api/Groups/GetAllGroups",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        setGroups(response.data);
+        const [groupResponse, postsResponse] = await Promise.all([
+          axios.get(
+            `https://questionprep.azurewebsites.net/api/Groups/GetGroupById/${groupId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          ),
+          axios
+            .get(
+              `https://questionprep.azurewebsites.net/api/Posts/GetAllPosts/${groupId}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+              }
+            )
+            .catch((err) => {
+              if (err.response?.status === 404) {
+                return { data: [] };
+              }
+              throw err;
+            }),
+        ]);
 
-        if (response.data.length > 0) {
-          setSelectedGroup(response.data[0]);
-        }
-      } catch (err) {
-        setError(err.message);
-      }
-    };
+        setGroup(groupResponse.data);
 
-    fetchGroups();
-  }, []);
-
-  // Fetch posts for selected group
-  useEffect(() => {
-    const fetchPosts = async () => {
-      if (!selectedGroup) return;
-
-      try {
-        setLoading(true);
-        const response = await axios.get(
-          `https://questionprep.azurewebsites.net/api/Posts/GetAllPosts/${selectedGroup.id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-
-        // Process posts data
-        const processedPosts = response.data.map((post) => ({
+        // Process posts with proper image URLs
+        const processedPosts = postsResponse.data.map((post) => ({
           ...post,
           id: post.postId || post.id,
           images: Array.isArray(post.images)
-            ? post.images
+            ? post.images.map((img) => getImageUrl(img, "post"))
             : post.imageUrl
-            ? [post.imageUrl]
+            ? [getImageUrl(post.imageUrl, "post")]
             : [],
           createdDate:
             post.postDate || post.createdDate || new Date().toISOString(),
           userName: post.userName || "Anonymous",
+          userPhoto: getImageUrl(post.userPhoto, "profile"),
           text: post.text || post.content || "",
           likesCount: post.likes || post.likesCount || 0,
-          isLiked: post.isLiked || false, // Add isLiked property
-          // Extract links from text
+          isLiked: post.isLiked || false,
           links: extractLinks(post.text || post.content || ""),
         }));
 
         setPosts(processedPosts);
+
+        // Initialize liked posts set
+        const liked = new Set();
+        processedPosts.forEach((post) => {
+          if (post.isLiked) {
+            liked.add(post.id);
+          }
+        });
+        setLikedPosts(liked);
+
         setLoading(false);
       } catch (err) {
-        console.error("Error fetching posts:", err);
+        console.error("Error fetching data:", err);
         setError(err.message);
         setLoading(false);
+        toast.error("Failed to load community data");
+        navigate("/community");
       }
     };
 
-    fetchPosts();
-  }, [selectedGroup]);
+    fetchData();
+  }, [groupId, navigate]);
 
   // Extract links from text
   const extractLinks = (text) => {
@@ -125,23 +146,26 @@ function CommunityPage() {
 
   // Submit new post
   const handleSubmitPost = async () => {
-    if (!postText.trim() && postImages.length === 0) return;
-    if (!selectedGroup) return;
+    if (!postText.trim() && postImages.length === 0 && !postLink) return;
+    if (!group) return;
 
     try {
       setUploading(true);
 
       const formData = new FormData();
-
-      // Add images to form data with correct field name
       postImages.forEach((image) => {
         formData.append("Images", image);
       });
 
-      // Add query parameters
+      // Include link in the post text if provided
+      let finalText = postText;
+      if (postLink) {
+        finalText = postText ? `${postText}\n${postLink}` : postLink;
+      }
+
       const params = new URLSearchParams();
-      params.append("groupId", selectedGroup.id);
-      params.append("Text", postText);
+      params.append("groupId", group.id);
+      params.append("Text", finalText);
       params.append("TypeOfBody", "post");
 
       const response = await axios.post(
@@ -155,15 +179,15 @@ function CommunityPage() {
         }
       );
 
-      // Add the new post to the posts list
       const newPost = {
         ...response.data,
         id: response.data.postId,
         images: Array.isArray(response.data.images)
-          ? response.data.images
-          : [response.data.images].filter(Boolean),
+          ? response.data.images.map((img) => getImageUrl(img, "post"))
+          : [getImageUrl(response.data.images, "post")].filter(Boolean),
         createdDate: response.data.postDate || new Date().toISOString(),
         userName: "You",
+        userPhoto: getImageUrl(response.data.userPhoto, "profile"),
         text: response.data.text,
         likesCount: 0,
         isLiked: false,
@@ -173,87 +197,74 @@ function CommunityPage() {
       setPosts((prev) => [newPost, ...prev]);
       setPostText("");
       setPostImages([]);
+      setPostLink("");
       setShowPostForm(false);
+      setActiveTab("Text");
+      toast.success("Post created successfully!");
     } catch (err) {
       console.error("Error creating post:", err);
-      setError("Failed to create post. Please try again.");
+      toast.error("Failed to create post");
     } finally {
       setUploading(false);
     }
   };
 
-  // Function to construct proper image URL
-  const getImageUrl = (photo) => {
-    if (!photo) return null;
-    if (photo.startsWith("http")) return photo;
-
-    // Try different possible paths
-    const baseUrl = "https://questionprep.azurewebsites.net";
-    const possiblePaths = [
-      `/PostPhotos/${photo}`,
-      `/PostPhotos/${photo}`,
-      `/GroupsPhoto/${photo}`,
-      `/GroupsPhoto/${photo}`,
-    ];
-
-    // Return the first possible path (error will be handled in the UI)
-    return `${baseUrl}${possiblePaths[0]}`;
-  };
-
   // Share post function
-  const handleSharePost = (postId) => {
-    const postUrl = `${window.location.origin}/community/post/${postId}`;
-    if (navigator.share) {
-      navigator
-        .share({
-          title: "Check out this post",
-          url: postUrl,
-        })
-        .catch((err) => {
-          console.error("Error sharing:", err);
-          copyToClipboard(postUrl);
-        });
-    } else {
-      copyToClipboard(postUrl);
-    }
-  };
+  const handleSharePost = async (postId) => {
+    try {
+      const post = posts.find((p) => p.id === postId);
+      if (!post) return;
 
-  // Copy to clipboard
-  const copyToClipboard = (text) => {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        alert("Link copied to clipboard!");
-      })
-      .catch((err) => {
-        console.error("Could not copy text: ", err);
-      });
+      const postUrl = `${window.location.origin}/community/${groupId}/post/${postId}`;
+      const shareData = {
+        title: `Post by ${post.userName}`,
+        text: post.text?.substring(0, 100) || "Check out this post",
+        url: postUrl,
+      };
+
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(postUrl);
+        toast.success("Post link copied to clipboard!");
+      }
+    } catch (err) {
+      console.error("Error sharing:", err);
+      if (err.name !== "AbortError") {
+        toast.error("Failed to share post");
+      }
+    }
   };
 
   // Handle like/unlike post
   const handleLikePost = async (postId) => {
     try {
+      // Check if already liked
+      if (likedPosts.has(postId)) {
+        toast.info("You've already liked this post");
+        return;
+      }
+
       const postIndex = posts.findIndex((post) => post.id === postId);
       if (postIndex === -1) return;
 
       const post = posts[postIndex];
-      const isLiked = post.isLiked;
 
       // Optimistic update
       const updatedPosts = [...posts];
       updatedPosts[postIndex] = {
         ...post,
-        likesCount: isLiked ? post.likesCount - 1 : post.likesCount + 1,
-        isLiked: !isLiked,
+        likesCount: post.likesCount + 1,
+        isLiked: true,
       };
       setPosts(updatedPosts);
 
-      // Make API call
-      const endpoint = isLiked
-        ? `https://questionprep.azurewebsites.net/api/Likes/RemoveLike/${postId}`
-        : `https://questionprep.azurewebsites.net/api/Likes/AddLike/${postId}`;
+      // Add to liked posts set
+      setLikedPosts((prev) => new Set(prev.add(postId)));
 
-      const response = await axios.post(
+      const endpoint = `https://questionprep.azurewebsites.net/api/Likes/AddLike/${postId}`;
+
+      await axios.post(
         endpoint,
         {},
         {
@@ -262,17 +273,10 @@ function CommunityPage() {
           },
         }
       );
-
-      // Update with actual data from server if needed
-      updatedPosts[postIndex] = {
-        ...updatedPosts[postIndex],
-        likesCount: response.data.likesCount,
-      };
-      setPosts(updatedPosts);
     } catch (err) {
       console.error("Error toggling like:", err);
-      // Revert optimistic update on error
       setPosts(posts);
+      toast.error("Failed to update like");
     }
   };
 
@@ -300,19 +304,6 @@ function CommunityPage() {
     });
   };
 
-  // Filter groups based on search
-  const filteredGroups = groups.filter((item) =>
-    item.groupName?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  // Current page posts
-  const indexOfLastPost = currentPage * postsPerPage;
-  const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
-
-  // Total pages
-  const totalPages = Math.ceil(posts.length / postsPerPage);
-
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -335,58 +326,53 @@ function CommunityPage() {
     );
   }
 
+  if (!group) {
+    return (
+      <div className="py-8 text-center">
+        <h2 className="text-xl font-bold">Community not found</h2>
+        <button
+          onClick={() => navigate("/community")}
+          className="px-4 py-2 mt-4 text-white rounded-lg bg-secondary"
+        >
+          Back to Communities
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="container max-w-screen-xl mx-auto">
-      {/* Community selection */}
-      <div className="flex flex-wrap gap-4 mb-8">
-        {filteredGroups.map((group) => (
-          <div
-            key={group.id}
-            className={`flex items-center p-3 border rounded-lg cursor-pointer ${
-              selectedGroup?.id === group.id
-                ? "border-secondary bg-secondary bg-opacity-10"
-                : "border-gray-200 hover:border-gray-300"
-            }`}
-            onClick={() => setSelectedGroup(group)}
-          >
-            <img
-              src={getImageUrl(group.photo) || userImage}
-              alt={group.groupName}
-              className="object-cover w-10 h-10 mr-3 rounded-full"
-              onError={(e) => {
-                e.target.src = userImage;
-              }}
-            />
-            <div>
-              <h3 className="font-medium">{group.groupName}</h3>
-              <p className="text-xs text-gray-500">
-                {group.numberOfMembers} member
-                {group.numberOfMembers !== "1" ? "s" : ""}
-              </p>
-            </div>
+      {/* Group header */}
+      <div className="flex items-center justify-between gap-4 p-4 mb-8 bg-white border-b-2 ">
+        <div className="flex items-center gap-4 ">
+          <img
+            src={getImageUrl(group.photo, "group")}
+            alt={group.groupName}
+            className="object-cover w-16 h-16 rounded-full"
+            onError={(e) => {
+              e.target.src = userImage;
+            }}
+          />
+          <div>
+            <h2 className="text-2xl font-bold">{group.groupName}</h2>
+            <p className="text-sm text-gray-500">
+              {group.numberOfMembers} members
+            </p>
           </div>
-        ))}
+        </div>
+        {/* Create post button */}
+        <button
+          onClick={() => setShowPostForm(true)}
+          className="flex items-center gap-1 px-4 py-2 font-bold transition-all border-2 rounded-lg border-secondary text-secondary hover:bg-primary hover:text-white hover:border-primary"
+        >
+          <FiPlus className="font-bold" /> Create Post
+        </button>
       </div>
 
       {/* Main content */}
       <div className="flex flex-col-reverse gap-10 py-5 md:flex-row">
         {/* Posts section */}
         <div className="px-1 basis-2/3">
-          {selectedGroup && (
-            <div className="p-4 mb-6 rounded-lg bg-gray-50">
-              <h2 className="text-xl font-bold">{selectedGroup.groupName}</h2>
-              <p className="text-gray-600">{selectedGroup.description}</p>
-
-              {/* Create post button */}
-              <button
-                onClick={() => setShowPostForm(true)}
-                className="w-full p-3 mt-4 text-left bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
-              >
-                What's on your mind?
-              </button>
-            </div>
-          )}
-
           {/* Post creation form */}
           {showPostForm && (
             <div className="p-4 mb-6 bg-white border border-gray-300 rounded-lg shadow-sm">
@@ -397,6 +383,8 @@ function CommunityPage() {
                     setShowPostForm(false);
                     setPostText("");
                     setPostImages([]);
+                    setPostLink("");
+                    setActiveTab("Text");
                   }}
                   className="text-gray-500 hover:text-gray-700"
                 >
@@ -404,46 +392,127 @@ function CommunityPage() {
                 </button>
               </div>
 
-              <textarea
-                className="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
-                placeholder="Share your thoughts..."
-                rows="4"
-                value={postText}
-                onChange={(e) => setPostText(e.target.value)}
-              />
-
-              {/* Selected images preview */}
-              <div className="flex flex-wrap gap-2 mb-4">
-                {postImages.map((image, index) => (
-                  <div key={index} className="relative">
-                    <img
-                      src={URL.createObjectURL(image)}
-                      alt={`preview-${index}`}
-                      className="object-cover w-20 h-20 rounded-lg"
-                    />
-                    <button
-                      onClick={() => removeImage(index)}
-                      className="absolute top-0 right-0 p-1 text-white translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full"
-                    >
-                      <FontAwesomeIcon icon={faTimes} size="xs" />
-                    </button>
-                  </div>
-                ))}
+              {/* Tabs */}
+              <div className="flex mb-4 border-b border-gray-200">
+                <button
+                  className={`px-4 py-2 font-medium ${
+                    activeTab === "Text"
+                      ? "text-secondary border-b-2 border-secondary"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                  onClick={() => setActiveTab("Text")}
+                >
+                  Text
+                </button>
+                <button
+                  className={`px-4 py-2 font-medium ${
+                    activeTab === "Image & Video"
+                      ? "text-secondary border-b-2 border-secondary"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                  onClick={() => setActiveTab("Image & Video")}
+                >
+                  Image & Video
+                </button>
+                <button
+                  className={`px-4 py-2 font-medium ${
+                    activeTab === "Link"
+                      ? "text-secondary border-b-2 border-secondary"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                  onClick={() => setActiveTab("Link")}
+                >
+                  Link
+                </button>
               </div>
 
-              <div className="flex items-center justify-between">
-                <button
-                  onClick={() => fileInputRef.current.click()}
-                  className="flex items-center p-2 text-gray-600 hover:text-secondary"
-                >
-                  <FontAwesomeIcon icon={faImage} className="mr-2" />
-                  Add Photo
-                </button>
+              {/* Tab content */}
+              {activeTab === "Text" && (
+                <textarea
+                  className="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
+                  placeholder="Share your thoughts..."
+                  rows="4"
+                  value={postText}
+                  onChange={(e) => setPostText(e.target.value)}
+                />
+              )}
 
+              {activeTab === "Image & Video" && (
+                <div className="mb-4">
+                  <div className="flex flex-col items-center justify-center p-8 border-2 border-gray-300 border-dashed rounded-lg">
+                    <FontAwesomeIcon
+                      icon={faImage}
+                      className="mb-2 text-3xl text-gray-400"
+                    />
+                    <p className="mb-2 text-gray-500">
+                      Drag and drop or upload media
+                    </p>
+                    <button
+                      onClick={() => fileInputRef.current.click()}
+                      className="px-4 py-2 text-white rounded-lg bg-secondary hover:bg-secondary-dark"
+                    >
+                      Select Files
+                    </button>
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleImageChange}
+                      className="hidden"
+                      multiple
+                      accept="image/*,video/*"
+                    />
+                  </div>
+
+                  {/* Selected images preview */}
+                  <div className="flex flex-wrap gap-2 mt-4">
+                    {postImages.map((image, index) => (
+                      <div key={index} className="relative">
+                        {image.type.startsWith("image/") ? (
+                          <img
+                            src={URL.createObjectURL(image)}
+                            alt={`preview-${index}`}
+                            className="object-cover w-20 h-20 rounded-lg"
+                          />
+                        ) : (
+                          <div className="flex items-center justify-center w-20 h-20 bg-gray-200 rounded-lg">
+                            <FontAwesomeIcon
+                              icon={faVideo}
+                              className="text-gray-500"
+                            />
+                          </div>
+                        )}
+                        <button
+                          onClick={() => removeImage(index)}
+                          className="absolute top-0 right-0 p-1 text-white translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full"
+                        >
+                          <FontAwesomeIcon icon={faTimes} size="xs" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {activeTab === "Link" && (
+                <div className="mb-4">
+                  <input
+                    type="url"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
+                    placeholder="Paste a link..."
+                    value={postLink}
+                    onChange={(e) => setPostLink(e.target.value)}
+                  />
+                </div>
+              )}
+
+              <div className="flex items-center justify-end">
                 <button
                   onClick={handleSubmitPost}
                   disabled={
-                    uploading || (!postText.trim() && postImages.length === 0)
+                    uploading ||
+                    (activeTab === "Text" && !postText.trim()) ||
+                    (activeTab === "Image & Video" && postImages.length === 0) ||
+                    (activeTab === "Link" && !postLink)
                   }
                   className={`px-4 py-2 text-white rounded-lg ${
                     uploading
@@ -461,28 +530,19 @@ function CommunityPage() {
                   )}
                 </button>
               </div>
-
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleImageChange}
-                className="hidden"
-                multiple
-                accept="image/*"
-              />
             </div>
           )}
 
           {/* Posts list */}
-          {currentPosts.length > 0 ? (
-            currentPosts.map((post) => (
+          {posts.length > 0 ? (
+            posts.map((post) => (
               <div key={post.id} className="border-t border-gray-300 py-7">
                 <div className="flex items-center justify-between gap-5 mb-4">
                   <div className="flex items-center gap-5">
                     <img
-                      src={getImageUrl(post.userPhoto) || userImage}
+                      src={post.userPhoto}
                       alt="profile"
-                      className="w-12 h-12 rounded-full"
+                      className="object-cover w-12 h-12 rounded-full"
                       onError={(e) => {
                         e.target.src = userImage;
                       }}
@@ -521,62 +581,51 @@ function CommunityPage() {
                   </p>
                 )}
 
-                {post.images && post.images.length > 0 && (
+                {post.images.length > 0 && (
                   <div
                     className={`grid gap-2 mb-4 ${
                       post.images.length === 1 ? "grid-cols-1" : "grid-cols-2"
                     }`}
                   >
-                    {post.images.map((image, index) => {
-                      const imageUrl = getImageUrl(image);
-                      return imageUrl ? (
-                        <div
-                          key={index}
-                          className="relative overflow-hidden bg-gray-100 rounded-lg group"
-                        >
-                          <img
-                            src={imageUrl}
-                            alt={`Post ${index}`}
-                            className="object-cover w-full h-full min-h-[200px]"
-                            loading="lazy"
-                            onError={(e) => {
-                              e.target.src =
-                                "https://via.placeholder.com/400x200?text=Image+Not+Found";
-                              e.target.className =
-                                "object-cover w-full h-full min-h-[200px] bg-gray-100";
-                            }}
-                          />
-                          <div className="absolute inset-0 flex items-center justify-center transition-opacity bg-black opacity-0 group-hover:opacity-100 bg-opacity-30">
-                            <a
-                              href={imageUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="p-2 text-white rounded-lg bg-secondary"
-                            >
-                              View Full Size
-                            </a>
-                          </div>
+                    {post.images.map((image, index) => (
+                      <div
+                        key={index}
+                        className="relative overflow-hidden bg-gray-100 rounded-lg group"
+                      >
+                        <img
+                          src={image}
+                          alt={`Post ${index}`}
+                          className="object-cover w-full h-full min-h-[200px]"
+                          loading="lazy"
+                          onError={(e) => {
+                            e.target.src =
+                              "https://via.placeholder.com/400x200?text=Image+Not+Found";
+                            e.target.className =
+                              "object-cover w-full h-full min-h-[200px] bg-gray-100";
+                          }}
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center transition-opacity bg-black opacity-0 group-hover:opacity-100 bg-opacity-30">
+                          <a
+                            href={image}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 text-white rounded-lg bg-secondary"
+                          >
+                            View Full Size
+                          </a>
                         </div>
-                      ) : (
-                        <div
-                          key={index}
-                          className="flex items-center justify-center w-full h-48 bg-gray-100 rounded-lg"
-                        >
-                          <span className="text-gray-500">
-                            Image not available
-                          </span>
-                        </div>
-                      );
-                    })}
+                      </div>
+                    ))}
                   </div>
                 )}
 
                 <div className="flex gap-4">
-                  <button 
+                  <button
                     onClick={() => handleLikePost(post.id)}
+                    disabled={likedPosts.has(post.id)}
                     className={`flex items-center gap-2 px-4 py-1 rounded-full ${
-                      post.isLiked
-                        ? "text-red-500 bg-red-100 hover:bg-red-200"
+                      likedPosts.has(post.id)
+                        ? "text-red-500 bg-red-100 cursor-not-allowed"
                         : "text-gray-700 bg-gray-100 hover:bg-gray-200"
                     }`}
                   >
@@ -595,42 +644,7 @@ function CommunityPage() {
             ))
           ) : (
             <div className="py-8 text-center text-gray-500">
-              {selectedGroup
-                ? "No posts in this community yet. Be the first to post!"
-                : "Select a community to view posts"}
-            </div>
-          )}
-
-          {/* Pagination */}
-          {posts.length > postsPerPage && (
-            <div className="flex justify-center mt-6 mb-10">
-              <button
-                className="px-4 py-2 mx-1 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50"
-                disabled={currentPage === 1}
-                onClick={() => setCurrentPage((prev) => prev - 1)}
-              >
-                Previous
-              </button>
-              {Array.from({ length: totalPages }, (_, index) => (
-                <button
-                  key={index}
-                  className={`px-4 py-2 mx-1 rounded-lg ${
-                    currentPage === index + 1
-                      ? "bg-secondary text-white"
-                      : "bg-gray-200 hover:bg-gray-300"
-                  }`}
-                  onClick={() => setCurrentPage(index + 1)}
-                >
-                  {index + 1}
-                </button>
-              ))}
-              <button
-                className="px-4 py-2 mx-1 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50"
-                disabled={currentPage === totalPages}
-                onClick={() => setCurrentPage((prev) => prev + 1)}
-              >
-                Next
-              </button>
+              No posts in this community yet. Be the first to post!
             </div>
           )}
         </div>

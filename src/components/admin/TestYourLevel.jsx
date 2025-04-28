@@ -224,7 +224,7 @@ const TestYourLevel = () => {
                         qeuestion: e.target.value,
                       })
                 }
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
               />
               <input
                 type="text"
@@ -235,7 +235,7 @@ const TestYourLevel = () => {
                     ? setEditQuestion({ ...editQuestion, a_1: e.target.value })
                     : setNewQuestion({ ...newQuestion, a_1: e.target.value })
                 }
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
               />
               <input
                 type="text"
@@ -246,7 +246,7 @@ const TestYourLevel = () => {
                     ? setEditQuestion({ ...editQuestion, a_2: e.target.value })
                     : setNewQuestion({ ...newQuestion, a_2: e.target.value })
                 }
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
               />
               <input
                 type="text"
@@ -257,7 +257,7 @@ const TestYourLevel = () => {
                     ? setEditQuestion({ ...editQuestion, a_3: e.target.value })
                     : setNewQuestion({ ...newQuestion, a_3: e.target.value })
                 }
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
               />
               <input
                 type="text"
@@ -268,7 +268,7 @@ const TestYourLevel = () => {
                     ? setEditQuestion({ ...editQuestion, a_4: e.target.value })
                     : setNewQuestion({ ...newQuestion, a_4: e.target.value })
                 }
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
               />
               <input
                 type="text"
@@ -289,7 +289,7 @@ const TestYourLevel = () => {
                         correctAnswers: e.target.value,
                       })
                 }
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
               />
               <div className="flex gap-2">
                 <button
@@ -297,7 +297,7 @@ const TestYourLevel = () => {
                   className={`flex-1 p-3 text-white rounded-lg focus:outline-none focus:ring-2 ${
                     isEditing
                       ? "bg-green-500 hover:bg-green-600 focus:ring-green-500"
-                      : "bg-blue-500 hover:bg-blue-600 focus:ring-blue-500"
+                      : "bg-secondary hover:bg-[#552f8f] focus:ring-secondary"
                   }`}
                 >
                   {isEditing ? "Update Question" : "Add Question"}

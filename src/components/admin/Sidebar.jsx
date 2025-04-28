@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FaBars, FaTimes, FaHome, FaUsers, FaCog } from "react-icons/fa"; // أيقونات من react-icons
+import { FaBars, FaTimes, FaHome, FaUsers,   } from "react-icons/fa"; // أيقونات من react-icons
+import { LiaLayerGroupSolid } from "react-icons/lia";
+
 function Sidebar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // حالة فتح/غلق القائمة
-  const location = useLocation(); // للحصول على المسار الحالي
+  const location = useLocation();  
 
   // روابط القائمة
   const links = [
@@ -15,7 +17,10 @@ function Sidebar() {
     },
 
     { path: "/adminusers ", name: "Users", icon: <FaUsers /> },
-    { path: "/admin/settings", name: "Settings", icon: <FaCog /> },
+    { path: "/groups", name: "Groups", icon: <LiaLayerGroupSolid /> },
+
+    // { path: "/admin/settings", name: "Settings", icon: <FaCog /> },
+
   ];
   return (
     <div>

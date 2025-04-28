@@ -23,10 +23,11 @@ const ManageQuestions = () => {
     questions: "",
     answers: "",
   });
-  const [level, setLevel] = useState("Q_BeginnerLevel"); // مستوى السؤال (مبتدئ، متوسط، متقدم)
+  const [level, setLevel] = useState("Q_BeginnerLevel");  
+  // eslint-disable-next-line no-unused-vars
   const [token, setToken] = useState(localStorage.getItem("token") || "");
   const [loading, setLoading] = useState(false);
-  const [showActions, setShowActions] = useState(null); // حالة إظهار الأزرار
+  const [showActions, setShowActions] = useState(null);  
 
   useEffect(() => {
     if (token && frameworkId) {
@@ -191,7 +192,7 @@ const ManageQuestions = () => {
             </h1>
             <button
               onClick={() => navigate(-1)}
-              className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+              className="px-4 py-2 text-white   rounded-lg bg-secondary hover:bg-[#552f8f]"
             >
               Back to Frameworks
             </button>
@@ -206,7 +207,7 @@ const ManageQuestions = () => {
               <select
                 value={level}
                 onChange={(e) => setLevel(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
               >
                 <option value="Q_BeginnerLevel">Beginner</option>
                 <option value="Q_IntermediateLevel">Intermediate</option>
@@ -230,7 +231,7 @@ const ManageQuestions = () => {
                         questions: e.target.value,
                       })
                 }
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
                 rows={3}
               />
               <textarea
@@ -251,7 +252,7 @@ const ManageQuestions = () => {
                         answers: e.target.value,
                       })
                 }
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
                 rows={5}
               />
               <div className="flex gap-2">
@@ -262,7 +263,7 @@ const ManageQuestions = () => {
                   className={`flex-1 p-3 text-white rounded-lg focus:outline-none focus:ring-2 ${
                     editQuestion.questionId
                       ? "bg-green-500 hover:bg-green-600 focus:ring-green-500"
-                      : "bg-blue-500 hover:bg-blue-600 focus:ring-blue-500"
+                      : "bg-secondary hover:bg-[#552f8f] focus:ring-secondary"
                   }`}
                 >
                   {editQuestion.questionId ? "Update Question" : "Add Question"}

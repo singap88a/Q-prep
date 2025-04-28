@@ -189,7 +189,7 @@ const FrameworkDashboard = () => {
             </h1>
             <button
               onClick={() => navigate(-1)}
-              className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+              className="px-4 py-2 text-white   rounded-lg bg-secondary hover:bg-[#552f8f]"
             >
               Back to Tracks
             </button>
@@ -222,7 +222,7 @@ const FrameworkDashboard = () => {
                         frameworkName: e.target.value,
                       })
                 }
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
               />
               <input
                 type="text"
@@ -243,7 +243,7 @@ const FrameworkDashboard = () => {
                         description: e.target.value,
                       })
                 }
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
               />
               <input
                 type="file"
@@ -258,14 +258,14 @@ const FrameworkDashboard = () => {
                         photo: e.target.files[0],
                       })
                 }
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
               />
               <div className="flex gap-2">
                 <button
                   onClick={
                     editFramework.frameworkId ? updateFramework : addFramework
                   }
-                  className="flex-1 p-3 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="flex-1 p-3 text-white   rounded-lg bg-secondary hover:bg-[#552f8f] focus:outline-none focus:ring-2 focus:ring-secondary"
                 >
                   {editFramework.frameworkId
                     ? "Update Framework"

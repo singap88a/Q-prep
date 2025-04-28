@@ -204,7 +204,7 @@ const MainTrackDashboard = () => {
                   ? setEditTrack({ ...editTrack, tarckName: e.target.value })
                   : setNewTrack({ ...newTrack, tarckName: e.target.value })
               }
-              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
             />
             <input
               type="text"
@@ -217,7 +217,7 @@ const MainTrackDashboard = () => {
                   ? setEditTrack({ ...editTrack, description: e.target.value })
                   : setNewTrack({ ...newTrack, description: e.target.value })
               }
-              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
             />
             <input
               type="file"
@@ -226,12 +226,12 @@ const MainTrackDashboard = () => {
                   ? setEditTrack({ ...editTrack, photo: e.target.files[0] })
                   : setNewTrack({ ...newTrack, photo: e.target.files[0] })
               }
-              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
             />
             <div className="flex gap-2">
               <button
                 onClick={editTrack.trackId ? updateTrack : addTrack}
-                className="flex-1 p-3 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex-1 p-3 text-white  rounded-lg bg-secondary hover:bg-[#552f8f] focus:outline-none focus:ring-2 focus:ring-secondary"
               >
                 {editTrack.trackId ? "Update Track" : "Add Track"}
               </button>

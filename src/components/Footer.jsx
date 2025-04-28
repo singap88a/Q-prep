@@ -9,7 +9,9 @@ function Footer() {
     "/requestQuestionId",
     "/frameworks",
     "/test-your-level",
-    "/manage-questions"
+    "/manage-questions",
+    "/groups"
+    
   ];
   
   if (hiddenFooterPaths.some(path => location.pathname.startsWith(path))) {

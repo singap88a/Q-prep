@@ -1,8 +1,10 @@
-// باقي الاستيرادات زي ما هي
-import { useState, useEffect } from "react";
+ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
+import {
+  faSearch,
+  faEllipsisVertical,
+} from "@fortawesome/free-solid-svg-icons";
 import userImage from "../../assets/user.png";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -16,7 +18,7 @@ function CommunityCard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const [actionLoading, setActionLoading] = useState({});
-  const cardsPerPage = 3;
+  const cardsPerPage = 6;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,7 +44,9 @@ function CommunityCard() {
         ]);
 
         setGroups(groupsResponse.data);
-        setJoinedGroups(userGroupsResponse.data.map(group => group.groupName));
+        setJoinedGroups(
+          userGroupsResponse.data.map((group) => group.groupName)
+        );
       } catch (err) {
         setError(err.message);
       } finally {
@@ -65,7 +69,7 @@ function CommunityCard() {
 
   const handleGroupAction = async (e, groupId, groupName, isJoined) => {
     e.stopPropagation();
-    setActionLoading(prev => ({ ...prev, [groupId]: true }));
+    setActionLoading((prev) => ({ ...prev, [groupId]: true }));
 
     try {
       if (isJoined) {
@@ -83,15 +87,19 @@ function CommunityCard() {
           }
         );
 
-        setJoinedGroups(joinedGroups.filter(name => name !== groupName));
-        setGroups(groups.map(group =>
-          group.id === groupId
-            ? {
-                ...group,
-                numberOfMembers: (parseInt(group.numberOfMembers || 1) - 1).toString(),
-              }
-            : group
-        ));
+        setJoinedGroups(joinedGroups.filter((name) => name !== groupName));
+        setGroups(
+          groups.map((group) =>
+            group.id === groupId
+              ? {
+                  ...group,
+                  numberOfMembers: (
+                    parseInt(group.numberOfMembers || 1) - 1
+                  ).toString(),
+                }
+              : group
+          )
+        );
         toast.success(`Left group ${groupName}`);
       } else {
         await axios.post(
@@ -109,22 +117,27 @@ function CommunityCard() {
         );
 
         setJoinedGroups([...joinedGroups, groupName]);
-        setGroups(groups.map(group => 
-          group.id === groupId 
-            ? {
-                ...group,
-                numberOfMembers: Math.max(0, parseInt(group.numberOfMembers) - 1).toString()
-              }
-            : group
-        ));
-        
+        setGroups(
+          groups.map((group) =>
+            group.id === groupId
+              ? {
+                  ...group,
+                  numberOfMembers: Math.max(
+                    0,
+                    parseInt(group.numberOfMembers) - 1
+                  ).toString(),
+                }
+              : group
+          )
+        );
+
         toast.success(`Joined group ${groupName}`);
-        navigate(`/community/${groupId}`);  
+        navigate(`/community/${groupId}`);
       }
     } catch (error) {
       toast.error(`Error: ${error.response?.data?.message || error.message}`);
     } finally {
-      setActionLoading(prev => ({ ...prev, [groupId]: false }));
+      setActionLoading((prev) => ({ ...prev, [groupId]: false }));
     }
   };
 
@@ -157,12 +170,16 @@ function CommunityCard() {
           Welcome to the Q-Prep Community!
         </h1>
         <p className="max-w-2xl mx-auto mt-2 text-gray-800">
-          Join a collaborative and vibrant space where learners and professionals come together.
+          Join a collaborative and vibrant space where learners and
+          professionals come together.
         </p>
       </div>
 
       <div className="relative w-full max-w-lg mx-auto mb-6">
-        <FontAwesomeIcon icon={faSearch} className="absolute text-gray-400 transform -translate-y-1/2 left-4 top-1/2" />
+        <FontAwesomeIcon
+          icon={faSearch}
+          className="absolute text-gray-400 transform -translate-y-1/2 left-4 top-1/2"
+        />
         <input
           type="text"
           placeholder="Search..."
@@ -193,14 +210,19 @@ function CommunityCard() {
                   }}
                 />
                 <div>
-                  <h2 className="text-lg font-bold text-gray-800">{item.groupName}</h2>
-                  <p className="text-sm text-gray-600">{item.description || "No description available"}</p>
+                  <h2 className="text-lg font-bold text-gray-800">
+                    {item.groupName}
+                  </h2>
+                  <p className="text-sm text-gray-600">
+                    {item.description || "No description available"}
+                  </p>
                 </div>
               </div>
 
               <div className="flex items-center mt-4 space-x-3 sm:mt-0">
                 <span className="text-gray-600">
-                  {item.numberOfMembers} member{item.numberOfMembers !== "1" ? "s" : ""}
+                  {item.numberOfMembers} member
+                  {item.numberOfMembers !== "1" ? "s" : ""}
                 </span>
                 <button
                   className={`px-4 py-1 text-sm rounded-full transition min-w-[60px] relative ${
@@ -208,14 +230,20 @@ function CommunityCard() {
                       ? "bg-gray-200 text-gray-800 hover:bg-gray-300"
                       : "bg-secondary text-white hover:bg-primary"
                   }`}
-                  onClick={(e) => handleGroupAction(e, item.id, item.groupName, isJoined)}
+                  onClick={(e) =>
+                    handleGroupAction(e, item.id, item.groupName, isJoined)
+                  }
                   disabled={actionLoading[item.id]}
                 >
                   {actionLoading[item.id] ? (
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="w-4 h-4 border-2 border-t-2 border-gray-200 rounded-full animate-spin border-t-white"></div>
                     </div>
-                  ) : isJoined ? "Leave" : "Join"}
+                  ) : isJoined ? (
+                    "Leave"
+                  ) : (
+                    "Join"
+                  )}
                 </button>
                 <button
                   className="text-gray-500 hover:text-gray-700"
@@ -229,7 +257,9 @@ function CommunityCard() {
         })
       ) : (
         <h1 className="font-bold text-center text-secondary">
-          {searchTerm ? "No matching communities found" : "No communities available"}
+          {searchTerm
+            ? "No matching communities found"
+            : "No communities available"}
         </h1>
       )}
 

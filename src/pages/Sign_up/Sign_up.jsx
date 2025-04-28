@@ -130,7 +130,7 @@ function Sign_up({ setIsLoggedIn }) {
                 <input
                   type="text"
                   id="name"
-                  placeholder="Hanin Burham"
+                  placeholder="Enter your name "
                   className="w-full p-3 border rounded-lg border-secondary text-secondary"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -148,7 +148,7 @@ function Sign_up({ setIsLoggedIn }) {
                 <input
                   type="email"
                   id="email"
-                  placeholder="Haninburham@gmail.com"
+                  placeholder="Enter your email"
                   className="w-full p-3 border rounded-lg border-secondary text-secondary"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}

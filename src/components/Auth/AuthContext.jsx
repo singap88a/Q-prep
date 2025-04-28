@@ -1,52 +1,33 @@
 import React from 'react'
-import { createContext, useContext, useState, useEffect } from "react";
-
+import { createContext, useState, useEffect } from "react";
 
 export const AuthContext = createContext();
 
-
-const AuthProvider  = ({ children }) => {
-
+const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(localStorage.getItem("token") || null);
+    
+    // For boolean values, no need to parse JSON - just check if it exists
     const [isLoggedIn, setIsLoggedIn] = useState(() => {
-        return JSON.parse(localStorage.getItem("isLoggedIn")) || false;
+        const loggedIn = localStorage.getItem("isLoggedIn");
+        return loggedIn ? JSON.parse(loggedIn) : false;
     });
 
-    //   const [userRole, setUserRole] = useState(localStorage.getItem("role"));
-    // console.log("UserROle: " , userRole)
-
-
-    const userRole = JSON.parse(localStorage.getItem("role"));
-    console.log(userRole);
-    // const [userRole, setUserRole] = useState([]);
+    // For role, provide a default empty string or null if not present
+    const [userRole, setUserRole] = useState(() => {
+        const role = localStorage.getItem("role");
+        try {
+            return role ? JSON.parse(role) : null;
+        } catch (e) {
+            return role || null; // if JSON parsing fails, return the raw value
+        }
+    });
 
     useEffect(() => {
         if (token) {
             setIsLoggedIn(true);
+            localStorage.setItem("isLoggedIn", "true");
         }
     }, [token]);
-
-    // const login = (token, userRole) => {
-    //     localStorage.setItem("token", token);
-    //     localStorage.setItem("isLoggedIn", true);
-    //     localStorage.setItem("role", userRole);
-
-    //     setToken(token);
-    //     setUserRole(userRole);
-    //     setIsLoggedIn(true);
-    // };
-
-    // const logout = () => {
-    //     localStorage.removeItem("token");
-    //     localStorage.removeItem("isLoggedIn");
-    //     localStorage.removeItem("role");
-
-    //     setToken(null);
-    //     setUserRole(null);
-    //     setIsLoggedIn(false);
-    // };
-
-
 
     return (
         <AuthContext.Provider
@@ -54,6 +35,9 @@ const AuthProvider  = ({ children }) => {
                 token,
                 isLoggedIn,
                 userRole,
+                setToken,
+                setIsLoggedIn,
+                setUserRole
             }}
         >
             {children}
