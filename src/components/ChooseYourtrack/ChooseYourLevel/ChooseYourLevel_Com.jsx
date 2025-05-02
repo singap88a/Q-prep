@@ -46,7 +46,7 @@ const ChooseLanguage_Com = () => {
       </div>
 
       {/* Choose Your Level */}
-      <div className="grid grid-cols-1 gap-32 my-20 md:grid-cols-3 sm:grid-cols-2 lg:px-32 md:px-10">
+      <div className="grid grid-cols-1 gap-16 my-20 md:grid-cols-3 sm:grid-cols-2  lg:px-32 md:px-10">
         {levels.map((level) => (
           <Link
             key={level.id}
@@ -54,7 +54,7 @@ const ChooseLanguage_Com = () => {
             state={{ frameworkId, frameworkName }}
             className="h-full Levels"
           >
-            <div className="bg_card">
+            <div className="bg_card ">
               <img src={card_img} alt="" className="m-auto" />
             </div>
             <h3>{level.name}</h3>

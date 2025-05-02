@@ -11,7 +11,7 @@ function Footer() {
     "/test-your-level",
     "/manage-questions"
   ];
-  
+
   if (hiddenFooterPaths.some(path => location.pathname.startsWith(path))) {
     return null;
   }
@@ -128,11 +128,6 @@ function Footer() {
                 <p className="text-lg font-medium text-gray-900">About Us</p>
 
                 <ul className="mt-8 space-y-4 text-sm">
-                  <li>
-                    <a className="text-gray-700 transition hover:text-gray-700/75" href="#">
-                      Company History
-                    </a>
-                  </li>
 
                   <li>
                     <a className="text-gray-700 transition hover:text-gray-700/75" href="#">
@@ -171,7 +166,7 @@ function Footer() {
                   </li>
 
                   <li>
-                    <a className="text-gray-700 transition hover:text-gray-700/75" href="#"> Google Ads </a>
+                    <a className="text-gray-700 transition hover:text-gray-700/75" href="#"> UI & UX Design </a>
                   </li>
                 </ul>
               </div>
@@ -189,12 +184,12 @@ function Footer() {
                   </li>
 
                   <li>
-                    <a
-                      className="group flex justify-center gap-1.5 ltr:sm:justify-start rtl:sm:justify-end"
-                      href="#"
+                    <Link
+                      className="group flex md:justify-start justify-center gap-1.5 "
+                      to="/geminiSingap"
                     >
                       <span className="text-gray-700 transition group-hover:text-gray-700/75">
-                        Live Chat
+                        AI Chat
                       </span>
 
                       <span className="relative flex size-2">
@@ -203,7 +198,7 @@ function Footer() {
                         ></span>
                         <span className="relative inline-flex bg-teal-500 rounded-full size-2"></span>
                       </span>
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>
@@ -232,7 +227,7 @@ function Footer() {
                         />
                       </svg>
 
-                      <span className="flex-1 text-gray-700">john@doe.com</span>
+                      <span className="flex-1 text-gray-700">Q-prepTeam@gamil.com</span>
                     </a>
                   </li>
 
@@ -284,7 +279,7 @@ function Footer() {
                     </svg>
 
                     <address className="-mt-0.5 flex-1 not-italic text-gray-700">
-                      213 Lane, London, United Kingdom
+                      Mansoura Egypt
                     </address>
                   </li>
                 </ul>
@@ -295,7 +290,7 @@ function Footer() {
           <div className="pt-6 mt-12 border-t border-gray-100">
             <div className="text-center sm:flex sm:justify-between sm:text-left">
               <p className="text-sm text-gray-500">
-                <span className="block sm:inline">All rights reserved.</span>
+                <span className="block sm:inline"> All rights reserved. </span>
 
                 <a
                   className="inline-block text-teal-600 underline transition hover:text-teal-600/75"
@@ -314,7 +309,7 @@ function Footer() {
                 </a>
               </p>
 
-              <p className="mt-4 text-sm text-gray-500 sm:order-first sm:mt-0">&copy; 2025 Company Name</p>
+              <p className="mt-4 text-sm text-gray-500 sm:order-first sm:mt-0">&copy; 2025 Q-Prep</p>
             </div>
           </div>
         </div>

@@ -178,11 +178,11 @@ const MainTrackDashboard = () => {
   }, [showActions]);
 
   return (
-    <div className="min-h-screen p-6 bg-gray-100">
+    <div className="min-h-screen sm:p-6 bg-gray-100">
       <ToastContainer />
       <div className="container mx-auto">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">
+        <div className="flex items-center  justify-between mb-8">
+          <h1 className="md:text-3xl text-xl md:mt-0 mt-8 font-bold text-gray-800">
             Main Tracks Dashboard
           </h1>
         </div>

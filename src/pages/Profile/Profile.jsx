@@ -32,7 +32,7 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
   const { setProfileImage: setGlobalProfileImage } = useUser();
 
   const { userRole } = useContext(AuthContext)
-  console.log(userRole);
+  // console.log(userRole);
 
 
 
@@ -75,8 +75,8 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
       setUserId(data.id);
 
 
-
       console.log("GetUser Data:", data);
+
     } catch (error) {
       console.error("Error fetching user:", error.message);
       setError(error.message);
@@ -86,51 +86,53 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
   };
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      if (!token) return;
+    // const fetchUserData = async () => {
+    //   if (!token) return;
 
-      try {
-        const response = await fetch(
-          `https://questionprep.azurewebsites.net/api/Account/GetUser`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+    //   try {
+    //     const response = await fetch(
+    //       `https://questionprep.azurewebsites.net/api/Account/GetUser`,
+    //       {
+    //         method: "GET",
+    //         headers: {
+    //           "Content-Type": "application/json",
+    //           Authorization: `Bearer ${token}`,
+    //         },
+    //       }
+    //     );
 
-        if (!response.ok) {
-          throw new Error(`Failed to fetch user: ${response.status}`);
-        }
+    //     if (!response.ok) {
+    //       throw new Error(`Failed to fetch user: ${response.status}`);
+    //     }
 
-        const data = await response.json();
-        setOriginalData(data);
-        setFirstName(data.firstName);
-        setLastName(data.lastName);
-        setEmail(data.email);
-        setAddress(data.address);
-        setLocation(data.location);
-        setDob(data.birthDay);
-        setPhone(data.phoneNamber);
+    //     const data = await response.json();
+    //     setOriginalData(data);
+    //     setFirstName(data.firstName);
+    //     setLastName(data.lastName);
+    //     setEmail(data.email);
+    //     setAddress(data.address);
+    //     setLocation(data.location);
+    //     setDob(data.birthDay);
+    //     setPhone(data.phoneNamber);
 
-        const newImage = data.urlPhoto
-          ? `https://questionprep.azurewebsites.net/ProfilePhoto/${data.urlPhoto}`
-          : userImage;
+    //     const newImage = data.urlPhoto
+    //       ? `https://questionprep.azurewebsites.net/ProfilePhoto/${data.urlPhoto}`
+    //       : userImage;
 
-        setProfileImage(newImage);
-        setGlobalProfileImage(newImage); // تحديث الصورة في الكون텍ست العالمي
+    //     setProfileImage(newImage);
+    //     setGlobalProfileImage(newImage); // تحديث الصورة في الكون텍ست العالمي
 
-      } catch (error) {
-        console.error("Error fetching user:", error.message);
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+    //   } catch (error) {
+    //     console.error("Error fetching user:", error.message);
+    //     setError(error.message);
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // };
+ 
 
-    fetchUserData();
+    // fetchUserData();
+    GetUserFunc()
   }, [token, setGlobalProfileImage]); // أضف setGlobalProfileImage إلى dependencies
 
   // Save Changes
@@ -194,6 +196,7 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
 
   // Dicard Changes
   const DiscardChanges = () => {
+
     setIsEditMode(false);
     GetUserFunc();
   };

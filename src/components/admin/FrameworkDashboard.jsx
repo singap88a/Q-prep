@@ -180,16 +180,17 @@ const FrameworkDashboard = () => {
     <div className="flex">
       <Sidebar />
 
-      <div className="flex-1 min-h-screen p-6 bg-gray-100 md:ml-64">
+      <div className="flex-1  min-h-screen sm:p-6  p-2  md:ml-64 ">
         <ToastContainer />
-        <div className="container mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <h1 className="text-2xl font-bold text-gray-800">
-              Frameworks Dashboard - Track ID: {mainTrackId}
+        <div className="sm:container bg-gray-100 p-3 mx-auto">
+          <div className="flex items-center justify-between   mb-8">
+            <h1 className="md:text-2xl sm:text-lg text-[17px] font-bold md:mt-0 mt-5 text-gray-800">
+              Frameworks Dashboard 
+              {/* - Track ID: {mainTrackId} */}
             </h1>
             <button
               onClick={() => navigate(-1)}
-              className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+              className=" md:px-4 px-2 py-2 text-white md:text-lg text-sm bg-blue-500 rounded-lg md:mt-0 mt-5 hover:bg-blue-600"
             >
               Back to Tracks
             </button>

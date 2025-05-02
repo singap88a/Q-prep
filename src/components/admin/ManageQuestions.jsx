@@ -182,23 +182,23 @@ const ManageQuestions = () => {
   return (
     <div className="flex">
       <Sidebar />
-      <div className="flex-1 min-h-screen p-4 bg-gray-100 md:ml-64">
+      <div className="flex-1 min-h-screen md:p-4 bg-gray-100 md:ml-64">
         <ToastContainer />
         <div className="container mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <h1 className="text-3xl font-bold text-gray-800">
+          <div className="flex items-center  justify-between md:nt-0 mt-9 mb-8">
+            <h1 className="md:text-2xl sm:text-lg text-[17px] font-bold text-gray-800">
               Manage Questions
             </h1>
             <button
               onClick={() => navigate(-1)}
-              className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+              className="md:px-4 px-2 py-2 text-white md:text-lg text-sm  bg-blue-500 rounded-lg hover:bg-blue-600"
             >
               Back to Frameworks
             </button>
           </div>
 
           {/* Add/Edit Question Form */}
-          <div className="p-6 mb-8 bg-white rounded-lg shadow-md">
+          <div className=" p-6 mb-8 bg-white rounded-lg shadow-md">
             <h2 className="mb-4 text-xl font-semibold text-gray-800">
               {editQuestion.questionId ? "Edit Question" : "Add New Question"}
             </h2>

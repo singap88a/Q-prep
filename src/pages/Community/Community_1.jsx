@@ -107,7 +107,7 @@ function CommunityCard() {
     <div className="container ">
       <div className="flex flex-col items-center justify-center ">
         <h1 className="text-2xl font-bold text-center text-transparent bg-gradient-to-r from-primary via-slate-600 to-secondary bg-clip-text md:text-4xl sm:text-3xl">
-          Welcome to the Q-Prep Community!{" "}
+          Welcome to the Q-Prep Community!
         </h1>
         <p className="md:w-[50%] text-center text-gray-800 w-[100%]">
           Join a collaborative and vibrant space where learners and
@@ -134,10 +134,10 @@ function CommunityCard() {
         currentCards.map((item) => (
           <div
             key={item.id}
-            className="flex flex-col sm:flex-row items-center justify-between p-4 rounded-lg shadow-md bg-[#8349DB0D] mb-8"
+            className="flex  md:flex-row flex-col items-center justify-between p-4 rounded-lg shadow-md bg-[#8349DB0D] mb-8 overflow-hidden"
           >
             {/* Left Section: Image */}
-            <div className="flex items-center">
+            <div className="flex items-center  md:w-[80%] w-[100%] ">
               <img
                 src={item.image}
                 alt={item.title}
@@ -147,7 +147,7 @@ function CommunityCard() {
                 <h2 className="text-lg font-bold text-gray-800">
                   {item.title}
                 </h2>
-                <p className="text-sm text-gray-600">{item.description}</p>
+                <p className="text-sm text-gray-600 ">{item.description}</p>
               </div>
             </div>
 

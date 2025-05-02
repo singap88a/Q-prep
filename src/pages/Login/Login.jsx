@@ -64,7 +64,7 @@ function Login({ setIsLoggedIn }) {
       );
 
       const data = await response.json();
-      console.log("Response data:", data);
+      console.log("Login data:", data);
 
       if (!response.ok) {
         throw new Error(data.message || "Login failed");
@@ -72,34 +72,32 @@ function Login({ setIsLoggedIn }) {
 
       localStorage.setItem("token", data.token);
 
+      // Need reda send 
+      localStorage.setItem("refreshToken", data.refreshToken);
 
-      // localStorage.setItem("role", data.roles);
+
       localStorage.setItem("role", JSON.stringify(data.roles));
-      // console.log(userRole);
 
 
 
       // role
       if (data.roles.includes("Admin")) {
         setSuccess("Login successful! Redirecting to admin panel...");
-        setIsLoggedIn(true);
-        setTimeout(() => {
-          navigate("/");
-        }, 2000);
       } else {
         setSuccess("Login successful! Redirecting to home...");
-        setIsLoggedIn(true);
-        setTimeout(() => {
-          navigate("/");
-        }, 2000);
       }
+      setIsLoggedIn(true);
+      setTimeout(() => navigate("/"), 2000);
+
     } catch (error) {
       console.error("Error:", error);
       setError(error.message || "Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
+
   };
+
 
   return (
     <div className="container">
