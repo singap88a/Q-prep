@@ -1,52 +1,32 @@
- import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faSearch,
-  faEllipsisVertical,
-} from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import userImage from "../../assets/user.png";
 import axios from "axios";
-import { toast } from "react-toastify";
 
 function CommunityCard() {
   const navigate = useNavigate();
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [joinedGroups, setJoinedGroups] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
-  const [actionLoading, setActionLoading] = useState({});
   const cardsPerPage = 6;
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchGroups = async () => {
       setLoading(true);
       try {
-        const [groupsResponse, userGroupsResponse] = await Promise.all([
-          axios.get(
-            "https://questionprep.azurewebsites.net/api/Groups/GetAllGroups",
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            }
-          ),
-          axios.get(
-            "https://questionprep.azurewebsites.net/api/UserGroup/GetAllUserGroups",
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            }
-          ),
-        ]);
-
-        setGroups(groupsResponse.data);
-        setJoinedGroups(
-          userGroupsResponse.data.map((group) => group.groupName)
+        const response = await axios.get(
+          "https://questionprep.azurewebsites.net/api/Groups/GetAllGroups",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
         );
+        setGroups(response.data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -54,7 +34,7 @@ function CommunityCard() {
       }
     };
 
-    fetchData();
+    fetchGroups();
   }, []);
 
   const getImageUrl = (photo) => {
@@ -63,82 +43,8 @@ function CommunityCard() {
     return `https://questionprep.azurewebsites.net/GroupsPhoto/${photo}`;
   };
 
-  const handleCardClick = (groupId, isJoined) => {
-    if (isJoined) navigate(`/community/${groupId}`);
-  };
-
-  const handleGroupAction = async (e, groupId, groupName, isJoined) => {
-    e.stopPropagation();
-    setActionLoading((prev) => ({ ...prev, [groupId]: true }));
-
-    try {
-      if (isJoined) {
-        await axios.post(
-          "https://questionprep.azurewebsites.net/api/UserGroup/LeaveGroup",
-          {
-            connectionId: groupId,
-            groupName: groupName,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        setJoinedGroups(joinedGroups.filter((name) => name !== groupName));
-        setGroups(
-          groups.map((group) =>
-            group.id === groupId
-              ? {
-                  ...group,
-                  numberOfMembers: (
-                    parseInt(group.numberOfMembers || 1) - 1
-                  ).toString(),
-                }
-              : group
-          )
-        );
-        toast.success(`Left group ${groupName}`);
-      } else {
-        await axios.post(
-          "https://questionprep.azurewebsites.net/api/UserGroup/JoinGroup",
-          {
-            connectionId: groupId,
-            groupName: groupName,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        setJoinedGroups([...joinedGroups, groupName]);
-        setGroups(
-          groups.map((group) =>
-            group.id === groupId
-              ? {
-                  ...group,
-                  numberOfMembers: Math.max(
-                    0,
-                    parseInt(group.numberOfMembers) - 1
-                  ).toString(),
-                }
-              : group
-          )
-        );
-
-        toast.success(`Joined group ${groupName}`);
-        navigate(`/community/${groupId}`);
-      }
-    } catch (error) {
-      toast.error(`Error: ${error.response?.data?.message || error.message}`);
-    } finally {
-      setActionLoading((prev) => ({ ...prev, [groupId]: false }));
-    }
+  const handleCardClick = (groupId) => {
+    navigate(`/community/${groupId}`);
   };
 
   const filteredData = groups.filter((item) =>
@@ -170,8 +76,7 @@ function CommunityCard() {
           Welcome to the Q-Prep Community!
         </h1>
         <p className="max-w-2xl mx-auto mt-2 text-gray-800">
-          Join a collaborative and vibrant space where learners and
-          professionals come together.
+          Join a collaborative and vibrant space where learners and professionals come together.
         </p>
       </div>
 
@@ -190,76 +95,45 @@ function CommunityCard() {
       </div>
 
       {currentCards.length > 0 ? (
-        currentCards.map((item) => {
-          const isJoined = joinedGroups.includes(item.groupName);
-          return (
-            <div
-              key={item.id}
-              onClick={() => handleCardClick(item.id, isJoined)}
-              className={`flex flex-col sm:flex-row items-center justify-between p-4 mb-6 bg-[#8349DB0D] rounded-lg shadow-md transition ${
-                isJoined ? "cursor-pointer hover:bg-[#8349DB1A]" : ""
-              }`}
-            >
-              <div className="flex items-center">
-                <img
-                  src={getImageUrl(item.photo)}
-                  alt={item.groupName}
-                  className="object-cover w-16 h-16 mr-4 rounded-full"
-                  onError={(e) => {
-                    e.target.src = userImage;
-                  }}
-                />
-                <div>
-                  <h2 className="text-lg font-bold text-gray-800">
-                    {item.groupName}
-                  </h2>
-                  <p className="text-sm text-gray-600">
-                    {item.description || "No description available"}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center mt-4 space-x-3 sm:mt-0">
-                <span className="text-gray-600">
-                  {item.numberOfMembers} member
-                  {item.numberOfMembers !== "1" ? "s" : ""}
-                </span>
-                <button
-                  className={`px-4 py-1 text-sm rounded-full transition min-w-[60px] relative ${
-                    isJoined
-                      ? "bg-gray-200 text-gray-800 hover:bg-gray-300"
-                      : "bg-secondary text-white hover:bg-primary"
-                  }`}
-                  onClick={(e) =>
-                    handleGroupAction(e, item.id, item.groupName, isJoined)
-                  }
-                  disabled={actionLoading[item.id]}
-                >
-                  {actionLoading[item.id] ? (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-4 h-4 border-2 border-t-2 border-gray-200 rounded-full animate-spin border-t-white"></div>
-                    </div>
-                  ) : isJoined ? (
-                    "Leave"
-                  ) : (
-                    "Join"
-                  )}
-                </button>
-                <button
-                  className="text-gray-500 hover:text-gray-700"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <FontAwesomeIcon icon={faEllipsisVertical} />
-                </button>
+        currentCards.map((item) => (
+          <div
+            key={item.id}
+            onClick={() => handleCardClick(item.id)}
+            className="flex flex-col sm:flex-row items-center justify-between p-4 mb-6 bg-[#8349DB0D] rounded-lg shadow-md transition cursor-pointer hover:bg-[#8349DB1A]"
+          >
+            <div className="flex items-center">
+              <img
+                src={getImageUrl(item.photo)}
+                alt={item.groupName}
+                className="object-cover w-16 h-16 mr-4 rounded-full"
+                onError={(e) => {
+                  e.target.src = userImage;
+                }}
+              />
+              <div>
+                <h2 className="text-lg font-bold text-gray-800">{item.groupName}</h2>
+                <p className="text-sm text-gray-600">
+                  {item.description || "No description available"}
+                </p>
               </div>
             </div>
-          );
-        })
+
+            <div className="flex items-center mt-4 space-x-3 sm:mt-0">
+              <span className="text-gray-600">
+                {item.numberOfMembers} member{item.numberOfMembers !== "1" ? "s" : ""}
+              </span>
+              <button
+                className="text-gray-500 hover:text-gray-700"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <FontAwesomeIcon icon={faEllipsisVertical} />
+              </button>
+            </div>
+          </div>
+        ))
       ) : (
         <h1 className="font-bold text-center text-secondary">
-          {searchTerm
-            ? "No matching communities found"
-            : "No communities available"}
+          {searchTerm ? "No matching communities found" : "No communities available"}
         </h1>
       )}
 
