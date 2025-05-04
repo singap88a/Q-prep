@@ -7,14 +7,14 @@ function ChooseTrack() {
   const [tracksData, setTracksData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const cardsPerPage = 6;
+  const cardsPerPage = 8;
 
   // جلب البيانات من الـ API
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://questionprep.azurewebsites.net/api/MainTrack/GetMainTrack"
+          "https://redasaad.azurewebsites.net/api/MainTrack/GetMainTrack"
         );
         if (!response.ok) {
           throw new Error("Failed to fetch data");
@@ -81,7 +81,7 @@ function ChooseTrack() {
               <div className="bg_card">
                 {track.photo ? (
                   <img
-                    src={`https://questionprep.azurewebsites.net/TrackandFrameworkPhoto/${track.photo}`}
+                    src={`https://prep.blob.core.windows.net/photosprep/${track.photo}`}
                     alt={track.tarckName}
                     className="object-cover w-full h-full rounded-lg"
                   />

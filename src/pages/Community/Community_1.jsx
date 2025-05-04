@@ -19,7 +19,7 @@ function CommunityCard() {
       setLoading(true);
       try {
         const response = await axios.get(
-          "https://questionprep.azurewebsites.net/api/Groups/GetAllGroups",
+          "https://redasaad.azurewebsites.net/api/Groups/GetAllGroups",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -40,7 +40,7 @@ function CommunityCard() {
   const getImageUrl = (photo) => {
     if (!photo) return userImage;
     if (photo.startsWith("http")) return photo;
-    return `https://questionprep.azurewebsites.net/GroupsPhoto/${photo}`;
+    return `https://prep.blob.core.windows.net/photosprep/${photo}`;
   };
 
   const handleCardClick = (groupId) => {

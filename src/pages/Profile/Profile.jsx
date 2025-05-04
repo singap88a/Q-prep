@@ -43,7 +43,7 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
         throw new Error("No Token found");
       }
       const response = await fetch(
-        `https://questionprep.azurewebsites.net/api/Account/GetUser`,
+        `https://redasaad.azurewebsites.net/api/Account/GetUser`,
         {
           method: "GET",
           mode: "cors",
@@ -69,7 +69,7 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
       setPhone(data.phoneNamber);
       setProfileImage(
         data.urlPhoto
-          ? `https://questionprep.azurewebsites.net/ProfilePhoto/${data.urlPhoto}`
+          ? `https://redasaad.azurewebsites.net/ProfilePhoto/${data.urlPhoto}`
           : userImage
       );
       setUserId(data.id);
@@ -91,7 +91,7 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
 
       try {
         const response = await fetch(
-          `https://questionprep.azurewebsites.net/api/Account/GetUser`,
+          `https://redasaad.azurewebsites.net/api/Account/GetUser`,
           {
             method: "GET",
             headers: {
@@ -116,7 +116,7 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
         setPhone(data.phoneNamber);
 
         const newImage = data.urlPhoto
-          ? `https://questionprep.azurewebsites.net/ProfilePhoto/${data.urlPhoto}`
+          ? `https://prep.blob.core.windows.net/photosprep/${data.urlPhoto}`
           : userImage;
 
         setProfileImage(newImage);
@@ -157,7 +157,7 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
 
     try {
       const response = await fetch(
-        `https://questionprep.azurewebsites.net/api/Account/EditUser`,
+        `https://redasaad.azurewebsites.net/api/Account/EditUser`,
         {
           method: "PUT",
           headers: {
@@ -174,7 +174,7 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
 
       const data = await response.json();
       const newImage = data.urlPhoto
-        ? `https://questionprep.azurewebsites.net/ProfilePhoto/${data.urlPhoto}`
+        ? `https://prep.blob.core.windows.net/photosprep/${data.urlPhoto}`
         : userImage;
 
       // تحديث الصورة محلياً وفي الكون텍ست العالمي

@@ -31,7 +31,7 @@ const MainTrackDashboard = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        "https://questionprep.azurewebsites.net/api/MainTrack/GetMainTrack",
+        "https://redasaad.azurewebsites.net/api/MainTrack/GetMainTrack",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -126,7 +126,7 @@ const MainTrackDashboard = () => {
       }
 
       const response = await axios.post(
-        "https://questionprep.azurewebsites.net/api/MainTrack/AddMainTrack",
+        "https://redasaad.azurewebsites.net.net/api/MainTrack/AddMainTrack",
         formData,
         {
           headers: {
@@ -181,7 +181,7 @@ const MainTrackDashboard = () => {
       }
 
       const response = await axios.put(
-        `https://questionprep.azurewebsites.net/api/MainTrack/UpdateMaintrack/${editTrack.trackId}`,
+        `https://redasaad.azurewebsites.net/api/MainTrack/UpdateMaintrack/${editTrack.trackId}`,
         formData,
         {
           headers: {
@@ -214,7 +214,7 @@ const MainTrackDashboard = () => {
     if (window.confirm("Are you sure you want to delete this track?")) {
       try {
         await axios.delete(
-          `https://questionprep.azurewebsites.net/api/MainTrack/DeleteTrack/${trackId}`,
+          `https://redasaad.azurewebsites.net/api/MainTrack/DeleteTrack/${trackId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -354,7 +354,7 @@ const MainTrackDashboard = () => {
                     {track.photo && (
                       <div className="flex-shrink-0">
                         <img
-                          src={`https://questionprep.azurewebsites.net/TrackandFrameworkPhoto/${track.photo}`}
+                          src={`https://prep.blob.core.windows.net/photosprep/${track.photo}`}
                           alt={track.tarckName}
                           className="object-contain w-20 h-20 p-1 border border-gray-200 rounded-lg"
                           style={{ backgroundColor: '#eeeeee' }}
@@ -389,7 +389,7 @@ const MainTrackDashboard = () => {
                                 ...track,
                                 photo: null,
                                 photoPreview: track.photo 
-                                  ? `https://questionprep.azurewebsites.net/TrackandFrameworkPhoto/${track.photo}`
+                                  ? `https://prep.blob.core.windows.net/photosprep/${track.photo}`
                                   : null
                               });
                               setShowActions(null);

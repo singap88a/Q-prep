@@ -50,7 +50,7 @@ function Sign_up({ setIsLoggedIn }) {
     setSuccess(null);
 
     try {
-      const response = await fetch("https://questionprep.azurewebsites.net/api/Authenticate/Register",
+      const response = await fetch("https://redasaad.azurewebsites.net/api/Authenticate/Register",
         {
           method: "POST",
           headers: {

@@ -17,7 +17,7 @@ const TrackDetails = () => {
     const fetchTrackDetails = async () => {
       try {
         const response = await fetch(
-          `https://questionprep.azurewebsites.net/api/Frameworks/GetFramework/${trackId}`,
+          `https://redasaad.azurewebsites.net/api/Frameworks/GetFramework/${trackId}`,
           {
             mode: "cors",
             headers: {
@@ -93,7 +93,7 @@ const TrackDetails = () => {
               <div className="bg_card">
                 {track.photo ? (
                   <img
-                    src={`https://questionprep.azurewebsites.net/TrackandFrameworkPhoto/${track.photo}`}
+                    src={`https://prep.blob.core.windows.net/photosprep/${track.photo}`}
                     alt={track.frameworkName}
                     className="object-cover w-full h-full rounded-lg"
                   />

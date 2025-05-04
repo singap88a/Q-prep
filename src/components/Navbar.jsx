@@ -46,7 +46,7 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
     if (isLoggedIn) {
       const token = localStorage.getItem("token");
       if (token && !globalProfileImage) {
-        fetch("https://questionprep.azurewebsites.net/api/Account/GetUser", {
+        fetch("https://redasaad.azurewebsites.net/api/Account/GetUser", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -55,7 +55,7 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
           .then((response) => response.json())
           .then((data) => {
             if (data.urlPhoto) {
-              const newImage = `https://questionprep.azurewebsites.net/ProfilePhoto/${data.urlPhoto}`;
+              const newImage = `https://prep.blob.core.windows.net/photosprep/${data.urlPhoto}`;
               setLocalProfileImage(newImage);
               setGlobalProfileImage(newImage);
             }

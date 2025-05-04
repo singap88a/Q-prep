@@ -27,7 +27,7 @@ function Add_question() {
 
     try {
       const response = await axios.post(
-        "https://questionprep.azurewebsites.net/api/Request/AddQuestionRequest",
+        "https://redasaad.azurewebsites.net/api/Request/AddQuestionRequest",
         {
           frameworkId: resolvedFrameworkId, // استخدام frameworkId بدلاً من frameworkName
           questions: question,

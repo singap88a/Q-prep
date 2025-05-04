@@ -36,7 +36,7 @@ function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `https://questionprep.azurewebsites.net/api/Questions/Q_BeginnerLevel/${frameworkId}`
+          `https://redasaad.azurewebsites.net/api/Questions/Q_BeginnerLevel/${frameworkId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch Beginer questions");
@@ -58,7 +58,7 @@ function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
   const fetchSavedQuestions = async () => {
     try {
       const response = await fetch(
-        "https://questionprep.azurewebsites.net/api/Save/GetSaveQuestions",
+        "https://redasaad.azurewebsites.net/api/Save/GetSaveQuestions",
         {
           method: "GET",
           headers: {
@@ -89,7 +89,7 @@ function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
 
   const handleSaveQuestion = async (faq) => {
     try {
-      const response = await fetch("https://questionprep.azurewebsites.net/api/Save/AddtoSave", {
+      const response = await fetch("https://redasaad.azurewebsites.net/api/Save/AddtoSave", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

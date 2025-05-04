@@ -36,7 +36,7 @@ function Intermediate({
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `https://questionprep.azurewebsites.net/api/Questions/Q_IntermediateLevel/${frameworkId}`
+          `https://redasaad.azurewebsites.net/api/Questions/Q_IntermediateLevel/${frameworkId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch intermediate questions");
@@ -59,7 +59,7 @@ function Intermediate({
       if (!token) return;
 
       const response = await fetch(
-        "https://questionprep.azurewebsites.net/api/Save/GetSaveQuestions",
+        "https://redasaad.azurewebsites.net/api/Save/GetSaveQuestions",
         {
           method: "GET",
           headers: {
@@ -96,7 +96,7 @@ function Intermediate({
 
     try {
       const response = await fetch(
-        "https://questionprep.azurewebsites.net/api/Save/AddtoSave",
+        "https://redasaad.azurewebsites.net/api/Save/AddtoSave",
         {
           method: "POST",
           headers: {

@@ -41,19 +41,19 @@ const ManageQuestions = () => {
       const [beginnerResponse, intermediateResponse, advancedResponse] =
         await Promise.all([
           axios.get(
-            `https://questionprep.azurewebsites.net/api/Questions/Q_BeginnerLevel/${frameworkId}`,
+            `https://redasaad.azurewebsites.net/api/Questions/Q_BeginnerLevel/${frameworkId}`,
             {
               headers: { Authorization: `Bearer ${token}` },
             }
           ),
           axios.get(
-            `https://questionprep.azurewebsites.net/api/Questions/Q_IntermediateLevel/${frameworkId}`,
+            `https://redasaad.azurewebsites.net/api/Questions/Q_IntermediateLevel/${frameworkId}`,
             {
               headers: { Authorization: `Bearer ${token}` },
             }
           ),
           axios.get(
-            `https://questionprep.azurewebsites.net/api/Questions/Q_AdvancedLevel/${frameworkId}`,
+            `https://redasaad.azurewebsites.net/api/Questions/Q_AdvancedLevel/${frameworkId}`,
             {
               headers: { Authorization: `Bearer ${token}` },
             }
@@ -81,7 +81,7 @@ const ManageQuestions = () => {
 
     try {
       await axios.post(
-        `https://questionprep.azurewebsites.net/api/Questions/AddQuestionFromAdmin/${level}`,
+        `https://redasaad.azurewebsites.net/api/Questions/AddQuestionFromAdmin/${level}`,
         {
           frameworkId: frameworkId, // إضافة frameworkId هنا
           questions: newQuestion.questions,
@@ -114,7 +114,7 @@ const ManageQuestions = () => {
 
     try {
       await axios.put(
-        `https://questionprep.azurewebsites.net/api/Questions/UpdateQuestion/${editQuestion.questionId}`,
+        `https://redasaad.azurewebsites.net/api/Questions/UpdateQuestion/${editQuestion.questionId}`,
         {
           questions: editQuestion.questions,
           answers: editQuestion.answers,
@@ -141,7 +141,7 @@ const ManageQuestions = () => {
     if (window.confirm("Are you sure you want to delete this question?")) {
       try {
         await axios.delete(
-          `https://questionprep.azurewebsites.net/api/Questions/DeleteQuestion/${questionId}`,
+          `https://redasaad.azurewebsites.net/api/Questions/DeleteQuestion/${questionId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

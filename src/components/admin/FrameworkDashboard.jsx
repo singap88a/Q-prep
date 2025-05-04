@@ -45,7 +45,7 @@ const FrameworkDashboard = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `https://questionprep.azurewebsites.net/api/Frameworks/GetFramework/${mainTrackId}`,
+        `https://redasaad.azurewebsites.net/api/Frameworks/GetFramework/${mainTrackId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -134,7 +134,7 @@ const FrameworkDashboard = () => {
       }
 
       const response = await axios.post(
-        `https://questionprep.azurewebsites.net/api/Frameworks/AddFramework?MainTrackId=${mainTrackId}&FramworkName=${newFramework.frameworkName}&description=${newFramework.description}`,
+        `https://redasaad.azurewebsites.net/api/Frameworks/AddFramework?MainTrackId=${mainTrackId}&FramworkName=${newFramework.frameworkName}&description=${newFramework.description}`,
         formData,
         {
           headers: {
@@ -174,7 +174,7 @@ const FrameworkDashboard = () => {
       }
 
       const response = await axios.put(
-        `https://questionprep.azurewebsites.net/api/Frameworks/UpdateFramewrok/${editFramework.frameworkId}?FrameworkName=${editFramework.frameworkName}&description=${editFramework.description}`,
+        `https://redasaad.azurewebsites.net/api/Frameworks/UpdateFramewrok/${editFramework.frameworkId}?FrameworkName=${editFramework.frameworkName}&description=${editFramework.description}`,
         formData,
         {
           headers: {
@@ -204,7 +204,7 @@ const FrameworkDashboard = () => {
     if (window.confirm("Are you sure you want to delete this framework?")) {
       try {
         await axios.delete(
-          `https://questionprep.azurewebsites.net/api/Frameworks/DeleteFramework/${frameworkId}`,
+          `https://redasaad.azurewebsites.net/api/Frameworks/DeleteFramework/${frameworkId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -383,7 +383,7 @@ const FrameworkDashboard = () => {
                       {framework.photo && (
                         <div className="flex-shrink-0">
                           <img
-                            src={`https://questionprep.azurewebsites.net/TrackandFrameworkPhoto/${framework.photo}`}
+                            src={`https://prep.blob.core.windows.net/photosprep/${framework.photo}`}
                             alt={framework.frameworkName}
                             className="object-contain w-20 h-20 p-1 border border-gray-200 rounded-lg"
                             style={{ backgroundColor: '#eeeeee' }}
@@ -418,7 +418,7 @@ const FrameworkDashboard = () => {
                                   ...framework,
                                   photo: null,
                                   photoPreview: framework.photo 
-                                    ? `https://questionprep.azurewebsites.net/TrackandFrameworkPhoto/${framework.photo}`
+                                    ? `https://prep.blob.core.windows.net/photosprep/${framework.photo}`
                                     : null
                                 });
                                 setShowActions(null);

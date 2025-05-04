@@ -48,13 +48,13 @@ function CommunityPage() {
     if (!photo) return null;
     if (photo.startsWith("http")) return photo;
 
-    const baseUrl = "https://questionprep.azurewebsites.net";
+    const baseUrl = "https://prep.blob.core.windows.net/photosprep";
     if (type === "profile") {
-      return `${baseUrl}/ProfilePhoto/${photo}`;
+      return `${baseUrl}/${photo}`;
     } else if (type === "post") {
-      return `${baseUrl}/PostPhotos/${photo}`;
+      return `${baseUrl}/${photo}`;
     } else {
-      return `${baseUrl}/GroupsPhoto/${photo}`;
+      return `${baseUrl}/${photo}`;
     }
   };
 
@@ -64,7 +64,7 @@ function CommunityPage() {
       try {
         const [userResponse, membershipResponse] = await Promise.all([
           axios.get(
-            "https://questionprep.azurewebsites.net/api/Account/GetCurrentUser",
+            "https://redasaad.azurewebsites.net/api/Account/GetCurrentUser",
             {
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -72,7 +72,7 @@ function CommunityPage() {
             }
           ),
           axios.get(
-            `https://questionprep.azurewebsites.net/api/UserGroup/CheckMembership/${groupId}`,
+            `https://redasaad.azurewebsites.net/api/UserGroup/CheckMembership/${groupId}`,
             {
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -98,7 +98,7 @@ function CommunityPage() {
       try {
         const [groupResponse, postsResponse] = await Promise.all([
           axios.get(
-            `https://questionprep.azurewebsites.net/api/Groups/GetGroupById/${groupId}`,
+            `https://redasaad.azurewebsites.net/api/Groups/GetGroupById/${groupId}`,
             {
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -107,7 +107,7 @@ function CommunityPage() {
           ),
           axios
             .get(
-              `https://questionprep.azurewebsites.net/api/Posts/GetAllPosts/${groupId}`,
+              `https://redasaad.azurewebsites.net/api/Posts/GetAllPosts/${groupId}`,
               {
                 headers: {
                   Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -220,7 +220,7 @@ function CommunityPage() {
       if (isMember) {
         // Leave group
         await axios.post(
-          "https://questionprep.azurewebsites.net/api/UserGroup/LeaveGroup",
+          "https://redasaad.azurewebsites.net/api/UserGroup/LeaveGroup",
           {
             connectionId: group.id,
             groupName: group.groupName,
@@ -241,7 +241,7 @@ function CommunityPage() {
       } else {
         // Join group
         await axios.post(
-          "https://questionprep.azurewebsites.net/api/UserGroup/JoinGroup",
+          "https://redasaad.azurewebsites.net/api/UserGroup/JoinGroup",
           {
             connectionId: group.id,
             groupName: group.groupName,
@@ -292,7 +292,7 @@ function CommunityPage() {
         params.append("Text", finalText);
 
         await axios.put(
-          `https://questionprep.azurewebsites.net/api/Posts/UpdatePost/${editingPost.id}?${params.toString()}`,
+          `https://redasaad.azurewebsites.net/api/Posts/UpdatePost/${editingPost.id}?${params.toString()}`,
           formData,
           {
             headers: {
@@ -329,7 +329,7 @@ function CommunityPage() {
         params.append("TypeOfBody", "post");
 
         const response = await axios.post(
-          `https://questionprep.azurewebsites.net/api/Posts/CreatePost?${params.toString()}`,
+          `https://redasaad.azurewebsites.net/api/Posts/CreatePost?${params.toString()}`,
           formData,
           {
             headers: {
@@ -424,7 +424,7 @@ function CommunityPage() {
       // Add to liked posts set
       setLikedPosts((prev) => new Set(prev.add(postId)));
 
-      const endpoint = `https://questionprep.azurewebsites.net/api/Likes/AddLike/${postId}`;
+      const endpoint = `https://redasaad.azurewebsites.net/api/Likes/AddLike/${postId}`;
 
       await axios.post(
         endpoint,
@@ -448,7 +448,7 @@ function CommunityPage() {
 
     try {
       await axios.delete(
-        `https://questionprep.azurewebsites.net/api/Posts/DeletePost/${postId}`,
+        `https://redasaad.azurewebsites.net/api/Posts/DeletePost/${postId}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,

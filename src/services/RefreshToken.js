@@ -1,7 +1,7 @@
 // src/services/authService.ts
 import axios from "axios";
 
-const API_URL = "https://questionprep.azurewebsites.net/api/Authenticate";
+const API_URL = "https://redasaad.azurewebsites.net/api/Authenticate";
 
 export const refreshToken = async () => {
     try {

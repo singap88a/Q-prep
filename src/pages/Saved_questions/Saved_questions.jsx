@@ -22,7 +22,7 @@ function Saved_questions({ isSaved, setIsSaved }) {
                 throw new Error("No token found. Please log in.");
             }
 
-            const response = await fetch("https://questionprep.azurewebsites.net/api/Save/GetSaveQuestions", {
+            const response = await fetch("https://redasaad.azurewebsites.net/api/Save/GetSaveQuestions", {
                 method: "GET",
                 headers: {
                     // "Content-Type": "application/json",
@@ -69,7 +69,7 @@ function Saved_questions({ isSaved, setIsSaved }) {
         if (isConfirmed) {
             try {
                 const response = await fetch(
-                    `https://questionprep.azurewebsites.net/api/Save/DeleteFromSave?Id=${faq.id}`, // إرسال Id كـ query parameter
+                    `https://redasaad.azurewebsites.net/api/Save/DeleteFromSave?Id=${faq.id}`, // إرسال Id كـ query parameter
                     {
                         method: "DELETE",
                         headers: {

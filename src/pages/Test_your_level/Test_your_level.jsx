@@ -28,7 +28,7 @@ const TestYourLevel = () => {
         }
 
         const response = await fetch(
-          `https://questionprep.azurewebsites.net/api/TestLevel/QuestionForTesting/${frameworkId}`,
+          `https://redasaad.azurewebsites.net/api/TestLevel/QuestionForTesting/${frameworkId}`,
           {
             method: "GET",
             headers: {
