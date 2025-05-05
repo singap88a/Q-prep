@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faEllipsisVertical, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import userImage from "../../assets/user.png";
 import axios from "axios";
 
@@ -58,9 +58,11 @@ function CommunityCard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-8">
-        <div className="w-8 h-8 border-4 border-t-4 border-gray-200 rounded-full animate-spin border-t-secondary"></div>
-        <span className="ml-2">Loading communities...</span>
+      <div className="flex items-center justify-center py-20">
+        <FontAwesomeIcon 
+          icon={faSpinner} 
+          className="text-4xl text-secondary animate-spin" 
+        />
       </div>
     );
   }

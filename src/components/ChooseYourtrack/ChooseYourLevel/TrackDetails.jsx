@@ -1,21 +1,22 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
-import { ClipLoader } from "react-spinners"; // استيراد مكون التحميل
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 const TrackDetails = () => {
   const { trackId } = useParams();
   const location = useLocation();
 
-  const [trackDetails, setTrackDetails] = useState([]); // تخزين جميع البيانات
+  const [trackDetails, setTrackDetails] = useState([]);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { tarckName } = location.state || {};
-  console.log(tarckName);
 
   useEffect(() => {
     const fetchTrackDetails = async () => {
       try {
+        setIsLoading(true);
         const response = await fetch(
           `https://redasaad.azurewebsites.net/api/Frameworks/GetFramework/${trackId}`,
           {
@@ -32,22 +33,24 @@ const TrackDetails = () => {
         }
 
         const data = await response.json();
-        console.log("Track Data:", data);
-        setTrackDetails(data); // تخزين جميع البيانات
+        setTrackDetails(data);
       } catch (error) {
         setError(error.message);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
     fetchTrackDetails();
   }, [trackId]);
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <ClipLoader color="#4A90E2" size={50} /> {/* تأثير التحميل */}
+        <FontAwesomeIcon
+          icon={faSpinner}
+          className="text-4xl text-secondary animate-spin"
+        />
       </div>
     );
   }
@@ -55,13 +58,17 @@ const TrackDetails = () => {
   if (error) {
     return (
       <div className="mt-10 font-semibold text-center text-red-500">
-        {error}
+        Error: {error}
       </div>
     );
   }
 
   if (!trackDetails || trackDetails.length === 0) {
-    return <div className="mt-10 text-center">Data Not Found</div>;
+    return (
+      <div className="mt-10 text-center text-secondary">
+        No frameworks found for this track
+      </div>
+    );
   }
 
   return (
@@ -87,7 +94,7 @@ const TrackDetails = () => {
               frameworkId: track.frameworkId,
               frameworkName: track.frameworkName,
             }}
-            className="cursor-pointer track card"
+            className="transition-shadow duration-300 cursor-pointer track card hover:shadow-lg"
           >
             <div className="">
               <div className="bg_card">
@@ -96,17 +103,19 @@ const TrackDetails = () => {
                     src={`https://prep.blob.core.windows.net/photosprep/${track.photo}`}
                     alt={track.frameworkName}
                     className="object-cover w-full h-full rounded-lg"
+                    loading="lazy"
                   />
                 ) : (
                   <img
                     src="https://via.placeholder.com/150"
                     alt="Placeholder"
                     className="object-cover w-full h-full"
+                    loading="lazy"
                   />
                 )}
               </div>
-              <h3 className="">{track.frameworkName}</h3>
-              <p className="">{track.description}</p>
+              <h3 className="mt-2 text-lg font-semibold">{track.frameworkName}</h3>
+              <p className="mt-1 text-gray-600">{track.description}</p>
             </div>
           </Link>
         ))}
