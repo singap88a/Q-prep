@@ -27,11 +27,14 @@ const MainTrackDashboard = () => {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
+  // Base URL for API requests
+  const API_BASE_URL = "https://redasaad.azurewebsites.net/api/MainTrack";
+
   const fetchTracks = async () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        "https://redasaad.azurewebsites.net/api/MainTrack/GetMainTrack",
+        `${API_BASE_URL}/GetMainTrack`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -126,7 +129,7 @@ const MainTrackDashboard = () => {
       }
 
       const response = await axios.post(
-        "https://redasaad.azurewebsites.net.net/api/MainTrack/AddMainTrack",
+        `${API_BASE_URL}/AddMainTrack`,
         formData,
         {
           headers: {
@@ -149,7 +152,21 @@ const MainTrackDashboard = () => {
       toast.success("Track added successfully!");
     } catch (error) {
       console.error("Error adding track:", error);
-      toast.error("Failed to add track. Please try again.");
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        console.error("Response data:", error.response.data);
+        console.error("Response status:", error.response.status);
+        console.error("Response headers:", error.response.headers);
+        toast.error(`Error: ${error.response.data.message || "Failed to add track"}`);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error("Request:", error.request);
+        toast.error("No response received from server. Please check your connection.");
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Error message:", error.message);
+        toast.error("Error setting up request. Please try again.");
+      }
     }
   };
 
@@ -181,7 +198,7 @@ const MainTrackDashboard = () => {
       }
 
       const response = await axios.put(
-        `https://redasaad.azurewebsites.net/api/MainTrack/UpdateMaintrack/${editTrack.trackId}`,
+        `${API_BASE_URL}/UpdateMaintrack/${editTrack.trackId}`,
         formData,
         {
           headers: {
@@ -214,7 +231,7 @@ const MainTrackDashboard = () => {
     if (window.confirm("Are you sure you want to delete this track?")) {
       try {
         await axios.delete(
-          `https://redasaad.azurewebsites.net/api/MainTrack/DeleteTrack/${trackId}`,
+          `${API_BASE_URL}/DeleteTrack/${trackId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

@@ -44,7 +44,7 @@ const GeminiSingap = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      fetch("https://questionprep.azurewebsites.net/api/Account/GetUser", {
+      fetch("https://redasaad.azurewebsites.net/api/Account/GetUser", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -55,7 +55,7 @@ const GeminiSingap = () => {
         .then((data) => {
           if (data.urlPhoto) {
             setProfileImage(
-              `https://questionprep.azurewebsites.net/ProfilePhoto/${data.urlPhoto}`
+              `https://prep.blob.core.windows.net/photosprep/${data.urlPhoto}`
             );
           }
           if (data.email) {

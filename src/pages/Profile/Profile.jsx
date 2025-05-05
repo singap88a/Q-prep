@@ -69,7 +69,7 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
       setPhone(data.phoneNamber);
       setProfileImage(
         data.urlPhoto
-          ? `https://redasaad.azurewebsites.net/ProfilePhoto/${data.urlPhoto}`
+          ? `https://prep.blob.core.windows.net/photosprep/${data.urlPhoto}`
           : userImage
       );
       setUserId(data.id);
