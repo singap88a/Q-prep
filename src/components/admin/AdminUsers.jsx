@@ -10,7 +10,7 @@ const AdminUsers = () => {
     const token = localStorage.getItem("token");
 
     axios
-      .get("https://questionprep.azurewebsites.net/api/Account/GetUsers", {
+      .get("https://redasaad.azurewebsites.net/api/Account/GetUsers", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -51,7 +51,7 @@ const AdminUsers = () => {
             {users.map((user, index) => {
               const fullName = `${user.firstName || ""} ${user.lastName || ""}`.trim();
               const photoUrl = user.urlPhoto
-                ? `https://questionprep.azurewebsites.net/ProfilePhoto/${user.urlPhoto}`
+                ? `https://prep.blob.core.windows.net/photosprep/${user.urlPhoto}`
                 
                  : "/default-user.png";
 

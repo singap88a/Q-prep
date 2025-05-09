@@ -23,7 +23,7 @@ const Groups = () => {
   });
 
   const apiClient = axios.create({
-    baseURL: "https://questionprep.azurewebsites.net/api",
+    baseURL: "https://redasaad.azurewebsites.net/api",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -262,7 +262,7 @@ const Groups = () => {
                     {group.photo ? (
                       <div className="w-20 h-20 overflow-hidden rounded-full">
                         <img
-                          src={`https://questionprep.azurewebsites.net/GroupsPhoto/${group.photo}`}
+                          src={`https://prep.blob.core.windows.net/photosprep/${group.photo}`}
                           alt={group.groupName}
                           className="object-cover w-full h-full"
                           onError={(e) => {

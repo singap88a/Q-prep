@@ -20,7 +20,7 @@ const Available_Tracks = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://questionprep.azurewebsites.net/api/MainTrack/GetMainTrack"
+          "https://redasaad.azurewebsites.net/api/MainTrack/GetMainTrack"
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -80,7 +80,7 @@ const Available_Tracks = () => {
             breakpoints={{
               640: { slidesPerView: 2 },
               768: { slidesPerView: 3 },
-              1024: { slidesPerView: 5 },
+              1024: { slidesPerView: 4 },
             }}
             pagination={{ clickable: true }}
             scrollbar={{ draggable: true }}
@@ -99,7 +99,7 @@ const Available_Tracks = () => {
                     <div className="bg_card">
                       {track.photo ? (
                         <img
-                          src={`https://questionprep.azurewebsites.net/TrackandFrameworkPhoto/${track.photo}`}
+                          src={`https://prep.blob.core.windows.net/photosprep/${track.photo}`}
                           alt={track.tarckName}
                           className="object-cover w-full h-full rounded-lg"
                         />
@@ -111,10 +111,10 @@ const Available_Tracks = () => {
                         />
                       )}
                     </div>
-                    <h3 className="mt-4 text-xl font-semibold">
+                    <h3 className="text-xl font-semibold ">
                       {track.tarckName}
                     </h3>
-                    <p className="mt-2 text-gray-600">{track.description}</p>
+                    <p className="text-gray-600 ">{track.description}</p>
                   </div>
                 </Link>
               </SwiperSlide>

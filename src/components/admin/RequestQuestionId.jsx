@@ -16,7 +16,7 @@ function RequestQuestionId() {
     const fetchRequests = async () => {
       try {
         const response = await axios.get(
-          "https://questionprep.azurewebsites.net/api/Request/GetRequests",
+          "https://redasaad.azurewebsites.net/api/Request/GetRequests",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -45,7 +45,7 @@ function RequestQuestionId() {
 
     try {
       const response = await axios.post(
-        `https://questionprep.azurewebsites.net/api/Questions/AddQuestion/${formattedLevel}/${requestId}`,
+        `https://redasaad.azurewebsites.net/api/Questions/AddQuestion/${formattedLevel}/${requestId}`,
         {},
         {
           headers: {
@@ -69,7 +69,7 @@ function RequestQuestionId() {
   const handleDelete = async (requestId) => {
     try {
       const response = await axios.delete(
-        `https://questionprep.azurewebsites.net/api/Request/DeleteRequest/${requestId}`,
+        `https://redasaad.azurewebsites.net/api/Request/DeleteRequest/${requestId}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -119,7 +119,7 @@ function RequestQuestionId() {
             <div key={request.requestId} className="p-4 border rounded-lg shadow-md">
               <div className="flex items-center gap-4 mb-4">
                 <img
-                  src={`https://questionprep.azurewebsites.net/ProfilePhoto/${request.photo}`}
+                  src={`https://prep.blob.core.windows.net/photosprep/${request.photo}`}
                   alt={request.userName}
                   className="w-12 h-12 rounded-full"
                 />

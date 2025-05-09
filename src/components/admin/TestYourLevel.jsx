@@ -46,7 +46,7 @@ const TestYourLevel = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `https://questionprep.azurewebsites.net/api/TestLevel/QuestionForTesting/${frameworkId}`,
+        `https://redasaad.azurewebsites.net/api/TestLevel/QuestionForTesting/${frameworkId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -77,7 +77,7 @@ const TestYourLevel = () => {
 
     try {
       const response = await axios.post(
-        `https://questionprep.azurewebsites.net/api/TestLevel/AddQuestionInTest`,
+        `https://redasaad.azurewebsites.net/api/TestLevel/AddQuestionInTest`,
         newQuestion,
         {
           headers: {
@@ -119,7 +119,7 @@ const TestYourLevel = () => {
 
     try {
       await axios.put(
-        `https://questionprep.azurewebsites.net/api/TestLevel/UpdateQuestionInTest/${editQuestion.q_Id}`,
+        `https://redasaad.azurewebsites.net/api/TestLevel/UpdateQuestionInTest/${editQuestion.q_Id}`,
         editQuestion,
         {
           headers: {
@@ -152,7 +152,7 @@ const TestYourLevel = () => {
     if (window.confirm("Are you sure you want to delete this question?")) {
       try {
         await axios.delete(
-          `https://questionprep.azurewebsites.net/api/TestLevel/DeleteQuestionInTest/${questionId}`,
+          `https://redasaad.azurewebsites.net/api/TestLevel/DeleteQuestionInTest/${questionId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

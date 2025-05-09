@@ -10,16 +10,16 @@ const Collaborative_Community = () => {
             </h2>
             <h1 >Join a vibrant forum where users:</h1>
             <ul className="pb-4">
-                <li class="flex items-start gap-2">
-                    <span class="text-lg">•</span>
+                <li className="flex items-start gap-2">
+                    <span className="text-lg">•</span>
                     <h2>Share tips and tricks.</h2>
                 </li>
-                <li class="flex items-start gap-2">
-                    <span class="text-lg">•</span>
+                <li className="flex items-start gap-2">
+                    <span className="text-lg">•</span>
                     <h2>Discuss experiences.</h2>
                 </li>
-                <li class="flex items-start gap-2">
-                    <span class="text-lg">•</span>
+                <li className="flex items-start gap-2">
+                    <span className="text-lg">•</span>
                     <h2>Vote on the most critical and relevant questions.</h2>
                 </li>
             </ul>

@@ -9,7 +9,7 @@ function Community_right() {
   };
 
   return (
-    <div>
+    <div className="hidden md:block">
       {/* الجزء الأيمن */}
       <div className="right bg-[#8349db14] basis-1/3 h-[100%] rounded-2xl">
         <div className="px-8 body-right py-7">

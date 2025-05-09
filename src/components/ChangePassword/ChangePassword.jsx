@@ -19,7 +19,7 @@ const ChangePassword = () => {
                 throw new Error("No Token found");
             }
             const response = await fetch(
-                `https://questionprep.azurewebsites.net/api/Account/GetUser`,
+                `https://redasaad.azurewebsites.net/api/Account/GetUser`,
                 {
                     method: "GET",
                     mode: "cors",
@@ -80,7 +80,7 @@ const ChangePassword = () => {
         }
 
 
-        const url = `https://questionprep.azurewebsites.net/api/Authenticate/ChangePassword/${userdata.id}`;
+        const url = `https://redasaad.azurewebsites.net/api/Authenticate/ChangePassword/${userdata.id}`;
         console.log(url);
 
         // Create FormData object
@@ -115,10 +115,10 @@ const ChangePassword = () => {
     };
 
     return (
-        <div className='ChangePassword pt-5 px-10'>
-            <h1 className='text-center text-3xl font-bold pb-8'>Change Password</h1>
+        <div className='px-10 pt-5 ChangePassword'>
+            <h1 className='pb-8 text-3xl font-bold text-center'>Change Password</h1>
 
-            <div className="lg:w-1/2 md:w-2/3 w-full form flex justify-center flex-col items-center gap-2 pt-5  pb-10 m-auto">
+            <div className="flex flex-col items-center justify-center w-full gap-2 pt-5 pb-10 m-auto lg:w-1/2 md:w-2/3 form">
                 <input
                     type="password"
                     placeholder="Enter new password"
@@ -139,7 +139,7 @@ const ChangePassword = () => {
                     {message}
                 </p>
                 <button onClick={handleChangePassword}
-                    className=" w-full relative z-10 px-2 mx-2 py-1 overflow-hidden font-bold text-white border-2 rounded-md cursor-pointer md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-1000 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-1000 hover:text-secondary bg-secondary "
+                    className="relative z-10 w-full px-2 py-1 mx-2 overflow-hidden font-bold text-white border-2 rounded-md cursor-pointer md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-1000 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-1000 hover:text-secondary bg-secondary"
                 >Change Password
                 </button>
             </div>

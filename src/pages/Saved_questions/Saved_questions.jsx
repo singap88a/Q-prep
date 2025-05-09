@@ -1,10 +1,11 @@
-import { useState, useEffect, useId } from "react";
+/* eslint-disable react/prop-types */
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
-import { ClipLoader } from "react-spinners";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 function Saved_questions({ isSaved, setIsSaved }) {
-
     console.log("isSaved :", isSaved)
     const navigate = useNavigate();
     const [savedQuestions, setSavedQuestions] = useState([]);
@@ -22,10 +23,9 @@ function Saved_questions({ isSaved, setIsSaved }) {
                 throw new Error("No token found. Please log in.");
             }
 
-            const response = await fetch("https://questionprep.azurewebsites.net/api/Save/GetSaveQuestions", {
+            const response = await fetch("https://redasaad.azurewebsites.net/api/Save/GetSaveQuestions", {
                 method: "GET",
                 headers: {
-                    // "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
             });
@@ -37,9 +37,6 @@ function Saved_questions({ isSaved, setIsSaved }) {
             const data = await response.json();
             console.log("data", data);
             setSavedQuestions(data);
-            // const filteredQuestions = data.filter(q => q.token === token);
-
-            // setSavedQuestions(filteredQuestions);
             const savedIds = data.map((q) => q.id);
             setIsSaved(savedIds);
 
@@ -69,7 +66,7 @@ function Saved_questions({ isSaved, setIsSaved }) {
         if (isConfirmed) {
             try {
                 const response = await fetch(
-                    `https://questionprep.azurewebsites.net/api/Save/DeleteFromSave?Id=${faq.id}`, // إرسال Id كـ query parameter
+                    `https://redasaad.azurewebsites.net/api/Save/DeleteFromSave?Id=${faq.id}`,
                     {
                         method: "DELETE",
                         headers: {
@@ -97,14 +94,13 @@ function Saved_questions({ isSaved, setIsSaved }) {
 
     const isQuestionSaved = (faq) => isSaved.includes(faq.id);
 
-    // const ClearSavedQuestion = () => {
-
-    // }
-
     if (loading) {
         return (
             <div className="flex items-center justify-center py-20">
-                <ClipLoader color="#4A90E2" size={50} />
+                <FontAwesomeIcon 
+                    icon={faSpinner} 
+                    className="text-4xl text-secondary animate-spin" 
+                />
             </div>
         );
     }
