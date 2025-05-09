@@ -85,7 +85,7 @@ const TrackDetails = () => {
       </div>
 
       {/* Tracks */}
-      <div className="grid grid-cols-1 gap-10 my-10 lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-10 my-10 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2">
         {trackDetails.map((track) => (
           <Link
             key={track.frameworkId}
@@ -114,8 +114,8 @@ const TrackDetails = () => {
                   />
                 )}
               </div>
-              <h3 className="mt-2 text-lg font-semibold">{track.frameworkName}</h3>
-              <p className="mt-1 text-gray-600">{track.description}</p>
+              <h3 className="text-lg font-semibold ">{track.frameworkName}</h3>
+              <p className="text-gray-600 ">{track.description}</p>
             </div>
           </Link>
         ))}

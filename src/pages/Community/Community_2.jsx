@@ -1,12 +1,14 @@
-// import Community_Header from "../../components/Community2/community_Header"
-import Community_Body from "../../components/Community2/Community_Body"
+ // import Community_Body from "../../components/Community2/Community_Body"
+
+import CommunityPage1 from "../../components/Community2/CommunityPage"
+
  
  
 function Community_2() {
   return (
     <div>
-       {/* <Community_Header /> */}
-      <Community_Body />
+       {/* <Community_Body /> */}
+       <CommunityPage1/>
     </div>
   )
 }
