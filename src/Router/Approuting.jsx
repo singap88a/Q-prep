@@ -1,5 +1,4 @@
-
-import { UserProvider } from '../Context/UserContext';
+import { UserProvider } from "../Context/UserContext";
 
 import {
   BrowserRouter as Router,
@@ -43,8 +42,8 @@ import PrivateRouting from "./PrivateRouting";
 import Unauthorized from "../components/Unauthorized/Unauthorized";
 
 import Icon_Gemini from "../pages/GeminiSingap/Icon_Gemini";
-import AdminUsers from '../components/admin/AdminUsers';
-
+import AdminUsers from "../components/admin/AdminUsers";
+import Groups from "../components/admin/Groups";
 
 // Lazy Loading for better performance
 const LazyAdmin = lazy(() => import("../pages/admin/Admin"));
@@ -70,11 +69,8 @@ function Approuting() {
   //   localStorage.setItem("role", userRole);
   // }, [userRole]);
 
-
-
   return (
     <UserProvider>
-
       <Router>
         <ScrollToTop />
         <Navbar
@@ -91,18 +87,15 @@ function Approuting() {
           {/* Auth Routes */}
           <Route
             path="/login"
-            element={
-              <Login setIsLoggedIn={setIsLoggedIn} />
-            }
+            element={<Login setIsLoggedIn={setIsLoggedIn} />}
           />
           <Route
             path="/sign-up"
-            element={
-              <Sign_up setIsLoggedIn={setIsLoggedIn} />
-            }
+            element={<Sign_up setIsLoggedIn={setIsLoggedIn} />}
           />
 
-          <Route path="/frameworks/:mainTrackId"
+          <Route
+            path="/frameworks/:mainTrackId"
             element={<FrameworkDashboard />}
           />
 
@@ -131,17 +124,22 @@ function Approuting() {
           <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
             <Route
               path="/profile"
-              element={<Profile
-                setIsLoggedIn={setIsLoggedIn}
-                setSavedQuestions={setSavedQuestions}
-                setIsSaved={setIsSaved}
-              />}
+              element={
+                <Profile
+                  setIsLoggedIn={setIsLoggedIn}
+                  setSavedQuestions={setSavedQuestions}
+                  setIsSaved={setIsSaved}
+                />
+              }
             />
           </Route>
 
           <Route path="/community" element={<Community_1 />} />
-          <Route path="/community_2" element={<Community_2 />} />
-          <Route path="/choosetrack/track/:trackId" element={<TrackDetails />} />
+          <Route path="/community/:groupId" element={<Community_2 />} />
+          <Route
+            path="/choosetrack/track/:trackId"
+            element={<TrackDetails />}
+          />
 
           <Route
             path="/choosetrack/track/:trackId/level"
@@ -183,19 +181,20 @@ function Approuting() {
           />
 
           {/* Unauthorized Page */}
-          <Route
-            element={<ProtectRouting isLoggedIn={isLoggedIn} />}
-          >
+          <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
             <Route path="/Unauthorized" element={<Unauthorized />} />
           </Route>
 
           {/* Admin Route start */}
+          
           <Route element={<PrivateRouting />}>
-            <Route path="/admin" element={
-              <Suspense fallback={<div>Loading...</div>}>
-                <LazyAdmin />
-              </Suspense>
-            }
+            <Route
+              path="/admin"
+              element={
+                <Suspense fallback={<div>Loading...</div>}>
+                  <LazyAdmin />
+                </Suspense>
+              }
             />
           </Route>
 
@@ -216,31 +215,31 @@ function Approuting() {
           <Route element={<PrivateRouting />}>
             <Route path="/requestQuestionId" element={<RequestQuestionId />} />
           </Route>
+          <Route element={<PrivateRouting />}>
+            <Route path="/groups" element={<Groups />} />
+          </Route>
+
+
+          <Route element={<PrivateRouting />}>
+            <Route path="/adminusers" element={<AdminUsers />} />
+          </Route>
 
           {/* Admin Route end */}
 
           {/* Error Route */}
 
           <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
-            <Route
-              path="/geminiSingap"
-              element={<GeminiSingap />}
-            />
+            <Route path="/geminiSingap" element={<GeminiSingap />} />
           </Route>
 
-          <Route
-            element={<ProtectRouting isLoggedIn={isLoggedIn} />}
-          >
+          <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
             <Route
               path="/profile/ChangePassword"
-              element={
-                <ChangePassword />
-              }
+              element={<ChangePassword />}
             />
           </Route>
 
           {/* Error Route End */}
-
 
           <Route path="*" element={<ErrorPage />} />
         </Routes>
@@ -250,7 +249,6 @@ function Approuting() {
         <Footer />
       </Router>
     </UserProvider>
-
   );
 }
 

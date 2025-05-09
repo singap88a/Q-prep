@@ -38,7 +38,8 @@
 }
 .bg_card {
   margin: auto;
-  background-color: rgb(209, 209, 209);
+  background-color: #eeeeee;
+   border: 3px;
   width: 93px;
   border-radius: 50%;
   height: 90px;

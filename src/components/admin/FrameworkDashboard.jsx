@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState, useEffect, useRef, useContext } from "react"; import axios from "axios";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -13,25 +12,37 @@ import {
   FaLevelUpAlt,
 } from "react-icons/fa";
 import Sidebar from "./Sidebar";
+import { MainTrackContext } from "../../Context/MainTrackProvider";
 
 const FrameworkDashboard = () => {
-  const { mainTrackId } = useParams(); // الحصول على الـ mainTrackId من الرابط
+
+  const [token, setToken] = useState(localStorage.getItem("token") || "");
+  const [loading, setLoading] = useState(false);
+
+
+  const {tracks} = useContext(MainTrackContext)
+
+
+
+  const { mainTrackId } = useParams();
   const navigate = useNavigate();
   const [frameworks, setFrameworks] = useState([]);
   const [newFramework, setNewFramework] = useState({
     frameworkName: "",
     description: "",
     photo: null,
+    photoPreview: null
   });
   const [editFramework, setEditFramework] = useState({
     frameworkId: null,
     frameworkName: "",
     description: "",
     photo: null,
+    photoPreview: null
   });
-  const [token, setToken] = useState(localStorage.getItem("token") || "");
-  const [loading, setLoading] = useState(false); // حالة التحميل
-  const [showActions, setShowActions] = useState(null); // حالة إظهار الأزرار
+
+  const [showActions, setShowActions] = useState(null);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (token && mainTrackId) {
@@ -40,7 +51,7 @@ const FrameworkDashboard = () => {
   }, [token, mainTrackId]);
 
   const fetchFrameworks = async () => {
-    setLoading(true); // بدء التحميل
+    setLoading(true);
     try {
       const response = await axios.get(
         `https://questionprep.azurewebsites.net/api/Frameworks/GetFramework/${mainTrackId}`,
@@ -50,13 +61,70 @@ const FrameworkDashboard = () => {
           },
         }
       );
-      console.log(response.data);
       setFrameworks(response.data);
     } catch (error) {
       console.error("Error fetching frameworks:", error);
       toast.error("Failed to fetch frameworks. Please try again.");
     } finally {
-      setLoading(false); // انتهاء التحميل
+      setLoading(false);
+    }
+  };
+
+  const processImageBeforeUpload = (file) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext('2d');
+
+          // Fill background with light gray color (#eeeeee)
+          ctx.fillStyle = '#eeeeee';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          // Draw the image on top of the background
+          ctx.drawImage(img, 0, 0);
+
+          canvas.toBlob((blob) => {
+            const processedFile = new File([blob], file.name, { type: 'image/jpeg' });
+            resolve({
+              file: processedFile,
+              preview: canvas.toDataURL('image/jpeg')
+            });
+          }, 'image/jpeg', 0.9);
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleImageChange = async (e, isEdit = false) => {
+    const file = e.target.files[0];
+    if (file) {
+      try {
+        const { file: processedFile, preview } = await processImageBeforeUpload(file);
+
+        if (isEdit) {
+          setEditFramework({
+            ...editFramework,
+            photo: processedFile,
+            photoPreview: preview
+          });
+        } else {
+          setNewFramework({
+            ...newFramework,
+            photo: processedFile,
+            photoPreview: preview
+          });
+        }
+      } catch (error) {
+        console.error("Error processing image:", error);
+        toast.error("Failed to process image. Please try another one.");
+      }
     }
   };
 
@@ -68,7 +136,7 @@ const FrameworkDashboard = () => {
 
     try {
       const formData = new FormData();
-      formData.append("FrameworkName", newFramework.frameworkName); // تأكد من استخدام الحقل الصحيح
+      formData.append("FrameworkName", newFramework.frameworkName);
       formData.append("description", newFramework.description);
       if (newFramework.photo) {
         formData.append("Photo", newFramework.photo);
@@ -85,9 +153,16 @@ const FrameworkDashboard = () => {
         }
       );
 
-      // تحديث القائمة بالبيانات الجديدة
+      setNewFramework({
+        frameworkName: "",
+        description: "",
+        photo: null,
+        photoPreview: null
+      });
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
       setFrameworks([...frameworks, response.data]);
-      setNewFramework({ frameworkName: "", description: "", photo: null }); // إعادة تعيين النموذج
       toast.success("Framework added successfully!");
     } catch (error) {
       console.error("Error adding framework:", error);
@@ -123,10 +198,11 @@ const FrameworkDashboard = () => {
         frameworkName: "",
         description: "",
         photo: null,
+        photoPreview: null
       });
-      fetchFrameworks(); // إعادة جلب البيانات لتحديث القائمة
+      fetchFrameworks();
       toast.success("Framework updated successfully!");
-      window.scrollTo({ top: 0, behavior: "smooth" }); // التمرير لأعلى
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (error) {
       console.error("Error updating framework:", error);
       toast.error("Failed to update framework. Please try again.");
@@ -158,14 +234,13 @@ const FrameworkDashboard = () => {
   };
 
   const handleTestYourLevel = (frameworkId) => {
-    navigate(`/test-your-level/${frameworkId}`); // الانتقال إلى صفحة TestYourLevel
+    navigate(`/test-your-level/${frameworkId}`);
   };
 
   const toggleActions = (frameworkId) => {
     setShowActions(showActions === frameworkId ? null : frameworkId);
   };
 
-  // إغلاق الأزرار عند الضغط خارجها
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (showActions && !e.target.closest(".actions-container")) {
@@ -185,12 +260,11 @@ const FrameworkDashboard = () => {
         <div className="sm:container bg-gray-100 p-3 mx-auto">
           <div className="flex items-center justify-between   mb-8">
             <h1 className="md:text-2xl sm:text-lg text-[17px] font-bold md:mt-0 mt-5 text-gray-800">
-              Frameworks Dashboard 
-              {/* - Track ID: {mainTrackId} */}
+              Frameworks Dashboard - {tracks[0]?.tarckName} 
             </h1>
             <button
               onClick={() => navigate(-1)}
-              className=" md:px-4 px-2 py-2 text-white md:text-lg text-sm bg-blue-500 rounded-lg md:mt-0 mt-5 hover:bg-blue-600"
+              className="px-4 py-2 text-white rounded-lg bg-secondary hover:bg-[#552f8f]"
             >
               Back to Tracks
             </button>
@@ -215,15 +289,15 @@ const FrameworkDashboard = () => {
                 onChange={(e) =>
                   editFramework.frameworkId
                     ? setEditFramework({
-                        ...editFramework,
-                        frameworkName: e.target.value,
-                      })
+                      ...editFramework,
+                      frameworkName: e.target.value,
+                    })
                     : setNewFramework({
-                        ...newFramework,
-                        frameworkName: e.target.value,
-                      })
+                      ...newFramework,
+                      frameworkName: e.target.value,
+                    })
                 }
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
               />
               <input
                 type="text"
@@ -236,37 +310,42 @@ const FrameworkDashboard = () => {
                 onChange={(e) =>
                   editFramework.frameworkId
                     ? setEditFramework({
-                        ...editFramework,
-                        description: e.target.value,
-                      })
+                      ...editFramework,
+                      description: e.target.value,
+                    })
                     : setNewFramework({
-                        ...newFramework,
-                        description: e.target.value,
-                      })
+                      ...newFramework,
+                      description: e.target.value,
+                    })
                 }
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
               />
-              <input
-                type="file"
-                onChange={(e) =>
-                  editFramework.frameworkId
-                    ? setEditFramework({
-                        ...editFramework,
-                        photo: e.target.files[0],
-                      })
-                    : setNewFramework({
-                        ...newFramework,
-                        photo: e.target.files[0],
-                      })
-                }
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+              <div>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={(e) => handleImageChange(e, !!editFramework.frameworkId)}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
+                  accept="image/*"
+                />
+                {(editFramework.frameworkId ? editFramework.photoPreview : newFramework.photoPreview) && (
+                  <div className="mt-2">
+                    <p className="text-sm text-gray-600">Image Preview:</p>
+                    <img
+                      src={editFramework.frameworkId ? editFramework.photoPreview : newFramework.photoPreview}
+                      alt="Preview"
+                      className="w-20 h-20 mt-1 border border-gray-200 rounded"
+                      style={{ backgroundColor: '#eeeeee' }}
+                    />
+                  </div>
+                )}
+              </div>
               <div className="flex gap-2">
                 <button
                   onClick={
                     editFramework.frameworkId ? updateFramework : addFramework
                   }
-                  className="flex-1 p-3 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="flex-1 p-3 text-white rounded-lg bg-secondary hover:bg-[#552f8f] focus:outline-none focus:ring-2 focus:ring-secondary"
                 >
                   {editFramework.frameworkId
                     ? "Update Framework"
@@ -274,14 +353,18 @@ const FrameworkDashboard = () => {
                 </button>
                 {editFramework.frameworkId && (
                   <button
-                    onClick={() =>
+                    onClick={() => {
                       setEditFramework({
                         frameworkId: null,
                         frameworkName: "",
                         description: "",
                         photo: null,
-                      })
-                    }
+                        photoPreview: null
+                      });
+                      if (fileInputRef.current) {
+                        fileInputRef.current.value = "";
+                      }
+                    }}
                     className="flex-1 p-3 text-white bg-gray-500 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
                   >
                     Cancel Edit
@@ -305,19 +388,25 @@ const FrameworkDashboard = () => {
                     key={framework.frameworkId}
                     className="p-4 border border-gray-200 rounded-lg hover:shadow-md"
                   >
-                    <div className="flex items-center justify-between">
-                      <div>
+                    <div className="flex items-start gap-4">
+                      {framework.photo && (
+                        <div className="flex-shrink-0">
+                          <img
+                            src={`https://questionprep.azurewebsites.net/TrackandFrameworkPhoto/${framework.photo}`}
+                            alt={framework.frameworkName}
+                            className="object-contain w-20 h-20 p-1 border border-gray-200 rounded-lg"
+                            style={{ backgroundColor: '#eeeeee' }}
+                            onError={(e) => {
+                              e.target.src = 'https://via.placeholder.com/100?text=No+Image';
+                            }}
+                          />
+                        </div>
+                      )}
+                      <div className="flex-1">
                         <h3 className="text-lg font-semibold text-gray-800">
                           {framework.frameworkName}
                         </h3>
                         <p className="text-gray-600">{framework.description}</p>
-                        {framework.photo && (
-                          <img
-                            src={`https://questionprep.azurewebsites.net/TrackandFrameworkPhoto/${framework.photo}`}
-                            alt={framework.frameworkName}
-                            className="w-20 h-20 mt-2 rounded-lg"
-                          />
-                        )}
                       </div>
                       <div className="relative actions-container">
                         <button
@@ -334,9 +423,15 @@ const FrameworkDashboard = () => {
                           <div className="absolute right-0 z-10 w-48 mt-2 bg-white rounded-lg shadow-lg">
                             <button
                               onClick={() => {
-                                setEditFramework(framework);
+                                setEditFramework({
+                                  ...framework,
+                                  photo: null,
+                                  photoPreview: framework.photo
+                                    ? `https://questionprep.azurewebsites.net/TrackandFrameworkPhoto/${framework.photo}`
+                                    : null
+                                });
                                 setShowActions(null);
-                                window.scrollTo({ top: 0, behavior: "smooth" }); // التمرير لأعلى
+                                window.scrollTo({ top: 0, behavior: "smooth" });
                               }}
                               className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-100"
                             >

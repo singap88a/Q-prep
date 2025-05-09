@@ -9,8 +9,8 @@ import { FaAngry } from "react-icons/fa";
 
 const Unauthorized = () => {
     return (
-        <div className="text-center p-10">
-            <div className="flex items-center justify-center  gap-2 text-red-600 text-3xl font-bold">
+        <div className="p-10 text-center">
+            <div className="flex items-center justify-center gap-2 text-3xl font-bold text-red-600">
                 <h1 className="text-3xl font-bold ">Access Denied</h1>
                 <FaAngry />
             </div>

@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import Approuting from './Router/Approuting';
 import AuthProvider from './components/Auth/AuthContext.jsx'
+import MainTrackProvider from './Context/MainTrackProvider.jsx';
 
 
 
@@ -11,9 +12,9 @@ import AuthProvider from './components/Auth/AuthContext.jsx'
 
 
 createRoot(document.getElementById('root')).render(
-  // <StrictMode>
   <AuthProvider>
-    <Approuting />
+    <MainTrackProvider>
+      <Approuting />
+    </MainTrackProvider>
   </AuthProvider>
-  // </StrictMode>,
 )
