@@ -1,15 +1,20 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaBookmark, FaRegBookmark } from "react-icons/fa";
 import logo from "../assets/home-img/logo.png";
 import userImage from "../assets/user.png";
 import { useUser } from "../Context/UserContext";
+import AdminRoute from "../Router/PrivateRouting";
+import { AuthContext } from "./Auth/AuthContext";
 
 function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
   const [isOpen, setIsOpen] = useState(false);
   const [hasShadow, setHasShadow] = useState(false);
-  const { profileImage: globalProfileImage, setProfileImage: setGlobalProfileImage } = useUser();
+  const {
+    profileImage: globalProfileImage,
+    setProfileImage: setGlobalProfileImage,
+  } = useUser();
   const [isBookmarkActive, setIsBookmarkActive] = useState(
     localStorage.getItem("bookmarkActive") === "true"
   );
@@ -66,14 +71,15 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
   }, [isLoggedIn, globalProfileImage, setGlobalProfileImage]);
 
   // Logout cleanup
-  useEffect(() => {
-    if (!sessionStorage.getItem("hasLoggedOut")) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("bookmarkActive");
-      setIsLoggedIn(false);
-      sessionStorage.setItem("hasLoggedOut", "true");
-    }
-  }, [setIsLoggedIn]);
+  // useEffect(() => {
+  //   if (!sessionStorage.getItem("hasLoggedOut")) {
+  //     localStorage.removeItem("token");
+  //     localStorage.removeItem("bookmarkActive");
+  //     localStorage.removeItem("role");
+  //     setIsLoggedIn(false);
+  //     sessionStorage.setItem("hasLoggedOut", "true");
+  //   }
+  // }, [setIsLoggedIn]);
 
   const closeMenu = () => setIsOpen(false);
 
@@ -81,16 +87,21 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
     const newState = !isBookmarkActive;
     setIsBookmarkActive(newState);
     localStorage.setItem("bookmarkActive", newState.toString());
-    navigate(newState ? "/saved_questions" : "/", 
-      newState ? { state: { savedQuestions } } : undefined);
+    navigate(
+      newState ? "/saved_questions" : "/",
+      newState ? { state: { savedQuestions } } : undefined
+    );
   };
+
+  const token = localStorage.getItem("token")
+  const { userRole } = useContext(AuthContext)
+  console.log("userRole", userRole);
 
   return (
     <div>
       <nav
-        className={`text-black fixed top-0 left-0 w-full z-50 transition-shadow duration-300 font-bold ${
-          hasShadow ? "bg-white shadow-md shadow-[#4627757c]" : ""
-        }`}
+        className={`text-black fixed top-0 left-0 w-full z-50 transition-shadow duration-300 font-bold ${hasShadow ? "bg-white shadow-md shadow-[#4627757c]" : ""
+          }`}
       >
         <div className="container relative flex items-center justify-between h-16">
           {/* Logo */}
@@ -111,11 +122,10 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
               <Link
                 key={link.to}
                 to={link.to}
-                className={`hover:text-secondary px-2 relative ${
-                  location.pathname === link.to
-                    ? "text-secondary after:content-[''] after:absolute after:right-0 after:bottom-[-2px] after:w-[35%] after:h-[2.41px] after:bg-secondary before:content-[''] before:absolute before:left-0 before:top-0 before:w-[35%] before:h-[2.50px] before:bg-secondary"
-                    : ""
-                }`}
+                className={`hover:text-secondary px-2 relative ${location.pathname === link.to
+                  ? "text-secondary after:content-[''] after:absolute after:right-0 after:bottom-[-2px] after:w-[35%] after:h-[2.41px] after:bg-secondary before:content-[''] before:absolute before:left-0 before:top-0 before:w-[35%] before:h-[2.50px] before:bg-secondary"
+                  : ""
+                  }`}
               >
                 {link.text}
               </Link>
@@ -129,7 +139,9 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
                 <button
                   onClick={goToSavedQuestions}
                   className="text-2xl font-semibold text-primary"
-                  aria-label={isBookmarkActive ? "View saved questions" : "Save questions"}
+                  aria-label={
+                    isBookmarkActive ? "View saved questions" : "Save questions"
+                  }
                 >
                   {isBookmarkActive ? (
                     <FaBookmark className="text-primary" />
@@ -147,6 +159,16 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
                     }}
                   />
                 </Link>
+                {
+                  token && userRole.includes("Admin") && (
+                <Link
+                  to="/admin"
+                  className="relative z-10  py-1 overflow-hidden font-bold text-white border-2 rounded-md md:px-4 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary"
+                >
+                  Admin
+                </Link>
+                )}
+
               </div>
             ) : (
               <div className="hidden gap-4 md:flex">
@@ -184,7 +206,9 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
+                  d={
+                    isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"
+                  }
                 />
               </svg>
             </button>

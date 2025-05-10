@@ -1,11 +1,12 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { AuthContext } from "../components/Auth/AuthContext";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 const AdminRoute = () => {
     const { userRole } = useContext(AuthContext);
+    const [token, setToken] = useState(localStorage.getItem("token"));
 
-    if (!userRole || !Array.isArray(userRole) || !userRole.includes("Admin")) {
+    if (!userRole || !token || !Array.isArray(userRole)  || !userRole.includes("Admin")) {
         return <Navigate to="/Unauthorized" replace />;
     }
 

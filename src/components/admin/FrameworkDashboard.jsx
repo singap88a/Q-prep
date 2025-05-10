@@ -20,13 +20,14 @@ const FrameworkDashboard = () => {
   const [loading, setLoading] = useState(false);
 
 
-  const {tracks} = useContext(MainTrackContext)
+  const { tracks } = useContext(MainTrackContext)
 
 
 
   const { mainTrackId } = useParams();
   const navigate = useNavigate();
   const [frameworks, setFrameworks] = useState([]);
+  console.log("frameworks", frameworks)
   const [newFramework, setNewFramework] = useState({
     frameworkName: "",
     description: "",
@@ -251,6 +252,7 @@ const FrameworkDashboard = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showActions]);
 
+
   return (
     <div className="flex">
       <Sidebar />
@@ -259,9 +261,15 @@ const FrameworkDashboard = () => {
         <ToastContainer />
         <div className="sm:container bg-gray-100 p-3 mx-auto">
           <div className="flex items-center justify-between   mb-8">
-            <h1 className="md:text-2xl sm:text-lg text-[17px] font-bold md:mt-0 mt-5 text-gray-800">
-              Frameworks Dashboard - {tracks[0]?.tarckName} 
-            </h1>
+            {
+              frameworks.length > 0 &&
+              <h1 className="md:text-2xl sm:text-lg text-[17px] font-bold md:mt-0 mt-5 text-gray-800">
+                Frameworks Dashboard - {frameworks[0]?.mainTrack.tarckName}
+              </h1>
+            }
+            {/* <h1 className="md:text-2xl sm:text-lg text-[17px] font-bold md:mt-0 mt-5 text-gray-800">
+              Frameworks Dashboard - {frameworks[0]?.mainTrack.tarckName}
+            </h1> */}
             <button
               onClick={() => navigate(-1)}
               className="px-4 py-2 text-white rounded-lg bg-secondary hover:bg-[#552f8f]"
@@ -427,7 +435,7 @@ const FrameworkDashboard = () => {
                                   ...framework,
                                   photo: null,
 
-                                  photoPreview: framework.photo 
+                                  photoPreview: framework.photo
                                     ? `https://prep.blob.core.windows.net/photosprep/${framework.photo}`
                                     : null
                                 });

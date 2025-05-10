@@ -8,6 +8,7 @@ export const MainTrackContext = createContext();
 const MainTrackProvider = ({ children }) => {
     const [token, setToken] = useState(localStorage.getItem("token") || null);
     const [tracks, setTracks] = useState([]);
+    console.log("trackscontext", tracks);
     const [loading, setLoading] = useState(false);
 
     const fetchTracks = async () => {

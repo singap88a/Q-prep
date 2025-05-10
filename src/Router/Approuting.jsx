@@ -186,7 +186,7 @@ function Approuting() {
           </Route>
 
           {/* Admin Route start */}
-          
+
           <Route element={<PrivateRouting />}>
             <Route
               path="/admin"
@@ -223,6 +223,7 @@ function Approuting() {
           <Route element={<PrivateRouting />}>
             <Route path="/adminusers" element={<AdminUsers />} />
           </Route>
+
 
           {/* Admin Route end */}
 

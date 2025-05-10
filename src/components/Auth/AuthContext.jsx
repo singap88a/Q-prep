@@ -14,13 +14,14 @@ const AuthProvider = ({ children }) => {
 
     // For role, provide a default empty string or null if not present
     const [userRole, setUserRole] = useState(() => {
-        const role = localStorage.getItem("role");
+        const role = (JSON.parse(localStorage.getItem("role")) || [])
         try {
             return role ? JSON.parse(role) : null;
         } catch (e) {
             return role || null; // if JSON parsing fails, return the raw value
         }
     });
+    console.log("Auth", userRole)
 
     useEffect(() => {
         if (token) {

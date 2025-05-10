@@ -32,7 +32,7 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
   const { setProfileImage: setGlobalProfileImage } = useUser();
 
   const { userRole } = useContext(AuthContext)
-  console.log(userRole);
+  console.log("userRole",userRole);
 
 
 

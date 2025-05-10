@@ -20,10 +20,13 @@ function Login({ setIsLoggedIn }) {
 
 
   // const [userRole, setUserRole] = useState(localStorage.getItem("role"));
-  // const { setUserRole  } = useContext(AuthContext)
+  // const [userRole, setUserRole] = useState([]);
+  const { setUserRole } = useContext(AuthContext)
 
 
-  // console.log("userRole", userRole)
+
+
+  // console.log("userRole login:", userRole)
 
 
   const validateEmail = (email) => {
@@ -70,6 +73,7 @@ function Login({ setIsLoggedIn }) {
         throw new Error(data.message || "Login failed");
       }
 
+
       localStorage.setItem("token", data.token);
 
       // Need reda send 
@@ -77,6 +81,9 @@ function Login({ setIsLoggedIn }) {
 
 
       localStorage.setItem("role", JSON.stringify(data.roles));
+      // setUserRole(localStorage.getItem("role"));
+      // setUserRole(JSON.parse(localStorage.getItem("role")) || []);
+
 
 
 
@@ -86,6 +93,7 @@ function Login({ setIsLoggedIn }) {
       } else {
         setSuccess("Login successful! Redirecting to home...");
       }
+      setUserRole(JSON.parse(localStorage.getItem("role")) || []);
       setIsLoggedIn(true);
       setTimeout(() => navigate("/"), 2000);
 
