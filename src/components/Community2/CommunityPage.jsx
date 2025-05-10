@@ -16,9 +16,13 @@ function CommunityPage1() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [group, setGroup] = useState(null);
+  console.log("groupId", groupId);
+  console.log("group", group);
   const [showPostForm, setShowPostForm] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [isMember, setIsMember] = useState(false);
+  console.log("is member", isMember);
+
   const [actionLoading, setActionLoading] = useState(false);
 
   // Fetch current user data and membership status

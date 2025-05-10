@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { FaRegBookmark, FaBookmark } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { motion } from "framer-motion"; // تمت إضافة هذا الاستيراد
 
 function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
   const [beginnerQuestions, setBeginnerQuestions] = useState([]);
@@ -227,7 +228,7 @@ function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   transition={{ duration: 0.2 }}
-                  className="mt-3 text-gray-600"
+                  className="mt-3 text-gray-600 whitespace-pre-wrap"
                 >
                   {faq.answers}
                 </motion.p>
