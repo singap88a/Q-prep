@@ -84,7 +84,7 @@ function ChooseTrack() {
       {/* عرض الكروت */}
       {!isLoading && (
         <>
-          <div className="grid gap-10 md:grid-cols-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-10 pb-10 md:grid-cols-3 sm:grid-cols-2 lg:grid-cols-4">
             {currentTracks.length >= 1 ? (
               currentTracks.map((track) => (
                 <Link
@@ -119,8 +119,8 @@ function ChooseTrack() {
             )}
           </div>
 
-          {/* التقسيم إلى صفحات */}
-          {filteredTracks.length > 0 && (
+          {/* عرض أزرار التقسيم إلى صفحات فقط إذا كان فيه أكثر من صفحة واحدة */}
+          {totalPages > 1 && (
             <div className="flex justify-center mt-6 mb-20">
               <button
                 className="px-4 py-2 mx-1 bg-gray-200 rounded-lg hover:bg-gray-300"

@@ -133,8 +133,11 @@ function Approuting() {
               }
             />
           </Route>
+          <Route element={<ProtectRouting isLoggedIn={isLoggedIn} />}>
 
           <Route path="/community" element={<Community_1 />} />
+                    </Route>
+
           <Route path="/community/:groupId" element={<Community_2 />} />
           <Route
             path="/choosetrack/track/:trackId"

@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Lottie from "lottie-react";
 import sign__up from "../../../public/animations/Login_animation.json";
 import Google from "../../assets/home-img/google.png";
@@ -182,9 +182,17 @@ function Sign_up({ setIsLoggedIn }) {
                 {loading ? "Signing up..." : "Sign up"}
               </button>
             </form>
-
+<div className="mt-6 text-center">
+  <p className="text-gray-600">Already have an account?</p>
+  <Link 
+    to="/login" 
+    className="font-medium text-primary hover:underline"
+  >
+    Sign In
+  </Link>
+</div>
             {/* تسجيل الدخول عبر وسائل التواصل الاجتماعي */}
-            <p className="mt-6 text-center text-primary">Create account with</p>
+            {/* <p className="mt-6 text-center text-primary">Create account with</p>
             <div className="flex justify-center gap-10 mt-4">
               <img
                 src={Google}
@@ -197,7 +205,7 @@ function Sign_up({ setIsLoggedIn }) {
                 className="w-6 h-6 cursor-pointer"
               />
               <img src={Apple} alt="Apple" className="w-6 h-6 cursor-pointer" />
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
