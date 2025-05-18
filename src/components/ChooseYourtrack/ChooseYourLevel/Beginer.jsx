@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { FaRegBookmark, FaBookmark } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { motion, AnimatePresence } from "framer-motion";
 
 function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
   const [beginnerQuestions, setBeginnerQuestions] = useState([]);
@@ -47,7 +48,7 @@ function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
   const fetchSavedQuestions = async () => {
     try {
       if (!token) return;
-      
+
       const response = await fetch(
         "https://redasaad.azurewebsites.net/api/Save/GetSaveQuestions",
         {
@@ -157,7 +158,7 @@ function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
   return (
     <div className="container px-4 mx-auto">
       <ToastContainer position="top-right" autoClose={3000} />
-      
+
       {/* Header */}
       <div className="flex flex-col gap-4 py-6 md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-3">
@@ -183,7 +184,7 @@ function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
       <div className="container max-w-4xl mx-auto">
         <div className="grid gap-4 py-6">
           {beginnerQuestions.map((faq, index) => (
-            <div
+            <motion.div
               key={index}
               className="p-4 bg-[#6BE9D112] border rounded-lg shadow-md transition-all duration-200 hover:shadow-lg"
             >
@@ -221,18 +222,21 @@ function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
                   )}
                 </div>
               </div>
-              
-              {activeIndex === index && (
-                <motion.p
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  transition={{ duration: 0.2 }}
-                  className="mt-3 text-gray-600"
-                >
-                  {faq.answers}
-                </motion.p>
-              )}
-            </div>
+
+              <AnimatePresence>
+                {activeIndex === index && (
+                  <motion.p
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="mt-3 text-gray-600 whitespace-pre-wrap"
+                  >
+                    {faq.answers}
+                  </motion.p>
+                )}
+              </AnimatePresence>
+            </motion.div>
           ))}
         </div>
       </div>

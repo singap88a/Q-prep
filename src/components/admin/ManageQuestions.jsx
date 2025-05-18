@@ -295,7 +295,7 @@ const ManageQuestions = () => {
             ) : (
               <>
                 {/* Beginner Questions */}
-                <h3 className="mb-2 text-lg font-semibold text-gray-800">
+                <h3 className="mb-2 text-lg font-bold text-gray-800">
                   Beginner Questions
                 </h3>
                 <ul className="mb-6 space-y-4">
@@ -359,7 +359,7 @@ const ManageQuestions = () => {
                 </ul>
 
                 {/* Intermediate Questions */}
-                <h3 className="mb-2 text-lg font-semibold text-gray-800">
+                <h3 className="mb-2 text-lg font-bold text-gray-800">
                   Intermediate Questions
                 </h3>
                 <ul className="mb-6 space-y-4">
@@ -423,7 +423,7 @@ const ManageQuestions = () => {
                 </ul>
 
                 {/* Advanced Questions */}
-                <h3 className="mb-2 text-lg font-semibold text-gray-800">
+                <h3 className="mb-2 text-lg font-bold text-gray-800">
                   Advanced Questions
                 </h3>
                 <ul className="space-y-4">

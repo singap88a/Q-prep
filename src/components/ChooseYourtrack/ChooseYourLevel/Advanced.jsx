@@ -7,7 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 function Advanced({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
   const [advancedQuestions, setAdvancedQuestions] = useState([]);
@@ -45,7 +45,7 @@ function Advanced({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
   const fetchSavedQuestions = async () => {
     try {
       if (!token) return;
-      
+
       const response = await fetch(
         "https://redasaad.azurewebsites.net/api/Save/GetSaveQuestions",
         {
@@ -155,7 +155,7 @@ function Advanced({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
   return (
     <div className="container px-4 mx-auto">
       <ToastContainer position="top-right" autoClose={3000} />
-      
+
       {/* Header */}
       <div className="flex flex-col gap-4 py-6 md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-3">
@@ -222,18 +222,20 @@ function Advanced({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
                   )}
                 </div>
               </div>
-              
-              {activeIndex === index && (
-                <motion.p
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="mt-3 text-gray-600"
-                >
-                  {faq.answers}
-                </motion.p>
-              )}
+
+              <AnimatePresence>
+                {activeIndex === index && (
+                  <motion.p
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="mt-3 text-gray-600 whitespace-pre-wrap"
+                  >
+                    {faq.answers}
+                  </motion.p>
+                )}
+              </AnimatePresence>
             </motion.div>
           ))}
         </div>

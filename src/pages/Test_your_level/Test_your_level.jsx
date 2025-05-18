@@ -151,7 +151,7 @@ const TestYourLevel = () => {
             to="/"
             className="px-10 py-2 font-bold text-white rounded-md bg-secondary hover:bg-[#33439f] transition-all my-3"
           >
-            Next
+            Home
           </Link>
         </div>
       </div>
