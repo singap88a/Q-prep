@@ -10,7 +10,7 @@ import {
 import { toast } from "react-toastify";
 import axios from "axios";
 import PostOptionsMenu from "./PostOptionsMenu";
-import { getImageUrl } from "./utils";
+// import { getImageUrl } from "./utils";
 import defaultUserImage from "../../assets/user.png";
 
 export default function PostItem({
@@ -108,7 +108,7 @@ export default function PostItem({
       <div className="flex items-center justify-between gap-5 mb-4">
         <div className="flex items-center gap-5">
           <img
-            src={getImageUrl(post.userPhoto, "profile") || defaultUserImage}
+            src={post.userImage ? `https://prep.blob.core.windows.net/photosprep/${post.userImage}` : defaultUserImage}
             alt="profile"
             className="object-cover w-12 h-12 rounded-full"
             onError={(e) => {
