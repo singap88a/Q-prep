@@ -21,63 +21,76 @@ export default function PostItem({
   onPostUpdated,
 }) {
   const [liked, setLiked] = useState(false);
-  const [likesCount, setLikesCount] = useState(post.likesCount);
+  const [likesCount, setLikesCount] = useState(post.likesCount || 0);
   const [showOptions, setShowOptions] = useState(false);
 
   // استرجاع حالة اللايك من localStorage عند تحميل الصفحة
   useEffect(() => {
-    const savedLike = localStorage.getItem(`post_${post.id}_liked`);
+    if (!currentUser) return;
+    
+    const savedLike = localStorage.getItem(`post_${post.id}_liked_${currentUser.id}`);
     if (savedLike === "true") {
       setLiked(true);
     } else {
       setLiked(false);
     }
-  }, [post.id]);
+  }, [post.id, currentUser]);
 
   const handleLikePost = async () => {
+    if (!currentUser) {
+      toast.info("Please login to like posts");
+      return;
+    }
+
     if (!isMember) {
       toast.info("Join the group to like posts");
       return;
     }
 
     try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.info("Please login to like posts");
+        return;
+      }
+
       if (liked) {
         // إزالة اللايك
-        setLiked(false);
-        setLikesCount((prev) => prev - 1);
-        localStorage.setItem(`post_${post.id}_liked`, "false");
-
         await axios.post(
           `https://redasaad.azurewebsites.net/api/Likes/RemoveLike/${post.id}`,
           {},
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              Authorization: `Bearer ${token}`,
             },
           }
         );
+
+        setLiked(false);
+        setLikesCount((prev) => Math.max(0, prev - 1));
+        localStorage.setItem(`post_${post.id}_liked_${currentUser.id}`, "false");
       } else {
         // إضافة لايك
-        setLiked(true);
-        setLikesCount((prev) => prev + 1);
-        localStorage.setItem(`post_${post.id}_liked`, "true");
-
         await axios.post(
           `https://redasaad.azurewebsites.net/api/Likes/AddLike/${post.id}`,
           {},
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              Authorization: `Bearer ${token}`,
             },
           }
         );
+
+        setLiked(true);
+        setLikesCount((prev) => prev + 1);
+        localStorage.setItem(`post_${post.id}_liked_${currentUser.id}`, "true");
       }
     } catch (err) {
       console.error("Error handling like:", err);
       // الرجوع للحالة الأصلية عند الخطأ
       setLiked((prev) => !prev);
       setLikesCount((prev) => (liked ? prev + 1 : prev - 1));
-      localStorage.setItem(`post_${post.id}_liked`, liked ? "true" : "false");
+      localStorage.setItem(`post_${post.id}_liked_${currentUser.id}`, liked ? "true" : "false");
       toast.error(`Failed to ${liked ? "unlike" : "like"} post`);
     }
   };
@@ -157,7 +170,7 @@ export default function PostItem({
         <p className="mb-4 text-gray-800 whitespace-pre-line">{post.text}</p>
       )}
 
-      {post.images.length > 0 && (
+      {post.images && post.images.length > 0 && (
         <div
           className={`grid gap-2 mb-4 ${
             post.images.length === 1 ? "grid-cols-1" : "grid-cols-2"

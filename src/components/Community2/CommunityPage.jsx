@@ -16,13 +16,9 @@ function CommunityPage1() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [group, setGroup] = useState(null);
-  console.log("groupId", groupId);
-  console.log("group", group);
   const [showPostForm, setShowPostForm] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [isMember, setIsMember] = useState(false);
-  console.log("is member", isMember);
-
   const [actionLoading, setActionLoading] = useState(false);
 
   // Fetch current user data and membership status
@@ -35,35 +31,44 @@ function CommunityPage1() {
           return;
         }
 
-        const [userResponse, membershipResponse] = await Promise.all([
-          axios.get(
-            "https://redasaad.azurewebsites.net/api/Account/GetCurrentUser",
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          ),
-          axios.get(
-            `https://redasaad.azurewebsites.net/api/UserGroup/CheckMembership/${groupId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          )
-        ]);
+        // First get the current user
+        const userResponse = await axios.get(
+          "https://redasaad.azurewebsites.net/api/Account/GetUser",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         setCurrentUser(userResponse.data);
-        setIsMember(membershipResponse.data.isMember);
-        
-        // تخزين حالة العضوية في localStorage
-        localStorage.setItem(`group_${groupId}_membership`, membershipResponse.data.isMember);
+
+        // Then check membership status
+        try {
+          const membershipResponse = await axios.get(
+            `https://redasaad.azurewebsites.net/api/UserGroup/IsMember/${groupId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          
+          setIsMember(membershipResponse.data);
+          localStorage.setItem(`group_${groupId}_membership_${userResponse.data.id}`, membershipResponse.data);
+        } catch (membershipError) {
+          console.error("Error checking membership:", membershipError);
+          // If membership check fails, use the saved value for this specific user
+          const savedMembership = localStorage.getItem(`group_${groupId}_membership_${userResponse.data.id}`) === 'true';
+          setIsMember(savedMembership);
+        }
       } catch (err) {
-        console.error("Error fetching data:", err);
-        // إذا فشل التحقق من العضوية، نستخدم القيمة المحفوظة مسبقاً
-        const savedMembership = localStorage.getItem(`group_${groupId}_membership`) === 'true';
-        setIsMember(savedMembership);
+        console.error("Error fetching user data:", err);
+        if (err.response?.status === 401) {
+          navigate("/login");
+        } else {
+          toast.error("Failed to load user data");
+        }
       }
     };
 
@@ -73,6 +78,8 @@ function CommunityPage1() {
   // Fetch group data and posts
   useEffect(() => {
     const fetchData = async () => {
+      if (!currentUser) return;
+      
       setLoading(true);
       try {
         const token = localStorage.getItem("token");
@@ -109,7 +116,7 @@ function CommunityPage1() {
 
         setGroup(groupResponse.data);
 
-        // Process posts with proper image URLs
+        // Process posts with proper image URLs and user-specific like status
         const processedPosts = postsResponse.data.map((post) => ({
           ...post,
           id: post.postId || post.id,
@@ -128,24 +135,26 @@ function CommunityPage1() {
         }));
 
         setPosts(processedPosts);
-        setLoading(false);
       } catch (err) {
         console.error("Error fetching data:", err);
         setError(err.message);
-        setLoading(false);
         toast.error("Failed to load community data");
-        navigate("/community");
+        if (err.response?.status === 401) {
+          navigate("/login");
+        }
+      } finally {
+        setLoading(false);
       }
     };
 
-    if (groupId) {
+    if (groupId && currentUser) {
       fetchData();
     }
-  }, [groupId, navigate, isMember]);
+  }, [groupId, navigate, currentUser]);
 
   // Handle join/leave group
   const handleGroupAction = async () => {
-    if (!group) return;
+    if (!group || !currentUser) return;
     
     setActionLoading(true);
     try {
@@ -170,7 +179,7 @@ function CommunityPage1() {
         );
         
         setIsMember(false);
-        localStorage.setItem(`group_${groupId}_membership`, 'false');
+        localStorage.setItem(`group_${groupId}_membership_${currentUser.id}`, 'false');
         setGroup(prev => ({
           ...prev,
           numberOfMembers: (parseInt(prev.numberOfMembers) - 1).toString()
@@ -191,7 +200,7 @@ function CommunityPage1() {
         );
         
         setIsMember(true);
-        localStorage.setItem(`group_${groupId}_membership`, 'true');
+        localStorage.setItem(`group_${groupId}_membership_${currentUser.id}`, 'true');
         setGroup(prev => ({
           ...prev,
           numberOfMembers: (parseInt(prev.numberOfMembers) + 1).toString()
@@ -199,7 +208,11 @@ function CommunityPage1() {
         toast.success(`Joined group ${group.groupName}`);
       }
     } catch (error) {
+      console.error("Error in group action:", error);
       toast.error(`Error: ${error.response?.data?.message || error.message}`);
+      if (error.response?.status === 401) {
+        navigate("/login");
+      }
     } finally {
       setActionLoading(false);
     }
