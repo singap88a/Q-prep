@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -20,6 +20,8 @@ function CommunityPage1() {
   const [currentUser, setCurrentUser] = useState(null);
   const [isMember, setIsMember] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
+  const [editingPost, setEditingPost] = useState(null);
+  const postFormRef = useRef(null);
 
   // Fetch current user data and membership status
   useEffect(() => {
@@ -180,10 +182,18 @@ function CommunityPage1() {
         
         setIsMember(false);
         localStorage.setItem(`group_${groupId}_membership_${currentUser.id}`, 'false');
-        setGroup(prev => ({
-          ...prev,
-          numberOfMembers: (parseInt(prev.numberOfMembers) - 1).toString()
-        }));
+        
+        // Fetch updated group data after leaving
+        const updatedGroupResponse = await axios.get(
+          `https://redasaad.azurewebsites.net/api/Groups/GetGroupById/${groupId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setGroup(updatedGroupResponse.data);
+        
         toast.success(`Left group ${group.groupName}`);
       } else {
         await axios.post(
@@ -201,10 +211,18 @@ function CommunityPage1() {
         
         setIsMember(true);
         localStorage.setItem(`group_${groupId}_membership_${currentUser.id}`, 'true');
-        setGroup(prev => ({
-          ...prev,
-          numberOfMembers: (parseInt(prev.numberOfMembers) + 1).toString()
-        }));
+        
+        // Fetch updated group data after joining
+        const updatedGroupResponse = await axios.get(
+          `https://redasaad.azurewebsites.net/api/Groups/GetGroupById/${groupId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setGroup(updatedGroupResponse.data);
+        
         toast.success(`Joined group ${group.groupName}`);
       }
     } catch (error) {
@@ -215,6 +233,18 @@ function CommunityPage1() {
       }
     } finally {
       setActionLoading(false);
+    }
+  };
+
+  const handlePostUpdated = (updatedPost) => {
+    setPosts(posts.map(p => p.id === updatedPost.id ? updatedPost : p));
+    setEditingPost(null);
+    setShowPostForm(false);
+  };
+
+  const scrollToForm = () => {
+    if (postFormRef.current) {
+      postFormRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
 
@@ -262,22 +292,30 @@ function CommunityPage1() {
         isMember={isMember}
         actionLoading={actionLoading}
         onGroupAction={handleGroupAction}
-        onShowPostForm={() => setShowPostForm(true)}
+        onShowPostForm={() => {
+          setEditingPost(null);
+          setShowPostForm(true);
+          setTimeout(scrollToForm, 100);
+        }}
       />
 
       <div className="flex flex-col-reverse gap-10 py-5 md:flex-row">
         <div className="px-1 basis-2/3">
           {showPostForm && (
-            <PostForm
-              groupId={groupId}
-              isMember={isMember}
-              currentUser={currentUser}
-              onClose={() => setShowPostForm(false)}
-              onPostCreated={(newPost) => setPosts([newPost, ...posts])}
-              onPostUpdated={(updatedPost) => 
-                setPosts(posts.map(p => p.id === updatedPost.id ? updatedPost : p))
-              }
-            />
+            <div ref={postFormRef}>
+              <PostForm
+                groupId={groupId}
+                isMember={isMember}
+                currentUser={currentUser}
+                onClose={() => {
+                  setShowPostForm(false);
+                  setEditingPost(null);
+                }}
+                onPostCreated={(newPost) => setPosts([newPost, ...posts])}
+                onPostUpdated={handlePostUpdated}
+                editingPost={editingPost}
+              />
+            </div>
           )}
 
           <PostList 
@@ -285,9 +323,11 @@ function CommunityPage1() {
             isMember={isMember}
             currentUser={currentUser}
             onPostDeleted={(postId) => setPosts(posts.filter(p => p.id !== postId))}
-            onPostUpdated={(updatedPost) => 
-              setPosts(posts.map(p => p.id === updatedPost.id ? updatedPost : p))
-            }
+            onPostUpdated={(post) => {
+              setEditingPost(post);
+              setShowPostForm(true);
+              setTimeout(scrollToForm, 100);
+            }}
           />
         </div>
 

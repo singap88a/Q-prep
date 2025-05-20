@@ -13,6 +13,29 @@ import PostOptionsMenu from "./PostOptionsMenu";
 // import { getImageUrl } from "./utils";
 import defaultUserImage from "../../assets/user.png";
 
+// Add URL detection function
+const detectAndStyleLinks = (text) => {
+  if (!text) return "";
+  
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  return text.split(urlRegex).map((part, index) => {
+    if (part.match(urlRegex)) {
+      return (
+        <a
+          key={index}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 hover:underline"
+        >
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
+};
+
 export default function PostItem({
   post,
   isMember,
@@ -167,7 +190,9 @@ export default function PostItem({
       </div>
 
       {post.text && (
-        <p className="mb-4 text-gray-800 whitespace-pre-line">{post.text}</p>
+        <p className="mb-4 text-gray-800 whitespace-pre-line">
+          {detectAndStyleLinks(post.text)}
+        </p>
       )}
 
       {post.images && post.images.length > 0 && (
