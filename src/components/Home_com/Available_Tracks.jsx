@@ -7,7 +7,7 @@ import "swiper/css/scrollbar";
 import { Autoplay, Scrollbar } from "swiper/modules";
 import { Link } from "react-router-dom";
 import { ClipLoader } from "react-spinners"; // استيراد تأثير التحميل
-import fetchData from "../../services/FetchData";
+// import fetchData from "../../services/FetchData";
 
 
 const Available_Tracks = () => {

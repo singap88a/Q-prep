@@ -1,14 +1,12 @@
 /* eslint-disable react/prop-types */
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Lottie from "lottie-react";
 import Login_animation from "../../../public/animations/Login_animation.json";
 import Google from "../../assets/home-img/google.png";
 import Facebook from "../../assets/home-img/facebook.png";
 import Apple from "../../assets/home-img/apple.png";
 import { AuthContext } from "../../components/Auth/AuthContext";
-
-
 
 function Login({ setIsLoggedIn }) {
   const [email, setEmail] = useState("");
@@ -18,16 +16,11 @@ function Login({ setIsLoggedIn }) {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-
   // const [userRole, setUserRole] = useState(localStorage.getItem("role"));
   // const [userRole, setUserRole] = useState([]);
-  const { setUserRole } = useContext(AuthContext)
-
-
-
+  const { setUserRole } = useContext(AuthContext);
 
   // console.log("userRole login:", userRole)
-
 
   const validateEmail = (email) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -73,19 +66,14 @@ function Login({ setIsLoggedIn }) {
         throw new Error(data.message || "Login failed");
       }
 
-
       localStorage.setItem("token", data.token);
 
-      // Need reda send 
-      localStorage.setItem("refreshToken", data.refreshToken);
-
+      // Need reda send
+      // localStorage.setItem("refreshToken", data.refreshToken);
 
       localStorage.setItem("role", JSON.stringify(data.roles));
       // setUserRole(localStorage.getItem("role"));
       // setUserRole(JSON.parse(localStorage.getItem("role")) || []);
-
-
-
 
       // role
       if (data.roles.includes("Admin")) {
@@ -96,16 +84,13 @@ function Login({ setIsLoggedIn }) {
       setUserRole(JSON.parse(localStorage.getItem("role")) || []);
       setIsLoggedIn(true);
       setTimeout(() => navigate("/"), 2000);
-
     } catch (error) {
       console.error("Error:", error);
       setError(error.message || "Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
-
   };
-
 
   return (
     <div className="container">
@@ -122,7 +107,6 @@ function Login({ setIsLoggedIn }) {
               Welcome back to Q-Prep
             </h1>
             <p className="mb-6 text-primary">Login now!</p>
-
             {error && (
               <div className="p-3 mb-4 text-red-700 bg-red-100 border border-red-400 rounded-lg">
                 {error}
@@ -133,7 +117,6 @@ function Login({ setIsLoggedIn }) {
                 {success}
               </div>
             )}
-
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
                 <label
@@ -177,8 +160,15 @@ function Login({ setIsLoggedIn }) {
                 {loading ? "Logging in..." : "Login"}
               </button>
             </form>
-
-            <p className="mt-6 text-center text-primary">Login with</p>
+            <div className="mt-6">
+              <Link
+                to="/sign-up"
+                className="flex justify-center mt-6 text-center text-primary hover:text-secondary"
+              >
+                Create a new account
+              </Link>
+            </div>{" "}
+            {/* <p className="mt-6 text-center text-primary">Login with</p>
             <div className="flex justify-center gap-10 mt-4">
               <img
                 src={Google}
@@ -191,7 +181,7 @@ function Login({ setIsLoggedIn }) {
                 className="w-6 h-6 cursor-pointer"
               />
               <img src={Apple} alt="Apple" className="w-6 h-6 cursor-pointer" />
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

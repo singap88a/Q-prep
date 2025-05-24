@@ -5,10 +5,11 @@ import { FaBookmark, FaRegBookmark } from "react-icons/fa";
 import logo from "../assets/home-img/logo.png";
 import userImage from "../assets/user.png";
 import { useUser } from "../Context/UserContext";
+// eslint-disable-next-line no-unused-vars
 import AdminRoute from "../Router/PrivateRouting";
 import { AuthContext } from "./Auth/AuthContext";
 
-function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
+function Navbar({ isLoggedIn, savedQuestions }) {
   const [isOpen, setIsOpen] = useState(false);
   const [hasShadow, setHasShadow] = useState(false);
   const {
@@ -95,7 +96,7 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
 
   const token = localStorage.getItem("token")
   const { userRole } = useContext(AuthContext)
-  console.log("userRole", userRole);
+  // console.log("userRole", userRole);
 
   return (
     <div>
@@ -163,7 +164,7 @@ function Navbar({ isLoggedIn, setIsLoggedIn, savedQuestions }) {
                   token && userRole.includes("Admin") && (
                 <Link
                   to="/admin"
-                  className="relative z-10  py-1 overflow-hidden font-bold text-white border-2 rounded-md md:px-4 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary"
+                  className="relative z-10 py-1 overflow-hidden font-bold text-white border-2 rounded-md md:px-4 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary"
                 >
                   Admin
                 </Link>

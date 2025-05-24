@@ -1,34 +1,34 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom';
+// import React from 'react'
+// import { useNavigate } from 'react-router-dom';
 
-const RefreshToken = async () => {
-    const navigate = useNavigate();
+// const RefreshToken = async () => {
+//     const navigate = useNavigate();
 
-    const refreshToken = localStorage.getItem("refreshToken")
+//     const refreshToken = localStorage.getItem("refreshToken")
 
-    try {
-        const refresTokenFetch = await fetch("https://questionprep.azurewebsites.net/api/Authenticate/RefreshToken", {
-            // method: "Get",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ token: refreshToken })
-        });
+//     try {
+//         const refresTokenFetch = await fetch("https://questionprep.azurewebsites.net/api/Authenticate/RefreshToken", {
+//             // method: "Get",
+//             headers: { "Content-Type": "application/json" },
+//             body: JSON.stringify({ token: refreshToken })
+//         });
 
-        const data = await refresTokenFetch.json();
+//         const data = await refresTokenFetch.json();
 
-        console.log("refresh Token:", data);
+//         console.log("refresh Token:", data);
 
-        if (!response.ok) throw new Error(data.message);
+//         if (!response.ok) throw new Error(data.message);
 
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("refreshToken", data.refreshToken);
+//         localStorage.setItem("token", data.token);
+//         localStorage.setItem("refreshToken", data.refreshToken);
 
-        return data.token;
+//         return data.token;
 
-    } catch (err) {
-        localStorage.clear();
-        navigate("/login");
-    }
+//     } catch (err) {
+//         localStorage.clear();
+//         navigate("/login");
+//     }
 
-}
+// }
 
-export default RefreshToken;
+// export default RefreshToken;

@@ -183,10 +183,10 @@ const ManageQuestions = () => {
   return (
     <div className="flex">
       <Sidebar />
-      <div className="flex-1 min-h-screen md:p-4 bg-gray-100 md:ml-64">
+      <div className="flex-1 min-h-screen bg-gray-100 md:p-4 md:ml-64">
         <ToastContainer />
         <div className="container mx-auto">
-          <div className="flex items-center  justify-between md:nt-0 mt-9 mb-8">
+          <div className="flex items-center justify-between mb-8 md:nt-0 mt-9">
             <h1 className="md:text-2xl sm:text-lg text-[17px] font-bold text-gray-800">
               Manage Questions
             </h1>
@@ -199,7 +199,7 @@ const ManageQuestions = () => {
           </div>
 
           {/* Add/Edit Question Form */}
-          <div className=" p-6 mb-8 bg-white rounded-lg shadow-md">
+          <div className="p-6 mb-8 bg-white rounded-lg shadow-md ">
             <h2 className="mb-4 text-xl font-semibold text-gray-800">
               {editQuestion.questionId ? "Edit Question" : "Add New Question"}
             </h2>

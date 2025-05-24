@@ -21,7 +21,7 @@ const AuthProvider = ({ children }) => {
             return role || null; // if JSON parsing fails, return the raw value
         }
     });
-    console.log("Auth", userRole)
+    // console.log("Auth", userRole)
 
     useEffect(() => {
         if (token) {

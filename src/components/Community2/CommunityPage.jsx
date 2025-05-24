@@ -16,55 +16,61 @@ function CommunityPage1() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [group, setGroup] = useState(null);
+  console.log("groupId", groupId);
+  console.log("group", group);
   const [showPostForm, setShowPostForm] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  console.log("currentUser", currentUser)
   const [isMember, setIsMember] = useState(false);
+  console.log("is member", isMember);
+
   const [actionLoading, setActionLoading] = useState(false);
 
-  // Fetch current user data and membership status
-  useEffect(() => {
-    const fetchCurrentUserAndMembership = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          navigate("/login");
-          return;
-        }
-
-        const [userResponse, membershipResponse] = await Promise.all([
-          axios.get(
-            "https://redasaad.azurewebsites.net/api/Account/GetCurrentUser",
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          ),
-          axios.get(
-            `https://redasaad.azurewebsites.net/api/UserGroup/CheckMembership/${groupId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          )
-        ]);
-
-        setCurrentUser(userResponse.data);
-        setIsMember(membershipResponse.data.isMember);
-        
-        // تخزين حالة العضوية في localStorage
-        localStorage.setItem(`group_${groupId}_membership`, membershipResponse.data.isMember);
-      } catch (err) {
-        console.error("Error fetching data:", err);
-        // إذا فشل التحقق من العضوية، نستخدم القيمة المحفوظة مسبقاً
-        const savedMembership = localStorage.getItem(`group_${groupId}_membership`) === 'true';
-        setIsMember(savedMembership);
+  const fetchCurrentUserAndMembership = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/login");
+        return;
       }
-    };
 
+      const [userResponse, membershipResponse] = await Promise.all([
+        axios.get(
+          "https://redasaad.azurewebsites.net/api/Account/GetCurrentUser",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        ),
+        axios.get(
+          `https://redasaad.azurewebsites.net/api/UserGroup/CheckMembership/${groupId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+      ]);
+
+
+
+      setCurrentUser(userResponse.data);
+      setIsMember(membershipResponse.data.isMember);
+
+      // تخزين حالة العضوية في localStorage
+      localStorage.setItem(`group_${groupId}_membership`, membershipResponse.data.isMember);
+
+    } catch (err) {
+      console.error("Error fetching data:", err);
+      // const savedMembership = localStorage.getItem(`group_${groupId}_membership`) === 'true';
+      // setIsMember(savedMembership);
+    }
+  };
+
+  useEffect(() => {
     fetchCurrentUserAndMembership();
-  }, [groupId, navigate]);
+  }, []);
 
   // Fetch group data and posts
   useEffect(() => {
@@ -95,6 +101,8 @@ function CommunityPage1() {
                 },
               }
             )
+
+
             .catch((err) => {
               if (err.response?.status === 404) {
                 return { data: [] };
@@ -113,8 +121,8 @@ function CommunityPage1() {
           images: Array.isArray(post.images)
             ? post.images.map((img) => getImageUrl(img, "post"))
             : post.imageUrl
-            ? [getImageUrl(post.imageUrl, "post")]
-            : [],
+              ? [getImageUrl(post.imageUrl, "post")]
+              : [],
           createdDate: post.postDate || post.createdDate || new Date().toISOString(),
           userName: post.userName || "Anonymous",
           userPhoto: getImageUrl(post.userPhoto, "profile"),
@@ -142,7 +150,7 @@ function CommunityPage1() {
   // Handle join/leave group
   const handleGroupAction = async () => {
     if (!group) return;
-    
+
     setActionLoading(true);
     try {
       const token = localStorage.getItem("token");
@@ -164,7 +172,7 @@ function CommunityPage1() {
             },
           }
         );
-        
+
         setIsMember(false);
         localStorage.setItem(`group_${groupId}_membership`, 'false');
         setGroup(prev => ({
@@ -185,7 +193,7 @@ function CommunityPage1() {
             },
           }
         );
-        
+
         setIsMember(true);
         localStorage.setItem(`group_${groupId}_membership`, 'true');
         setGroup(prev => ({
@@ -239,8 +247,8 @@ function CommunityPage1() {
 
   return (
     <div className="container max-w-screen-xl mx-auto">
-      <CommunityHeader 
-        group={group} 
+      <CommunityHeader
+        group={group}
         currentUser={currentUser}
         isMember={isMember}
         actionLoading={actionLoading}
@@ -257,18 +265,18 @@ function CommunityPage1() {
               currentUser={currentUser}
               onClose={() => setShowPostForm(false)}
               onPostCreated={(newPost) => setPosts([newPost, ...posts])}
-              onPostUpdated={(updatedPost) => 
+              onPostUpdated={(updatedPost) =>
                 setPosts(posts.map(p => p.id === updatedPost.id ? updatedPost : p))
               }
             />
           )}
 
-          <PostList 
-            posts={posts} 
+          <PostList
+            posts={posts}
             isMember={isMember}
             currentUser={currentUser}
             onPostDeleted={(postId) => setPosts(posts.filter(p => p.id !== postId))}
-            onPostUpdated={(updatedPost) => 
+            onPostUpdated={(updatedPost) =>
               setPosts(posts.map(p => p.id === updatedPost.id ? updatedPost : p))
             }
           />

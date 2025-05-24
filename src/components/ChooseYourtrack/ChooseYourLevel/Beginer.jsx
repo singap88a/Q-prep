@@ -222,7 +222,6 @@ function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
                   )}
                 </div>
               </div>
-
               <AnimatePresence>
                 {activeIndex === index && (
                   <motion.p
