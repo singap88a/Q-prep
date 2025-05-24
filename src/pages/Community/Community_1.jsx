@@ -109,7 +109,7 @@ function CommunityCard() {
               <img
                 src={getImageUrl(item.photo)}
                 alt={item.groupName}
-                className="object-cover w-16 h-16 mr-4 rounded-full"
+                className="object-cover w-16 h-16 mr-4 rounded-[10px]"
                 onError={(e) => {
                   e.target.src = userImage;
                 }}

@@ -27,6 +27,7 @@
     "bootstrap": "^5.3.3",
     "framer-motion": "^12.4.10",
     "fuse.js": "^7.0.0",
+    "highlight.js": "^11.11.1",
     "lottie-react": "^2.4.0",
     "prism-react-renderer": "^2.4.1",
     "prismjs": "^1.30.0",

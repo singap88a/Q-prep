@@ -12,6 +12,7 @@ import { AuthContext } from "./Auth/AuthContext";
 function Navbar({ isLoggedIn, savedQuestions }) {
   const [isOpen, setIsOpen] = useState(false);
   const [hasShadow, setHasShadow] = useState(false);
+  const [activeButton, setActiveButton] = useState('login');
   const {
     profileImage: globalProfileImage,
     setProfileImage: setGlobalProfileImage,
@@ -71,6 +72,16 @@ function Navbar({ isLoggedIn, savedQuestions }) {
     }
   }, [isLoggedIn, globalProfileImage, setGlobalProfileImage]);
 
+  // Add effect to set active button based on current path
+  useEffect(() => {
+    const path = location.pathname;
+    if (path === '/login') {
+      setActiveButton('login');
+    } else if (path === '/sign-up') {
+      setActiveButton('signup');
+    }
+  }, [location.pathname]);
+
   // Logout cleanup
   // useEffect(() => {
   //   if (!sessionStorage.getItem("hasLoggedOut")) {
@@ -124,7 +135,7 @@ function Navbar({ isLoggedIn, savedQuestions }) {
                 key={link.to}
                 to={link.to}
                 className={`hover:text-secondary px-2 relative ${location.pathname === link.to
-                  ? "text-secondary after:content-[''] after:absolute after:right-0 after:bottom-[-2px] after:w-[35%] after:h-[2.41px] after:bg-secondary before:content-[''] before:absolute before:left-0 before:top-0 before:w-[35%] before:h-[2.50px] before:bg-secondary"
+                  ? "text-secondary after:content-[''] after:absolute after:right-0 after:bottom-[-2px] after:w-[35%] after:h-[2.0px] after:bg-secondary before:content-[''] before:absolute before:left-0 before:top-0 before:w-[35%] before:h-[2.0px] before:bg-secondary"
                   : ""
                   }`}
               >
@@ -175,13 +186,23 @@ function Navbar({ isLoggedIn, savedQuestions }) {
               <div className="hidden gap-4 md:flex">
                 <Link
                   to="/login"
-                  className="px-3 py-1 border-2 rounded border-secondary text-secondary"
+                  className={`px-3 py-1 border-2 rounded border-secondary ${
+                    activeButton === 'login' 
+                      ? 'bg-secondary text-white' 
+                      : 'text-secondary'
+                  }`}
+                  onClick={() => setActiveButton('login')}
                 >
                   Login
                 </Link>
                 <Link
                   to="/sign-up"
-                  className="px-3 py-1 border-2 rounded border-secondary text-secondary"
+                  className={`px-3 py-1 border-2 rounded border-secondary ${
+                    activeButton === 'signup' 
+                      ? 'bg-secondary text-white' 
+                      : 'text-secondary'
+                  }`}
+                  onClick={() => setActiveButton('signup')}
                 >
                   Sign Up
                 </Link>
@@ -243,15 +264,29 @@ function Navbar({ isLoggedIn, savedQuestions }) {
                 <div className="flex gap-5 py-5 ml-5">
                   <Link
                     to="/login"
-                    className="px-3 py-1 border-2 rounded border-secondary text-secondary"
-                    onClick={closeMenu}
+                    className={`px-3 py-1 border-2 rounded border-secondary ${
+                      activeButton === 'login' 
+                        ? 'bg-secondary text-white' 
+                        : 'text-secondary'
+                    }`}
+                    onClick={() => {
+                      setActiveButton('login');
+                      closeMenu();
+                    }}
                   >
                     Login
                   </Link>
                   <Link
                     to="/sign-up"
-                    className="px-3 py-1 border-2 rounded border-secondary text-secondary"
-                    onClick={closeMenu}
+                    className={`px-3 py-1 border-2 rounded border-secondary ${
+                      activeButton === 'signup' 
+                        ? 'bg-secondary text-white' 
+                        : 'text-secondary'
+                    }`}
+                    onClick={() => {
+                      setActiveButton('signup');
+                      closeMenu();
+                    }}
                   >
                     Sign Up
                   </Link>

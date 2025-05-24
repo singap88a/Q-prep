@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -7,6 +8,8 @@ import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import hljs from 'highlight.js';
+import 'highlight.js/styles/github.css';
 
 // eslint-disable-next-line no-unused-vars
 function Intermediate({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
@@ -128,6 +131,17 @@ function Intermediate({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }
     setActiveIndex((prevIndex) => (prevIndex === index ? null : index));
   };
 
+  // Add function to handle code highlighting
+  const handleCodeHighlight = (text) => {
+    try {
+      // Try to detect the language automatically
+      const result = hljs.highlightAuto(text);
+      return result.value;
+    } catch (error) {
+      return text;
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -237,15 +251,22 @@ function Intermediate({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }
               
               <AnimatePresence>
                 {activeIndex === index && (
-                  <motion.p
+                  <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
                     exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="mt-3 text-gray-600 whitespace-pre-wrap"
+                    className="mt-3"
                   >
-                    {faq.answers}
-                  </motion.p>
+                    <pre className="p-4 bg-[#f5fdfc] rounded-lg overflow-x-auto border border-gray-200">
+                      <code 
+                        className="font-mono text-sm"
+                        dangerouslySetInnerHTML={{ 
+                          __html: handleCodeHighlight(faq.answers) 
+                        }} 
+                      />
+                    </pre>
+                  </motion.div>
                 )}
               </AnimatePresence>
             </motion.div>

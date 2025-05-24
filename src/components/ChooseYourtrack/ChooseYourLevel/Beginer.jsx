@@ -9,7 +9,9 @@ import "react-toastify/dist/ReactToastify.css";
 import { FaRegBookmark, FaBookmark } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { motion } from "framer-motion"; // تمت إضافة هذا الاستيراد
+import { motion } from "framer-motion";
+import hljs from 'highlight.js';
+import 'highlight.js/styles/github.css';
 
 function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
   const [beginnerQuestions, setBeginnerQuestions] = useState([]);
@@ -121,6 +123,17 @@ function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
     setActiveIndex((prevIndex) => (prevIndex === index ? null : index));
   };
 
+  // Add function to handle code highlighting
+  const handleCodeHighlight = (text) => {
+    try {
+      // Try to detect the language automatically
+      const result = hljs.highlightAuto(text);
+      return result.value;
+    } catch (error) {
+      return text;
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -224,14 +237,21 @@ function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
               </div>
               
               {activeIndex === index && (
-                <motion.p
+                <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   transition={{ duration: 0.2 }}
-                  className="mt-3 text-gray-600 whitespace-pre-wrap"
+                  className="mt-3"
                 >
-                  {faq.answers}
-                </motion.p>
+                  <pre className="p-4 bg-[#f5fdfc] rounded-lg overflow-x-auto border border-gray-200">
+                    <code 
+                      className="text-sm font-mono"
+                      dangerouslySetInnerHTML={{ 
+                        __html: handleCodeHighlight(faq.answers) 
+                      }} 
+                    />
+                  </pre>
+                </motion.div>
               )}
             </div>
           ))}

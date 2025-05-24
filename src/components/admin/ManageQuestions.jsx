@@ -1,10 +1,13 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { FaEllipsisV, FaTimes, FaEdit, FaTrash } from "react-icons/fa";
+import { FaEllipsisV, FaTimes, FaEdit, FaTrash, FaCode } from "react-icons/fa";
 import Sidebar from "./Sidebar";
+import hljs from 'highlight.js';
+import 'highlight.js/styles/github.css';
 
 const ManageQuestions = () => {
   const { frameworkId } = useParams();
@@ -28,6 +31,8 @@ const ManageQuestions = () => {
   const [token, setToken] = useState(localStorage.getItem("token") || "");
   const [loading, setLoading] = useState(false);
   const [showActions, setShowActions] = useState(null);
+  const [isCodeMode, setIsCodeMode] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState('javascript');
 
   useEffect(() => {
     if (token && frameworkId) {
@@ -180,6 +185,15 @@ const ManageQuestions = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showActions]);
 
+  // Modify the handleCodeHighlight function
+  const handleCodeHighlight = (text) => {
+    try {
+      return hljs.highlight(text, { language: selectedLanguage }).value;
+    } catch (error) {
+      return text;
+    }
+  };
+
   return (
     <div className="flex">
       <Sidebar />
@@ -213,6 +227,31 @@ const ManageQuestions = () => {
                 <option value="Q_IntermediateLevel">Intermediate</option>
                 <option value="Q_AdvancedLevel">Advanced</option>
               </select>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setIsCodeMode(!isCodeMode)}
+                  className={`p-2 rounded-lg ${isCodeMode ? 'bg-secondary text-white' : 'bg-gray-200 text-gray-700'}`}
+                >
+                  <FaCode />
+                </button>
+                {isCodeMode && (
+                  <select
+                    value={selectedLanguage}
+                    onChange={(e) => setSelectedLanguage(e.target.value)}
+                    className="p-2 border border-gray-300 rounded-lg"
+                  >
+                    <option value="javascript">JavaScript</option>
+                    <option value="python">Python</option>
+                    <option value="java">Java</option>
+                    <option value="cpp">C++</option>
+                    <option value="csharp">C#</option>
+                    <option value="html">HTML</option>
+                    <option value="css">CSS</option>
+                    <option value="dart">Dart</option>
+                    <option value="r">R</option>
+                  </select>
+                )}
+              </div>
               <textarea
                 placeholder="Question"
                 value={
@@ -223,19 +262,19 @@ const ManageQuestions = () => {
                 onChange={(e) =>
                   editQuestion.questionId
                     ? setEditQuestion({
-                      ...editQuestion,
-                      questions: e.target.value,
-                    })
+                        ...editQuestion,
+                        questions: e.target.value,
+                      })
                     : setNewQuestion({
-                      ...newQuestion,
-                      questions: e.target.value,
-                    })
+                        ...newQuestion,
+                        questions: e.target.value,
+                      })
                 }
                 className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
                 rows={3}
               />
               <textarea
-                placeholder="Answer"
+                placeholder="Answer (Code)"
                 value={
                   editQuestion.questionId
                     ? editQuestion.answers
@@ -244,15 +283,15 @@ const ManageQuestions = () => {
                 onChange={(e) =>
                   editQuestion.questionId
                     ? setEditQuestion({
-                      ...editQuestion,
-                      answers: e.target.value,
-                    })
+                        ...editQuestion,
+                        answers: e.target.value,
+                      })
                     : setNewQuestion({
-                      ...newQuestion,
-                      answers: e.target.value,
-                    })
+                        ...newQuestion,
+                        answers: e.target.value,
+                      })
                 }
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
+                className="w-full p-3 font-mono border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
                 rows={5}
               />
               <div className="flex gap-2">
@@ -309,9 +348,11 @@ const ManageQuestions = () => {
                           <h3 className="text-lg font-semibold text-gray-800">
                             {question.questions}
                           </h3>
-                          <p className="text-gray-600 whitespace-pre-wrap">
-                            {question.answers}
-                          </p>
+                          <div className="mt-2">
+                            <pre className="p-4 overflow-x-auto bg-gray-100 rounded-lg">
+                              <code dangerouslySetInnerHTML={{ __html: handleCodeHighlight(question.answers) }} />
+                            </pre>
+                          </div>
                         </div>
                         <div className="relative actions-container">
                           <button
@@ -373,9 +414,11 @@ const ManageQuestions = () => {
                           <h3 className="text-lg font-semibold text-gray-800">
                             {question.questions}
                           </h3>
-                          <p className="text-gray-600 whitespace-pre-wrap">
-                            {question.answers}
-                          </p>
+                          <div className="mt-2">
+                            <pre className="p-4 overflow-x-auto bg-gray-100 rounded-lg">
+                              <code dangerouslySetInnerHTML={{ __html: handleCodeHighlight(question.answers) }} />
+                            </pre>
+                          </div>
                         </div>
                         <div className="relative actions-container">
                           <button
@@ -437,9 +480,11 @@ const ManageQuestions = () => {
                           <h3 className="text-lg font-semibold text-gray-800">
                             {question.questions}
                           </h3>
-                          <p className="text-gray-600 whitespace-pre-wrap">
-                            {question.answers}
-                          </p>
+                          <div className="mt-2">
+                            <pre className="p-4 overflow-x-auto bg-gray-100 rounded-lg">
+                              <code dangerouslySetInnerHTML={{ __html: handleCodeHighlight(question.answers) }} />
+                            </pre>
+                          </div>
                         </div>
                         <div className="relative actions-container">
                           <button
