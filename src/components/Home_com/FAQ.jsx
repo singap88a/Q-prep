@@ -21,6 +21,11 @@ const FAQ = () => {
       answer:
         "Our questions are based on real-life interview experiences shared by users and updated regularly to ensure they remain relevant and accurate.",
     },
+ 
+  ];
+
+    const faqs_1 = [
+ 
     {
       question: "What should I do if I forget my password?",
       answer:
@@ -34,7 +39,7 @@ const FAQ = () => {
     {
       question: "Does Q-Prep support all career tracks?",
       answer:
-        "We cover a wide range of tracks, including technology, business, marketing, and more. If you don’t find your track, let us know, and we’ll consider adding it in the future.",
+        "We cover a wide range of tracks, including technology, business, marketing, and more. If you don't find your track, let us know, and we'll consider adding it in the future.",
     },
   ];
 
@@ -50,43 +55,85 @@ const FAQ = () => {
     <div className="py-10">
       <h1 className="container text-2xl font-bold">FAQ</h1>
       <div className="py-16 my-4 bg-bac_bg">
-        <div className="container max-w-4xl p-6 mx-auto">
+        <div className="container max-w-6xl p-6 mx-auto">
           <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2">
-            {faqs.map((faq, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}  
-                className="p-4 bg-white border rounded-lg shadow-md"
-              >
-                <button
-                  onClick={() => toggleAnswer(index)}
-                  className="flex items-center justify-between w-full text-lg font-semibold text-left"
+            {/* Left Column - First set of FAQs */}
+            <div className="space-y-4">
+              {faqs.map((faq, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  viewport={{ once: true }}  
+                  className="p-4 bg-white border rounded-lg shadow-md"
                 >
-                  {faq.question}
-                  {activeIndex === index ? (
-                    <FaChevronUp className="text-secondary" />
-                  ) : (
-                    <FaChevronDown className="text-secondary" />
-                  )}
-                </button>
-                <AnimatePresence>
-                  {activeIndex === index && (
-                    <motion.p
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="mt-2 text-gray-600"
-                    >
-                      {faq.answer}
-                    </motion.p>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-            ))}
+                  <button
+                    onClick={() => toggleAnswer(index)}
+                    className="flex items-center justify-between w-full text-lg font-semibold text-left"
+                  >
+                    {faq.question}
+                    {activeIndex === index ? (
+                      <FaChevronUp className="text-secondary" />
+                    ) : (
+                      <FaChevronDown className="text-secondary" />
+                    )}
+                  </button>
+                  <AnimatePresence>
+                    {activeIndex === index && (
+                      <motion.p
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="mt-2 text-gray-600"
+                      >
+                        {faq.answer}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Right Column - Second set of FAQs */}
+            <div className="space-y-4">
+              {faqs_1.map((faq, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  viewport={{ once: true }}  
+                  className="p-4 bg-white border rounded-lg shadow-md"
+                >
+                  <button
+                    onClick={() => toggleAnswer(index + faqs.length)}
+                    className="flex items-center justify-between w-full text-lg font-semibold text-left"
+                  >
+                    {faq.question}
+                    {activeIndex === index + faqs.length ? (
+                      <FaChevronUp className="text-secondary" />
+                    ) : (
+                      <FaChevronDown className="text-secondary" />
+                    )}
+                  </button>
+                  <AnimatePresence>
+                    {activeIndex === index + faqs.length && (
+                      <motion.p
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="mt-2 text-gray-600"
+                      >
+                        {faq.answer}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
