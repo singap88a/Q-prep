@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faImage,
@@ -16,6 +16,7 @@ export default function PostForm({
   onClose,
   onPostCreated,
   onPostUpdated,
+  editingPost,
 }) {
   const [postText, setPostText] = useState("");
   const [postImages, setPostImages] = useState([]);
@@ -23,8 +24,22 @@ export default function PostForm({
   const fileInputRef = useRef(null);
   const [activeTab, setActiveTab] = useState("Text");
   const [postLink, setPostLink] = useState("");
-  // eslint-disable-next-line no-unused-vars
-  const [editingPost, setEditingPost] = useState(null);
+
+  useEffect(() => {
+    if (editingPost) {
+      setPostText(editingPost.text || "");
+      setPostImages(editingPost.images || []);
+      // If the post has a link, extract it and set it
+      if (editingPost.text && editingPost.text.includes("http")) {
+        const textParts = editingPost.text.split("\n");
+        const link = textParts.find(part => part.startsWith("http"));
+        if (link) {
+          setPostLink(link);
+          setPostText(textParts.filter(part => part !== link).join("\n"));
+        }
+      }
+    }
+  }, [editingPost]);
 
   const handleImageChange = (e) => {
     if (e.target.files) {

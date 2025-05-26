@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -16,65 +16,72 @@ function CommunityPage1() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [group, setGroup] = useState(null);
-  console.log("groupId", groupId);
-  console.log("group", group);
   const [showPostForm, setShowPostForm] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
-  console.log("currentUser", currentUser)
   const [isMember, setIsMember] = useState(false);
-  console.log("is member", isMember);
-
   const [actionLoading, setActionLoading] = useState(false);
+  const [editingPost, setEditingPost] = useState(null);
+  const postFormRef = useRef(null);
 
-  const fetchCurrentUserAndMembership = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        navigate("/login");
-        return;
-      }
-
-      const [userResponse, membershipResponse] = await Promise.all([
-        axios.get(
-          "https://redasaad.azurewebsites.net/api/Account/GetCurrentUser",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        ),
-        axios.get(
-          `https://redasaad.azurewebsites.net/api/UserGroup/CheckMembership/${groupId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
-      ]);
-
-
-
-      setCurrentUser(userResponse.data);
-      setIsMember(membershipResponse.data.isMember);
-
-      // تخزين حالة العضوية في localStorage
-      localStorage.setItem(`group_${groupId}_membership`, membershipResponse.data.isMember);
-
-    } catch (err) {
-      console.error("Error fetching data:", err);
-      // const savedMembership = localStorage.getItem(`group_${groupId}_membership`) === 'true';
-      // setIsMember(savedMembership);
-    }
-  };
-
+  // Fetch current user data and membership status
   useEffect(() => {
+    const fetchCurrentUserAndMembership = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          navigate("/login");
+          return;
+        }
+
+        // First get the current user
+        const userResponse = await axios.get(
+          "https://redasaad.azurewebsites.net/api/Account/GetUser",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        setCurrentUser(userResponse.data);
+
+        // Then check membership status
+        try {
+          const membershipResponse = await axios.get(
+            `https://redasaad.azurewebsites.net/api/UserGroup/IsMember/${groupId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          setIsMember(membershipResponse.data);
+          localStorage.setItem(`group_${groupId}_membership_${userResponse.data.id}`, membershipResponse.data);
+        } catch (membershipError) {
+          console.error("Error checking membership:", membershipError);
+          // If membership check fails, use the saved value for this specific user
+          const savedMembership = localStorage.getItem(`group_${groupId}_membership_${userResponse.data.id}`) === 'true';
+          setIsMember(savedMembership);
+        }
+      } catch (err) {
+        console.error("Error fetching user data:", err);
+        if (err.response?.status === 401) {
+          navigate("/login");
+        } else {
+          toast.error("Failed to load user data");
+        }
+      }
+    };
+
     fetchCurrentUserAndMembership();
-  }, []);
+  }, [groupId, navigate]);
 
   // Fetch group data and posts
   useEffect(() => {
     const fetchData = async () => {
+      if (!currentUser) return;
+
       setLoading(true);
       try {
         const token = localStorage.getItem("token");
@@ -101,8 +108,6 @@ function CommunityPage1() {
                 },
               }
             )
-
-
             .catch((err) => {
               if (err.response?.status === 404) {
                 return { data: [] };
@@ -113,7 +118,7 @@ function CommunityPage1() {
 
         setGroup(groupResponse.data);
 
-        // Process posts with proper image URLs
+        // Process posts with proper image URLs and user-specific like status
         const processedPosts = postsResponse.data.map((post) => ({
           ...post,
           id: post.postId || post.id,
@@ -132,24 +137,26 @@ function CommunityPage1() {
         }));
 
         setPosts(processedPosts);
-        setLoading(false);
       } catch (err) {
         console.error("Error fetching data:", err);
         setError(err.message);
-        setLoading(false);
         toast.error("Failed to load community data");
-        navigate("/community");
+        if (err.response?.status === 401) {
+          navigate("/login");
+        }
+      } finally {
+        setLoading(false);
       }
     };
 
-    if (groupId) {
+    if (groupId && currentUser) {
       fetchData();
     }
-  }, [groupId, navigate, isMember]);
+  }, [groupId, navigate, currentUser]);
 
   // Handle join/leave group
   const handleGroupAction = async () => {
-    if (!group) return;
+    if (!group || !currentUser) return;
 
     setActionLoading(true);
     try {
@@ -174,11 +181,19 @@ function CommunityPage1() {
         );
 
         setIsMember(false);
-        localStorage.setItem(`group_${groupId}_membership`, 'false');
-        setGroup(prev => ({
-          ...prev,
-          numberOfMembers: (parseInt(prev.numberOfMembers) - 1).toString()
-        }));
+        localStorage.setItem(`group_${groupId}_membership_${currentUser.id}`, 'false');
+
+        // Fetch updated group data after leaving
+        const updatedGroupResponse = await axios.get(
+          `https://redasaad.azurewebsites.net/api/Groups/GetGroupById/${groupId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setGroup(updatedGroupResponse.data);
+
         toast.success(`Left group ${group.groupName}`);
       } else {
         await axios.post(
@@ -195,17 +210,41 @@ function CommunityPage1() {
         );
 
         setIsMember(true);
-        localStorage.setItem(`group_${groupId}_membership`, 'true');
-        setGroup(prev => ({
-          ...prev,
-          numberOfMembers: (parseInt(prev.numberOfMembers) + 1).toString()
-        }));
+        localStorage.setItem(`group_${groupId}_membership_${currentUser.id}`, 'true');
+
+        // Fetch updated group data after joining
+        const updatedGroupResponse = await axios.get(
+          `https://redasaad.azurewebsites.net/api/Groups/GetGroupById/${groupId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setGroup(updatedGroupResponse.data);
+
         toast.success(`Joined group ${group.groupName}`);
       }
     } catch (error) {
+      console.error("Error in group action:", error);
       toast.error(`Error: ${error.response?.data?.message || error.message}`);
+      if (error.response?.status === 401) {
+        navigate("/login");
+      }
     } finally {
       setActionLoading(false);
+    }
+  };
+
+  const handlePostUpdated = (updatedPost) => {
+    setPosts(posts.map(p => p.id === updatedPost.id ? updatedPost : p));
+    setEditingPost(null);
+    setShowPostForm(false);
+  };
+
+  const scrollToForm = () => {
+    if (postFormRef.current) {
+      postFormRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
 
@@ -253,22 +292,30 @@ function CommunityPage1() {
         isMember={isMember}
         actionLoading={actionLoading}
         onGroupAction={handleGroupAction}
-        onShowPostForm={() => setShowPostForm(true)}
+        onShowPostForm={() => {
+          setEditingPost(null);
+          setShowPostForm(true);
+          setTimeout(scrollToForm, 100);
+        }}
       />
 
       <div className="flex flex-col-reverse gap-10 py-5 md:flex-row">
         <div className="px-1 basis-2/3">
           {showPostForm && (
-            <PostForm
-              groupId={groupId}
-              isMember={isMember}
-              currentUser={currentUser}
-              onClose={() => setShowPostForm(false)}
-              onPostCreated={(newPost) => setPosts([newPost, ...posts])}
-              onPostUpdated={(updatedPost) =>
-                setPosts(posts.map(p => p.id === updatedPost.id ? updatedPost : p))
-              }
-            />
+            <div ref={postFormRef}>
+              <PostForm
+                groupId={groupId}
+                isMember={isMember}
+                currentUser={currentUser}
+                onClose={() => {
+                  setShowPostForm(false);
+                  setEditingPost(null);
+                }}
+                onPostCreated={(newPost) => setPosts([newPost, ...posts])}
+                onPostUpdated={handlePostUpdated}
+                editingPost={editingPost}
+              />
+            </div>
           )}
 
           <PostList
@@ -276,9 +323,11 @@ function CommunityPage1() {
             isMember={isMember}
             currentUser={currentUser}
             onPostDeleted={(postId) => setPosts(posts.filter(p => p.id !== postId))}
-            onPostUpdated={(updatedPost) =>
-              setPosts(posts.map(p => p.id === updatedPost.id ? updatedPost : p))
-            }
+            onPostUpdated={(post) => {
+              setEditingPost(post);
+              setShowPostForm(true);
+              setTimeout(scrollToForm, 100);
+            }}
           />
         </div>
 

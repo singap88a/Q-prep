@@ -9,7 +9,76 @@ import "react-toastify/dist/ReactToastify.css";
 import { FaRegBookmark, FaBookmark } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+
 import { motion, AnimatePresence } from "framer-motion";
+
+import "../Z_Track.css"
+
+// import hljs from 'highlight.js';
+// import 'highlight.js/styles/github.css';
+
+
+
+
+// import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
+// import { qtcreatorLight } from 'react-syntax-highlighter/dist/esm/styles/hljs'; 
+
+// import { github } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+// import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+
+import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+
+
+// استيراد اللغات
+import jsx from "react-syntax-highlighter/dist/esm/languages/prism/jsx";
+import html from "react-syntax-highlighter/dist/esm/languages/prism/markup";
+import css from "react-syntax-highlighter/dist/esm/languages/prism/css";
+import javascript from "react-syntax-highlighter/dist/esm/languages/prism/javascript";
+import ts from "react-syntax-highlighter/dist/esm/languages/prism/typescript";
+
+// تسجيل اللغات
+SyntaxHighlighter.registerLanguage("jsx", jsx);
+SyntaxHighlighter.registerLanguage("html", html);
+SyntaxHighlighter.registerLanguage("css", css);
+SyntaxHighlighter.registerLanguage("javascript", javascript);
+SyntaxHighlighter.registerLanguage("typescript", ts);
+
+function detectLanguage(code) {
+  const trimmed = code.trim();
+
+  // HTML: يبدأ بـ <
+  if (trimmed.startsWith("<")) return "html";
+
+  // CSS: يحتوي على { و ends with } بدون كلمات JS
+  if (
+    /^[a-zA-Z0-9\s.#:\[\]\-="'()]+{\s*[^}]+\s*}$/.test(trimmed) || // قواعد CSS مثل body { color: red; }
+    /^[-a-zA-Z]+:\s*[^;]+;?$/.test(trimmed) // خصائص مفردة مثل color: red;
+  ) {
+    return "css";
+  }
+
+  // TypeScript: يحتوي على type أو interface أو أنواع مثل :string
+  if (/(interface|type\s+\w+\s*=|:\s*(string|number|boolean))/.test(trimmed)) {
+    return "typescript";
+  }
+
+  // JavaScript: يحتوي على import, export, function, const, let, إلخ
+  if (/^\s*(import|export|function|const|let|var|=>)/.test(trimmed)) {
+    return "javascript";
+  }
+
+  // fallback: jsx
+  return "jsx";
+}
+
+
+// function detectLanguage(code) {
+//   const trimmed = code.trim();
+//   if (trimmed.startsWith('<')) return 'html';
+//   return 'javascript';
+// }
+
 
 function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
   const [beginnerQuestions, setBeginnerQuestions] = useState([]);
@@ -19,6 +88,8 @@ function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
   const location = useLocation();
   const { frameworkId, frameworkName } = location.state || {};
   const token = localStorage.getItem("token");
+
+
 
   // Fetch beginner questions
   useEffect(() => {
@@ -121,6 +192,17 @@ function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
     setActiveIndex((prevIndex) => (prevIndex === index ? null : index));
   };
 
+  // Add function to handle code highlighting
+  const handleCodeHighlight = (text) => {
+    try {
+      // Try to detect the language automatically
+      const result = hljs.highlightAuto(text);
+      return result.value;
+    } catch (error) {
+      return text;
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -164,7 +246,6 @@ function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
         <div className="flex items-center gap-3">
           <FaChevronLeft className="text-2xl font-bold text-primary" />
           <h1 className="text-2xl font-bold">{frameworkName}</h1>
-          <FaChevronLeft className="text-2xl font-bold text-primary" />
           <h2 className="text-2xl text-gray-600">
             {beginnerQuestions[0]?.levelName}
           </h2>
@@ -182,7 +263,7 @@ function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
 
       {/* Questions List */}
       <div className="container max-w-4xl mx-auto">
-        <div className="grid gap-4 py-6">
+        <div className="grid gap-4 py-6 overflow-x-hidden">
           {beginnerQuestions.map((faq, index) => (
             <motion.div
               key={index}
@@ -193,7 +274,7 @@ function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
                 className="flex items-center justify-between w-full cursor-pointer"
                 aria-expanded={activeIndex === index}
               >
-                <span className="text-lg font-semibold">{faq.questions}</span>
+                <span className="sm:text-lg text-sm  font-semibold">{faq.questions}</span>
 
                 <div className="flex items-center gap-4">
                   <button
@@ -222,19 +303,23 @@ function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
                   )}
                 </div>
               </div>
-              <AnimatePresence>
-                {activeIndex === index && (
-                  <motion.p
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="mt-3 text-gray-600 whitespace-pre-wrap"
-                  >
-                    {faq.answers}
-                  </motion.p>
-                )}
-              </AnimatePresence>
+
+
+              {activeIndex === index && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  transition={{ duration: 0.2 }}
+                  className="mt-3"
+                >
+                  <div className="p-4 bg-[#f5fdfc] rounded-lg border border-gray-200 w-full overflow-hidden sm:text-lg text-xs font-semibold">
+                    <SyntaxHighlighter language="javascript" style={oneLight}>
+                      {faq.answers}
+                    </SyntaxHighlighter>
+                  </div>
+
+                </motion.div>
+              )}
             </motion.div>
           ))}
         </div>

@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
@@ -6,13 +6,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 function Saved_questions({ isSaved, setIsSaved }) {
-    console.log("isSaved :", isSaved)
+    // console.log("isSaved :", isSaved)
     const navigate = useNavigate();
     const [savedQuestions, setSavedQuestions] = useState([]);
-    console.log(savedQuestions)
+    // console.log(savedQuestions)
     const [activeIndex, setActiveIndex] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const [showModal, setShowModal] = useState(false);
+    const [selectedFaq, setSelectedFaq] = useState(null);
 
     const token = localStorage.getItem("token");
 
@@ -20,7 +23,9 @@ function Saved_questions({ isSaved, setIsSaved }) {
     const fetchSavedQuestions = async () => {
         try {
             if (!token) {
+                setSavedQuestions([]);
                 throw new Error("No token found. Please log in.");
+                return;
             }
 
             const response = await fetch("https://redasaad.azurewebsites.net/api/Save/GetSaveQuestions", {
@@ -30,18 +35,26 @@ function Saved_questions({ isSaved, setIsSaved }) {
                 },
             });
 
+            // to Edit when Empty
+            if (response.status === 404) {
+                setSavedQuestions([]);
+                setIsSaved([]);
+                return;
+            }
+
             if (!response.ok) {
                 throw new Error("Failed to fetch saved questions");
             }
 
             const data = await response.json();
-            console.log("data", data);
+            // console.log("data", data);
             setSavedQuestions(data);
             const savedIds = data.map((q) => q.id);
             setIsSaved(savedIds);
 
         } catch (error) {
             setError(error.message);
+            setSavedQuestions([]);
             console.error("Error fetching saved questions:", error);
         } finally {
             setLoading(false);
@@ -59,47 +72,97 @@ function Saved_questions({ isSaved, setIsSaved }) {
         setActiveIndex((prevIndex) => (prevIndex === index ? null : index));
     };
 
-    const handleSaveQuestion = async (faq) => {
-        const isConfirmed = window.confirm(
-            "Are you sure you want to remove this question from your saved list?"
-        );
-        if (isConfirmed) {
-            try {
-                const response = await fetch(
-                    `https://redasaad.azurewebsites.net/api/Save/DeleteFromSave?Id=${faq.id}`,
-                    {
-                        method: "DELETE",
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                );
 
-                if (!response.ok) {
-                    throw new Error("Failed to delete question");
-                }
 
-                const updatedSavedQuestions = savedQuestions.filter(
-                    (saved) => saved.id !== faq.id
-                );
-                setSavedQuestions(updatedSavedQuestions);
+    // const handleSaveQuestion = async (faq) => {
+    //     const isConfirmed = window.confirm(
+    //         "Are you sure you want to remove this question from your saved list?"
+    //     );
+    //     if (isConfirmed) {
+    //         try {
+    //             const response = await fetch(
+    //                 `https://redasaad.azurewebsites.net/api/Save/DeleteFromSave?Id=${faq.id}`,
+    //                 {
+    //                     method: "DELETE",
+    //                     headers: {
+    //                         Authorization: `Bearer ${token}`,
+    //                     },
+    //                 }
+    //             );
 
-                setIsSaved((prev) => prev.filter((id) => id !== faq.id));
-            } catch (error) {
-                console.error("Error deleting question:", error);
-            }
-        }
-        fetchSavedQuestions();
-    };
+    //             if (!response.ok) {
+    //                 throw new Error("Failed to delete question");
+    //             }
+
+    //             const updatedSavedQuestions = savedQuestions.filter(
+    //                 (saved) => saved.id !== faq.id
+    //             );
+    //             setSavedQuestions(updatedSavedQuestions);
+
+    //             setIsSaved((prev) => prev.filter((id) => id !== faq.id));
+    //         } catch (error) {
+    //             console.error("Error deleting question:", error);
+    //         }
+    //     }
+    //     fetchSavedQuestions();
+    // };
 
     const isQuestionSaved = (faq) => isSaved.includes(faq.id);
+
+
+
+    const handleOpenModal = (faq) => {
+        setSelectedFaq(faq);
+        setShowModal(true);
+    };
+
+    const handleCancel = () => {
+        setShowModal(false);
+        setSelectedFaq(null);
+    };
+
+    const handleConfirmDelete = async () => {
+        if (!selectedFaq) return;
+
+        try {
+            const response = await fetch(
+                `https://redasaad.azurewebsites.net/api/Save/DeleteFromSave?Id=${selectedFaq.id}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+
+
+            if (!response.ok) {
+                throw new Error("Failed to delete question");
+            }
+
+            const updatedSavedQuestions = savedQuestions.filter(
+                (saved) => saved.id !== selectedFaq.id
+            );
+            setSavedQuestions(updatedSavedQuestions);
+
+            setIsSaved((prev) => prev.filter((id) => id !== selectedFaq.id));
+        } catch (error) {
+            console.error("Error deleting question:", error);
+        } finally {
+            setShowModal(false);
+            setSelectedFaq(null);
+            fetchSavedQuestions();
+        }
+    };
+
 
     if (loading) {
         return (
             <div className="flex items-center justify-center py-20">
-                <FontAwesomeIcon 
-                    icon={faSpinner} 
-                    className="text-4xl text-secondary animate-spin" 
+                <FontAwesomeIcon
+                    icon={faSpinner}
+                    className="text-4xl text-secondary animate-spin"
                 />
             </div>
         );
@@ -113,6 +176,7 @@ function Saved_questions({ isSaved, setIsSaved }) {
         );
     }
 
+
     return (
         <div className="container py-10">
             {/* Header Section */}
@@ -123,6 +187,35 @@ function Saved_questions({ isSaved, setIsSaved }) {
                 ></i>
                 <h1 className="text-xl font-bold">Saved Questions</h1>
             </div>
+
+
+            <div>
+                {/* Modal Confirmation */}
+                {showModal && (
+                    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black bg-opacity-40">
+                        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+                            <h2 className="text-lg font-semibold mb-4">
+                                Are you Sure want remove question from Saved
+                            </h2>
+                            <div className="flex justify-end space-x-4">
+                                <button
+                                    onClick={handleCancel}
+                                    className="px-4 py-2 bg-gray-200 text-black rounded hover:bg-gray-300"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleConfirmDelete}
+                                    className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
+
 
             {/* Saved Questions List */}
             <div className="container max-w-4xl mx-auto">
@@ -144,7 +237,7 @@ function Saved_questions({ isSaved, setIsSaved }) {
                                                 }`}
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                handleSaveQuestion(faq);
+                                                handleOpenModal(faq)
                                             }}
                                         ></i>
                                         {activeIndex === index ? (

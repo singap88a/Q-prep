@@ -12,6 +12,7 @@ import { AuthContext } from "./Auth/AuthContext";
 function Navbar({ isLoggedIn, savedQuestions }) {
   const [isOpen, setIsOpen] = useState(false);
   const [hasShadow, setHasShadow] = useState(false);
+  const [activeButton, setActiveButton] = useState('login');
   const {
     profileImage: globalProfileImage,
     setProfileImage: setGlobalProfileImage,
@@ -71,6 +72,16 @@ function Navbar({ isLoggedIn, savedQuestions }) {
     }
   }, [isLoggedIn, globalProfileImage, setGlobalProfileImage]);
 
+  // Add effect to set active button based on current path
+  useEffect(() => {
+    const path = location.pathname;
+    if (path === '/login') {
+      setActiveButton('login');
+    } else if (path === '/sign-up') {
+      setActiveButton('signup');
+    }
+  }, [location.pathname]);
+
   // Logout cleanup
   // useEffect(() => {
   //   if (!sessionStorage.getItem("hasLoggedOut")) {
@@ -106,11 +117,9 @@ function Navbar({ isLoggedIn, savedQuestions }) {
       >
         <div className="container relative flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="text-xl font-bold">
-            <Link to="/">
-              <img src={logo} alt="Logo" className="w-auto h-12" />
-            </Link>
-          </div>
+          <Link to="/">
+            <img src={logo} alt="Logo" className=" md:w-auto md:h-12 w-25 h-11" />
+          </Link>
 
           {/* Desktop Links */}
           <div className="hidden space-x-4 mr-36 md:flex">
@@ -124,7 +133,7 @@ function Navbar({ isLoggedIn, savedQuestions }) {
                 key={link.to}
                 to={link.to}
                 className={`hover:text-secondary px-2 relative ${location.pathname === link.to
-                  ? "text-secondary after:content-[''] after:absolute after:right-0 after:bottom-[-2px] after:w-[35%] after:h-[2.41px] after:bg-secondary before:content-[''] before:absolute before:left-0 before:top-0 before:w-[35%] before:h-[2.50px] before:bg-secondary"
+                  ? "text-secondary after:content-[''] after:absolute after:right-0 after:bottom-[-2px] after:w-[35%] after:h-[2.0px] after:bg-secondary before:content-[''] before:absolute before:left-0 before:top-0 before:w-[35%] before:h-[2.0px] before:bg-secondary"
                   : ""
                   }`}
               >
@@ -162,26 +171,34 @@ function Navbar({ isLoggedIn, savedQuestions }) {
                 </Link>
                 {
                   token && userRole.includes("Admin") && (
-                <Link
-                  to="/admin"
-                  className="relative z-10 py-1 overflow-hidden font-bold text-white border-2 rounded-md md:px-4 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary"
-                >
-                  Admin
-                </Link>
-                )}
+                    <Link
+                      to="/admin"
+                      className="relative z-10 py-1 overflow-hidden font-bold text-white border-2 rounded-md md:px-4 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary"
+                    >
+                      Admin
+                    </Link>
+                  )}
 
               </div>
             ) : (
               <div className="hidden gap-4 md:flex">
                 <Link
                   to="/login"
-                  className="px-3 py-1 border-2 rounded border-secondary text-secondary"
+                  className={`px-3 py-1 border-2 rounded border-secondary ${activeButton === 'login'
+                      ? 'bg-secondary text-white'
+                      : 'text-secondary'
+                    }`}
+                  onClick={() => setActiveButton('login')}
                 >
                   Login
                 </Link>
                 <Link
                   to="/sign-up"
-                  className="px-3 py-1 border-2 rounded border-secondary text-secondary"
+                  className={`px-3 py-1 border-2 rounded border-secondary ${activeButton === 'signup'
+                      ? 'bg-secondary text-white'
+                      : 'text-secondary'
+                    }`}
+                  onClick={() => setActiveButton('signup')}
                 >
                   Sign Up
                 </Link>
@@ -243,15 +260,27 @@ function Navbar({ isLoggedIn, savedQuestions }) {
                 <div className="flex gap-5 py-5 ml-5">
                   <Link
                     to="/login"
-                    className="px-3 py-1 border-2 rounded border-secondary text-secondary"
-                    onClick={closeMenu}
+                    className={`px-3 py-1 border-2 rounded border-secondary ${activeButton === 'login'
+                        ? 'bg-secondary text-white'
+                        : 'text-secondary'
+                      }`}
+                    onClick={() => {
+                      setActiveButton('login');
+                      closeMenu();
+                    }}
                   >
                     Login
                   </Link>
                   <Link
                     to="/sign-up"
-                    className="px-3 py-1 border-2 rounded border-secondary text-secondary"
-                    onClick={closeMenu}
+                    className={`px-3 py-1 border-2 rounded border-secondary ${activeButton === 'signup'
+                        ? 'bg-secondary text-white'
+                        : 'text-secondary'
+                      }`}
+                    onClick={() => {
+                      setActiveButton('signup');
+                      closeMenu();
+                    }}
                   >
                     Sign Up
                   </Link>

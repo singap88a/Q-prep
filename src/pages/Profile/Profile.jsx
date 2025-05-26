@@ -13,6 +13,8 @@ import PrivateRoute from "../../Router/PrivateRouting";
 import { useUser } from "../../Context/UserContext";
 import { AuthContext } from "../../components/Auth/AuthContext";
 
+import { RiImageEditLine } from "react-icons/ri";
+
 
 function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
   const [originalData, setOriginalData] = useState(null);
@@ -32,7 +34,7 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
   const { setProfileImage: setGlobalProfileImage } = useUser();
 
   const { userRole } = useContext(AuthContext)
-  console.log("userRole",userRole);
+  // console.log("userRole", userRole);
 
 
 
@@ -76,7 +78,7 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
 
 
 
-      console.log("GetUser Data:", data);
+      // console.log("GetUser Data:", data);
     } catch (error) {
       console.error("Error fetching user:", error.message);
       setError(error.message);
@@ -182,7 +184,7 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
       setGlobalProfileImage(newImage);
 
       // إظهار رسالة نجاح
-      console.log("Profile edited successfully");
+      // console.log("Profile edited successfully");
       setIsEditMode(false);
     } catch (error) {
       console.error("Error editing profile:", error.message);
@@ -227,14 +229,14 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
       className="container p-4 mx-auto"
     >
       <div className="flex items-center gap-3 mb-8">
-        <i className="text-2xl font-bold cursor-pointer fa-solid fa-chevron-left text-primary"></i>
-        <div className="flex items-center justify-between w-full gap-3">
+        {/* <i className="text-2xl font-bold cursor-pointer fa-solid fa-chevron-left text-primary"></i> */}
+        <div className="flex sm:flex-row flex-col sm:items-center justify-between w-full sm:gap-3 gap-5">
 
           <div className="flex items-center gap-3 ">
             <motion.img
               src={profileImage}
               alt="Photo not load"
-              className="w-20 h-20 rounded-full"
+              className="md:w-20 md:h-20 w-16 h-16 rounded-full"
               whileHover={{ scale: 1.1 }}
               transition={{ type: "spring", stiffness: 300 }}
             />
@@ -245,7 +247,7 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
                 exit={{ opacity: 0, y: -20, transition: { delay: 0.5 } }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="relative z-10 px-2 py-1 mx-2 overflow-hidden font-bold text-white border-2 rounded-md cursor-pointer md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary"
+                className="relative z-10  px-2 py-1 mx-2 overflow-hidden md:font-bold font-semibold  md:text-lg text-sm text-white border-2 rounded-md cursor-pointer md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary"
               >
                 <input
                   type="file"
@@ -253,7 +255,7 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
                   onChange={handleImageUpload}
                   disabled={!isEditMode}
                 />
-                Edit photo
+                <span className="flex items-center justify-center gap-1"> <span className="mt-1"><RiImageEditLine size={20} /></span> photo </span>
               </motion.label>
             }
           </div>
@@ -265,8 +267,8 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
                 exit={{ opacity: 0, y: -20, transition: { delay: 0.5 } }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="relative z-10 px-2 py-1 mx-2 overflow-hidden font-bold text-white border-2 rounded-md cursor-pointer md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary ">
-                ChangePassword
+                className="relative z-10  md:w-full w-40 text-center  px-2 py-1 mx-2 overflow-hidden md:font-bold font-semibold md:text-lg text-sm text-white border-2 rounded-md cursor-pointer md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary ">
+                Change Password
               </motion.div>
             </Link>
           }
@@ -391,7 +393,7 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
           </motion.div>
         </div>
 
-        <div className="flex justify-between mb-20">
+        <div className="flex sm:flex-row flex-col justify-between mb-20 md:gap-0 gap-10 ">
           <AnimatePresence mode="wait">
             {isEditMode ? (
               <motion.div
@@ -399,14 +401,14 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="flex gap-4"
+                className="flex sm:flex-row flex-col md:gap-2 gap-3"
               >
                 <motion.button
                   type="button"
                   onClick={DiscardChanges}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="relative px-2 py-1 overflow-hidden font-bold border-2 rounded-md md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-secondary before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 text-secondary hover:text-white"
+                  className="relative px-2 py-1 overflow-hidden font-bold  text-lg border-2 rounded-md md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-secondary before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 text-secondary hover:text-white"
                 >
                   Discard changes
                 </motion.button>
@@ -415,7 +417,7 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
                   onClick={handleSave}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="relative z-10 px-2 py-1 overflow-hidden font-bold text-white border-2 rounded-md md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary"
+                  className="relative z-10 px-2 py-1 overflow-hidden font-bold  text-lg text-white border-2 rounded-md md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary"
                 >
                   Save changes
                 </motion.button>
@@ -430,7 +432,7 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
                 onClick={() => setIsEditMode(true)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="relative z-10 px-2 py-1 overflow-hidden font-bold text-white border-2 rounded-md md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary"
+                className="relative z-10 px-2 py-1 overflow-hidden font-bold  text-lg text-white border-2 rounded-md md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 hover:text-secondary bg-secondary"
               >
                 Edit Profile
               </motion.button>

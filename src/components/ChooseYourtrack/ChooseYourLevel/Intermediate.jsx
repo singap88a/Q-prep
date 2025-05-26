@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -7,6 +8,55 @@ import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+
+import "../Z_Track.css"
+
+import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+
+
+// استيراد اللغات
+import jsx from "react-syntax-highlighter/dist/esm/languages/prism/jsx";
+import html from "react-syntax-highlighter/dist/esm/languages/prism/markup";
+import css from "react-syntax-highlighter/dist/esm/languages/prism/css";
+import javascript from "react-syntax-highlighter/dist/esm/languages/prism/javascript";
+import ts from "react-syntax-highlighter/dist/esm/languages/prism/typescript";
+
+// تسجيل اللغات
+SyntaxHighlighter.registerLanguage("jsx", jsx);
+SyntaxHighlighter.registerLanguage("html", html);
+SyntaxHighlighter.registerLanguage("css", css);
+SyntaxHighlighter.registerLanguage("javascript", javascript);
+SyntaxHighlighter.registerLanguage("typescript", ts);
+
+function detectLanguage(code) {
+  const trimmed = code.trim();
+
+  // HTML: يبدأ بـ <
+  if (trimmed.startsWith("<")) return "html";
+
+  // CSS: يحتوي على { و ends with } بدون كلمات JS
+  if (
+    /^[a-zA-Z0-9\s.#:\[\]\-="'()]+{\s*[^}]+\s*}$/.test(trimmed) || // قواعد CSS مثل body { color: red; }
+    /^[-a-zA-Z]+:\s*[^;]+;?$/.test(trimmed) // خصائص مفردة مثل color: red;
+  ) {
+    return "css";
+  }
+
+  // TypeScript: يحتوي على type أو interface أو أنواع مثل :string
+  if (/(interface|type\s+\w+\s*=|:\s*(string|number|boolean))/.test(trimmed)) {
+    return "typescript";
+  }
+
+  // JavaScript: يحتوي على import, export, function, const, let, إلخ
+  if (/^\s*(import|export|function|const|let|var|=>)/.test(trimmed)) {
+    return "javascript";
+  }
+
+  // fallback: jsx
+  return "jsx";
+}
 
 // eslint-disable-next-line no-unused-vars
 function Intermediate({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
@@ -128,6 +178,17 @@ function Intermediate({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }
     setActiveIndex((prevIndex) => (prevIndex === index ? null : index));
   };
 
+  // Add function to handle code highlighting
+  const handleCodeHighlight = (text) => {
+    try {
+      // Try to detect the language automatically
+      const result = hljs.highlightAuto(text);
+      return result.value;
+    } catch (error) {
+      return text;
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -167,13 +228,12 @@ function Intermediate({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }
   return (
     <div className="container px-4 mx-auto">
       <ToastContainer position="top-right" autoClose={3000} />
-      
+
       {/* Header */}
       <div className="flex flex-col gap-4 py-6 md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-3">
           <FaChevronLeft className="text-2xl font-bold text-primary" />
           <h1 className="text-2xl font-bold">{frameworkName}</h1>
-          <FaChevronLeft className="text-2xl font-bold text-primary" />
           <h2 className="text-2xl text-gray-600">
             {intermediateQuestions[0]?.levelName || "Intermediate Level"}
           </h2>
@@ -191,7 +251,7 @@ function Intermediate({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }
 
       {/* Questions List */}
       <div className="container max-w-4xl mx-auto">
-        <div className="grid gap-4 py-6">
+        <div className="grid gap-4 py-6 overflow-x-hidden">
           {intermediateQuestions.map((faq, index) => (
             <motion.div
               key={index}
@@ -205,7 +265,7 @@ function Intermediate({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }
                 className="flex items-center justify-between w-full cursor-pointer"
                 aria-expanded={activeIndex === index}
               >
-                <span className="text-lg font-semibold">{faq.questions}</span>
+                <span className=" sm:text-lg text-sm font-semibold ">{faq.questions}</span>
 
                 <div className="flex items-center gap-4">
                   <button
@@ -234,18 +294,26 @@ function Intermediate({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }
                   )}
                 </div>
               </div>
-              
+
               <AnimatePresence>
                 {activeIndex === index && (
-                  <motion.p
+                  <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
                     exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="mt-3 text-gray-600 whitespace-pre-wrap"
+                    className="mt-3"
                   >
-                    {faq.answers}
-                  </motion.p>
+                    
+
+                    <div className="p-4 bg-[#f5fdfc] rounded-lg border border-gray-200 w-full overflow-hidden  sm:text-lg text-xs font-semibold">
+                      <SyntaxHighlighter language="javascript" style={oneLight}>
+                        {faq.answers}
+                      </SyntaxHighlighter>
+                    </div>
+
+                    {/* </pre> */}
+                  </motion.div>
                 )}
               </AnimatePresence>
             </motion.div>
@@ -257,3 +325,4 @@ function Intermediate({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }
 }
 
 export default Intermediate;
+

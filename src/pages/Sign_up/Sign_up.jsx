@@ -70,8 +70,8 @@ function Sign_up({ setIsLoggedIn }) {
         ? await response.json()
         : await response.text();
 
-      console.log("Response status:", response.status);
-      console.log("Response data:", data);
+      // console.log("Response status:", response.status);
+      // console.log("Response data:", data);
 
       if (!response.ok) {
         throw new Error(data.message || "Registration failed");

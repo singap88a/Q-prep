@@ -59,11 +59,18 @@ function Login({ setIsLoggedIn }) {
         }
       );
 
-      const data = await response.json();
+      let data;
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        data = await response.json();
+      } else {
+        throw new Error("Invalid response from server. Please try again.");
+      }
+
       console.log("Login data:", data);
 
       if (!response.ok) {
-        throw new Error(data.message || "Login failed");
+        throw new Error(data.message || "Login failed. Please check your credentials.");
       }
 
       localStorage.setItem("token", data.token);

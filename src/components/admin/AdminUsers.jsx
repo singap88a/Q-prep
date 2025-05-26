@@ -16,7 +16,6 @@ const AdminUsers = () => {
         },
       })
       .then((res) => {
-        console.log("Users:", res.data);
         setUsers(res.data);
         setLoading(false);
       })
