@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { Link, useParams, useLocation } from "react-router-dom";
+import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 const TrackDetails = () => {
   const { trackId } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [trackDetails, setTrackDetails] = useState([]);
   const [error, setError] = useState(null);
@@ -76,7 +77,10 @@ const TrackDetails = () => {
       {/* Header */}
       <div className="headRight">
         <div className="flex gap-3">
-          <i className="text-2xl font-bold fa-solid fa-chevron-left text-primary"></i>
+          <i 
+            className="text-2xl font-bold fa-solid fa-chevron-left text-primary cursor-pointer" 
+            onClick={() => navigate(-1)}
+          ></i>
           <h1 className="text-2xl font-bold">{tarckName}</h1>
         </div>
         <h1 className="text-sm text-gray-600 md:text-xl ms-6">

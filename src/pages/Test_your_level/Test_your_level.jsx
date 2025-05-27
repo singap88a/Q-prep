@@ -3,7 +3,7 @@ import Test_level from "../../assets/Test_level.png";
 import Test_level_2 from "../../assets/Test_level_2.png";
 import Lottie from "lottie-react";
 import TestYourLevel_animation from "../../../public/animations/TestYourLevel_animation.json";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const TestYourLevel = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -19,6 +19,7 @@ const TestYourLevel = () => {
   const { frameworkId, frameworkName } = location.state || {};
 
   const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -100,9 +101,18 @@ const TestYourLevel = () => {
     return "Advanced";
   };
 
-  if (loading) {
-    return <div className="container text-center">Loading questions...</div>;
-  }
+if (loading) {
+  return (
+    <div className="container flex flex-col items-center justify-center min-h-screen gap-4">
+      <div className="relative w-32 h-32">
+        <div className="absolute inset-0 border-4 rounded-full border-t-secondary border-r-secondary border-b-transparent border-l-transparent animate-spin"></div>
+        <div className="absolute border-4 rounded-full inset-4 border-t-primary border-r-primary border-b-transparent border-l-transparent animate-spin animation-delay-200"></div>
+      </div>
+      <h2 className="text-2xl font-bold text-primary">Preparing Your Test</h2>
+      <p className="text-gray-600">Loading questions for {frameworkName}</p>
+    </div>
+  );
+}
 
   if (error) {
     return (
@@ -164,11 +174,17 @@ const TestYourLevel = () => {
     <div className="container">
       <div className="flex gap-3">
         <div className="flex items-center justify-center gap-3">
-          <i className="text-2xl font-bold fa-solid fa-chevron-left text-primary"></i>
+          <i 
+            className="text-2xl font-bold cursor-pointer fa-solid fa-chevron-left text-primary"
+            onClick={() => navigate(-1)}
+          ></i>
           <h1> {frameworkName} </h1>
         </div>
         <div className="flex items-center justify-center gap-3">
-          <i className="text-2xl font-bold fa-solid fa-chevron-left text-primary"></i>
+          <i 
+            className="text-2xl font-bold cursor-pointer fa-solid fa-chevron-left text-primary"
+            onClick={() => navigate(-1)}
+          ></i>
           <h1>Test your level</h1>
         </div>
       </div>

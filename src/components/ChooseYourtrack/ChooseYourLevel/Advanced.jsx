@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FaChevronDown, FaChevronUp, FaChevronLeft, FaBookmark, FaRegBookmark } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
@@ -65,6 +65,7 @@ function Advanced({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
   const location = useLocation();
   const { frameworkId, frameworkName } = location.state || {};
   const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
   // Fetch advanced questions
   useEffect(() => {
@@ -209,7 +210,10 @@ function Advanced({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
       {/* Header */}
       <div className="flex flex-col gap-4 py-6 md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-3">
-          <FaChevronLeft className="text-2xl font-bold text-primary" />
+          <FaChevronLeft 
+            className="text-2xl font-bold text-primary cursor-pointer" 
+            onClick={() => navigate(-1)}
+          />
           <h1 className="text-2xl font-bold">{frameworkName}</h1>
           <h2 className="text-2xl text-gray-600">
             {advancedQuestions[0]?.levelName}

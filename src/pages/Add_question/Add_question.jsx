@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -13,6 +13,8 @@ function Add_question() {
   const location = useLocation(); // إذا كان frameworkId جزءًا من حالة التنقل
   const resolvedFrameworkId = frameworkId || location.state?.frameworkId;
   const frameworkName = location.state?.frameworkName; // الحصول على اسم الفريم ورك
+
+  const navigate = useNavigate();
 
   const handleSubmit = async () => {
     if (!question.trim() || !answer.trim()) {
@@ -56,11 +58,17 @@ function Add_question() {
     <div className="container ">
       <div className="flex gap-3">
         <div className="flex items-center justify-center gap-3">
-          <i className="text-2xl font-bold fa-solid fa-chevron-left text-primary"></i>
-          <h1>{frameworkName}</h1> {/* عرض اسم الفريم ورك هنا */}
+          <i 
+            className="text-2xl font-bold fa-solid fa-chevron-left text-primary cursor-pointer"
+            onClick={() => navigate(-1)}
+          ></i>
+          <h1>{frameworkName}</h1>
         </div>
         <div className="flex items-center justify-center gap-3">
-          <i className="text-2xl font-bold fa-solid fa-chevron-left text-primary"></i>
+          <i 
+            className="text-2xl font-bold fa-solid fa-chevron-left text-primary cursor-pointer"
+            onClick={() => navigate(-1)}
+          ></i>
           <h1> Add question</h1>
         </div>
       </div>

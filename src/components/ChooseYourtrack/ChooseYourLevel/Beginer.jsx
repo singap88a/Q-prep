@@ -1,7 +1,8 @@
+/* eslint-disable no-undef */
 /* eslint-disable react/jsx-no-undef */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FaChevronDown, FaChevronUp, FaChevronLeft } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
@@ -52,6 +53,7 @@ function detectLanguage(code) {
 
   // CSS: يحتوي على { و ends with } بدون كلمات JS
   if (
+    // eslint-disable-next-line no-useless-escape
     /^[a-zA-Z0-9\s.#:\[\]\-="'()]+{\s*[^}]+\s*}$/.test(trimmed) || // قواعد CSS مثل body { color: red; }
     /^[-a-zA-Z]+:\s*[^;]+;?$/.test(trimmed) // خصائص مفردة مثل color: red;
   ) {
@@ -88,6 +90,7 @@ function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
   const location = useLocation();
   const { frameworkId, frameworkName } = location.state || {};
   const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
 
 
@@ -244,7 +247,10 @@ function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
       {/* Header */}
       <div className="flex flex-col gap-4 py-6 md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-3">
-          <FaChevronLeft className="text-2xl font-bold text-primary" />
+          <FaChevronLeft 
+            className="text-2xl font-bold cursor-pointer text-primary" 
+            onClick={() => navigate(-1)}
+          />
           <h1 className="text-2xl font-bold">{frameworkName}</h1>
           <h2 className="text-2xl text-gray-600">
             {beginnerQuestions[0]?.levelName}
@@ -274,7 +280,7 @@ function Beginner({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
                 className="flex items-center justify-between w-full cursor-pointer"
                 aria-expanded={activeIndex === index}
               >
-                <span className="sm:text-lg text-sm  font-semibold">{faq.questions}</span>
+                <span className="text-sm font-semibold sm:text-lg">{faq.questions}</span>
 
                 <div className="flex items-center gap-4">
                   <button

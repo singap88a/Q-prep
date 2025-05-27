@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FaChevronDown, FaChevronUp, FaChevronLeft, FaBookmark, FaRegBookmark } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -70,6 +70,7 @@ function Intermediate({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }
     frameworkName: "Intermediate Level",
   };
   const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
   // Fetch questions
   useEffect(() => {
@@ -232,7 +233,10 @@ function Intermediate({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }
       {/* Header */}
       <div className="flex flex-col gap-4 py-6 md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-3">
-          <FaChevronLeft className="text-2xl font-bold text-primary" />
+          <FaChevronLeft 
+            className="text-2xl font-bold text-primary cursor-pointer" 
+            onClick={() => navigate(-1)}
+          />
           <h1 className="text-2xl font-bold">{frameworkName}</h1>
           <h2 className="text-2xl text-gray-600">
             {intermediateQuestions[0]?.levelName || "Intermediate Level"}

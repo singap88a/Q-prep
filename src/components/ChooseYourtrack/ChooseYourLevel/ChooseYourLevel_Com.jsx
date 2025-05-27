@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 // Image
 import card_img from "../../../assets/ChooseTrack/Card-img.png";
@@ -10,6 +10,7 @@ import {motion} from "framer-motion"
 
 const ChooseLanguage_Com = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { frameworkId, frameworkName } = location.state || {}; // Fallback to empty object
 
 
@@ -26,7 +27,10 @@ const ChooseLanguage_Com = () => {
         <div className="flex items-center justify-between head">
           <div className="headRight">
             <div className="flex gap-3">
-              <i className="text-2xl font-bold fa-solid fa-chevron-left text-primary"></i>
+              <i 
+                className="text-2xl font-bold fa-solid fa-chevron-left text-primary cursor-pointer"
+                onClick={() => navigate(-1)}
+              ></i>
               <h1 className="text-2xl font-bold">{frameworkName}</h1>
             </div>
             <h1 className="text-sm text-gray-600 md:text-xl ms-6">
