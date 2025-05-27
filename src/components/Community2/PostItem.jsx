@@ -236,14 +236,14 @@ export default function PostItem({
       <div className="flex gap-4">
         <button
           onClick={handleLikePost}
-          className={`flex items-center gap-2 px-4 py-1 rounded-full ${
+          className={`flex items-center gap-2 px-4 py-1 rounded-full max-w-[120px] ${
             liked
               ? "text-red-500 bg-red-100"
               : "text-gray-700 bg-gray-100 hover:bg-gray-200"
           }`}
         >
           <FontAwesomeIcon icon={faHeart} />
-          {likesCount} Likes
+          <span className="truncate">{likesCount} Likes</span>
         </button>
         <button
           onClick={handleSharePost}
