@@ -64,13 +64,14 @@ function Login({ setIsLoggedIn }) {
       if (contentType && contentType.includes("application/json")) {
         data = await response.json();
       } else {
-        throw new Error("Invalid response from server. Please try again.");
+        const errorText = await response.text();
+        throw new Error(errorText || "Server error occurred");
       }
 
       console.log("Login data:", data);
 
       if (!response.ok) {
-        throw new Error(data.message || "Login failed. Please check your credentials.");
+        throw new Error(data.message || data.error || "Login failed. Please check your credentials.");
       }
 
       localStorage.setItem("token", data.token);
