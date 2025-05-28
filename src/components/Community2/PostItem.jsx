@@ -77,22 +77,12 @@ export default function PostItem({
         return;
       }
 
-      if (liked) {
-        // إزالة اللايك
-        await axios.post(
-          `https://redasaad.azurewebsites.net/api/Likes/RemoveLike/${post.id}`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+      // Update UI optimistically
+      const newLikedState = !liked;
+      setLiked(newLikedState);
+      setLikesCount((prev) => newLikedState ? prev + 1 : Math.max(0, prev - 1));
 
-        setLiked(false);
-        setLikesCount((prev) => Math.max(0, prev - 1));
-        localStorage.setItem(`post_${post.id}_liked_${currentUser.id}`, "false");
-      } else {
+      if (newLikedState) {
         // إضافة لايك
         await axios.post(
           `https://redasaad.azurewebsites.net/api/Likes/AddLike/${post.id}`,
@@ -103,16 +93,25 @@ export default function PostItem({
             },
           }
         );
-
-        setLiked(true);
-        setLikesCount((prev) => prev + 1);
         localStorage.setItem(`post_${post.id}_liked_${currentUser.id}`, "true");
+      } else {
+        // إزالة اللايك
+        await axios.post(
+          `https://redasaad.azurewebsites.net/api/Likes/RemoveLike/${post.id}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        localStorage.setItem(`post_${post.id}_liked_${currentUser.id}`, "false");
       }
     } catch (err) {
       console.error("Error handling like:", err);
-      // الرجوع للحالة الأصلية عند الخطأ
+      // Revert UI state on error
       setLiked((prev) => !prev);
-      setLikesCount((prev) => (liked ? prev + 1 : prev - 1));
+      setLikesCount((prev) => liked ? prev + 1 : Math.max(0, prev - 1));
       localStorage.setItem(`post_${post.id}_liked_${currentUser.id}`, liked ? "true" : "false");
       toast.error(`Failed to ${liked ? "unlike" : "like"} post`);
     }

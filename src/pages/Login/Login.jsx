@@ -100,6 +100,49 @@ function Login({ setIsLoggedIn }) {
     }
   };
 
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    
+    if (!email) {
+      setError("Please enter your email address");
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const formData = new FormData();
+      formData.append('Email', email);
+
+      const response = await fetch(
+        "https://redasaad.azurewebsites.net/api/Authenticate/ForgetPassword",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to send reset code");
+      }
+
+      const message = await response.text();
+      setSuccess(message);
+    } catch (error) {
+      console.error("Error:", error);
+      setError(error.message || "Failed to send reset code. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="container">
       <div className="flex flex-col-reverse py-16 gap-28 md:flex-row">
@@ -158,6 +201,12 @@ function Login({ setIsLoggedIn }) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
+                <Link
+                  to="/forgot-password"
+                  className="text-sm text-primary hover:text-secondary mt-1 block"
+                >
+                  Forgot Password?
+                </Link>
               </div>
 
               <button

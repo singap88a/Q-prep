@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 
 const ChangePassword = () => {
@@ -8,6 +9,7 @@ const ChangePassword = () => {
     const [loading, setLoading] = useState(true);
     const [token, setToken] = useState(localStorage.getItem("token"));
 
+    const [oldPassword, setOldPassword] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [message, setMessage] = useState("");
@@ -62,10 +64,7 @@ const ChangePassword = () => {
     };
 
     const handleChangePassword = async () => {
-
-
-
-        if (!password || !confirmPassword) {
+        if (!oldPassword || !password || !confirmPassword) {
             setMessage("Please fill all fields.");
             return;
         }
@@ -79,15 +78,13 @@ const ChangePassword = () => {
             return;
         }
 
-
-        const url = `https://redasaad.azurewebsites.net/api/Authenticate/ChangePassword/${userdata.id}`;
-        console.log(url);
+        const url = `https://redasaad.azurewebsites.net/api/Authenticate/ChangePassword`;
 
         // Create FormData object
         const formData = new FormData();
+        formData.append("OldPassword", oldPassword);
         formData.append("NewPassword", password);
         formData.append("ConfirmedNewPassword", confirmPassword);
-
 
         try {
             const response = await fetch(url, {
@@ -98,13 +95,12 @@ const ChangePassword = () => {
                 body: formData,
             });
 
-            // const data = await response.json();
-
-            // console.log("ChangePassword Data:", data);
-
-
             if (response.ok) {
                 setMessage("Password changed successfully!");
+                // Clear the form
+                setOldPassword("");
+                setPassword("");
+                setConfirmPassword("");
             } else {
                 setMessage("Failed to change password");
             }
@@ -121,6 +117,13 @@ const ChangePassword = () => {
             <div className="flex flex-col items-center justify-center w-full gap-2 pt-5 pb-10 m-auto lg:w-1/2 md:w-2/3 form">
                 <input
                     type="password"
+                    placeholder="Enter old password"
+                    value={oldPassword}
+                    onChange={(e) => setOldPassword(e.target.value)}
+                    className="w-full p-3 border rounded-lg border-secondary text-secondary"
+                />
+                <input
+                    type="password"
                     placeholder="Enter new password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -134,7 +137,6 @@ const ChangePassword = () => {
                     className="w-full p-3 border rounded-lg border-secondary text-secondary"
                 />
 
-                {/* <p className={message !== "Password changed successfully!" ? "w-full text-sm  text-center font-semibold text-red-800" :" w-full text-sm  text-center font-semibold text-green-800"}>{message}</p> */}
                 <p className={`w-full text-md text-center font-semibold ${message.includes("success") ? "text-green-800" : "text-red-800"}`}>
                     {message}
                 </p>
@@ -144,7 +146,6 @@ const ChangePassword = () => {
                 </button>
             </div>
         </div>
-        // </div >
     )
 }
 

@@ -44,7 +44,7 @@ import Unauthorized from "../components/Unauthorized/Unauthorized";
 import Icon_Gemini from "../pages/GeminiSingap/Icon_Gemini";
 import AdminUsers from "../components/admin/AdminUsers";
 import Groups from "../components/admin/Groups";
-
+import ForgotPassword from "../pages/ForgotPassword/ForgotPassword";
 // Lazy Loading for better performance
 const LazyAdmin = lazy(() => import("../pages/admin/Admin"));
 
@@ -93,7 +93,7 @@ function Approuting() {
             path="/sign-up"
             element={<Sign_up setIsLoggedIn={setIsLoggedIn} />}
           />
-
+<Route path="/forgot-password" element={<ForgotPassword />} />
           <Route
             path="/frameworks/:mainTrackId"
             element={<FrameworkDashboard />}
