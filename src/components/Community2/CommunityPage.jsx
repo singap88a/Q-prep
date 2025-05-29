@@ -119,21 +119,56 @@ function CommunityPage1() {
         setGroup(groupResponse.data);
 
         // Process posts with proper image URLs and user-specific like status
-        const processedPosts = postsResponse.data.map((post) => ({
-          ...post,
-          id: post.postId || post.id,
-          userId: post.userId,
-          images: Array.isArray(post.images)
-            ? post.images.map((img) => getImageUrl(img, "post"))
-            : post.imageUrl
-              ? [getImageUrl(post.imageUrl, "post")]
-              : [],
-          createdDate: post.postDate || post.createdDate || new Date().toISOString(),
-          userName: post.userName || "Anonymous",
-          userPhoto: getImageUrl(post.userPhoto, "profile"),
-          text: post.text || post.content || "",
-          likesCount: post.likes || post.likesCount || 0,
-          isLiked: post.isLiked || false,
+        const processedPosts = await Promise.all(postsResponse.data.map(async (post) => {
+          try {
+            // الحصول على قائمة اللايكات لكل منشور
+            const likesResponse = await axios.get(
+              `https://redasaad.azurewebsites.net/api/Likes/GetLikes/${post.postId || post.id}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+
+            const isLiked = likesResponse.data.includes(currentUser.id);
+            const likesCount = likesResponse.data.length;
+
+            return {
+              ...post,
+              id: post.postId || post.id,
+              userId: post.userId,
+              images: Array.isArray(post.images)
+                ? post.images.map((img) => getImageUrl(img, "post"))
+                : post.imageUrl
+                  ? [getImageUrl(post.imageUrl, "post")]
+                  : [],
+              createdDate: post.postDate || post.createdDate || new Date().toISOString(),
+              userName: post.userName || "Anonymous",
+              userPhoto: getImageUrl(post.userPhoto, "profile"),
+              text: post.text || post.content || "",
+              likesCount,
+              isLiked,
+            };
+          } catch (err) {
+            console.error("Error fetching likes for post:", err);
+            return {
+              ...post,
+              id: post.postId || post.id,
+              userId: post.userId,
+              images: Array.isArray(post.images)
+                ? post.images.map((img) => getImageUrl(img, "post"))
+                : post.imageUrl
+                  ? [getImageUrl(post.imageUrl, "post")]
+                  : [],
+              createdDate: post.postDate || post.createdDate || new Date().toISOString(),
+              userName: post.userName || "Anonymous",
+              userPhoto: getImageUrl(post.userPhoto, "profile"),
+              text: post.text || post.content || "",
+              likesCount: post.likes || post.likesCount || 0,
+              isLiked: false,
+            };
+          }
         }));
 
         setPosts(processedPosts);
