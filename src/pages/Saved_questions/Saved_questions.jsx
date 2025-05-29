@@ -4,6 +4,56 @@ import { useNavigate } from "react-router-dom";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { motion, AnimatePresence } from "framer-motion";
+
+
+
+import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+
+
+import jsx from "react-syntax-highlighter/dist/esm/languages/prism/jsx";
+import html from "react-syntax-highlighter/dist/esm/languages/prism/markup";
+import css from "react-syntax-highlighter/dist/esm/languages/prism/css";
+import javascript from "react-syntax-highlighter/dist/esm/languages/prism/javascript";
+import ts from "react-syntax-highlighter/dist/esm/languages/prism/typescript";
+
+
+SyntaxHighlighter.registerLanguage("jsx", jsx);
+SyntaxHighlighter.registerLanguage("html", html);
+SyntaxHighlighter.registerLanguage("css", css);
+SyntaxHighlighter.registerLanguage("javascript", javascript);
+SyntaxHighlighter.registerLanguage("typescript", ts);
+
+function detectLanguage(code) {
+    const trimmed = code.trim();
+
+    // HTML: يبدأ بـ <
+    if (trimmed.startsWith("<")) return "html";
+
+    // CSS: يحتوي على { و ends with } بدون كلمات JS
+    if (
+        /^[a-zA-Z0-9\s.#:\[\]\-="'()]+{\s*[^}]+\s*}$/.test(trimmed) || // قواعد CSS مثل body { color: red; }
+        /^[-a-zA-Z]+:\s*[^;]+;?$/.test(trimmed) // خصائص مفردة مثل color: red;
+    ) {
+        return "css";
+    }
+
+    // TypeScript: يحتوي على type أو interface أو أنواع مثل :string
+    if (/(interface|type\s+\w+\s*=|:\s*(string|number|boolean))/.test(trimmed)) {
+        return "typescript";
+    }
+
+    // JavaScript: يحتوي على import, export, function, const, let, إلخ
+    if (/^\s*(import|export|function|const|let|var|=>)/.test(trimmed)) {
+        return "javascript";
+    }
+
+    // fallback: jsx
+    return "jsx";
+}
+
+
 
 function Saved_questions({ isSaved, setIsSaved }) {
     // console.log("isSaved :", isSaved)
@@ -247,9 +297,25 @@ function Saved_questions({ isSaved, setIsSaved }) {
                                         )}
                                     </div>
                                 </button>
+
+
                                 {activeIndex === index && (
-                                    <p className="mt-2 text-gray-600">{faq.answer}</p>
+                                    <motion.div
+                                        initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: "auto" }}
+                                        exit={{ opacity: 0, height: 0 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="mt-3"
+                                    >
+                                        <div className="p-2 bg-[#f5fdfc] rounded-lg border border-gray-200   w-full overflow-hidden sm:text-lg text-xs font-semibold">
+                                            <SyntaxHighlighter language="javascript" style={oneLight}>
+                                                {faq.answer}
+                                            </SyntaxHighlighter>
+                                        </div>
+
+                                    </motion.div>
                                 )}
+
                             </div>
                         ))
                     ) : (
@@ -264,3 +330,13 @@ function Saved_questions({ isSaved, setIsSaved }) {
 }
 
 export default Saved_questions;
+
+                                // {
+                                //     activeIndex === index && (
+                                //         // <p className="mt-2 text-gray-600">{faq.answer}</p>
+                                //         <div className="p-4 bg-[#f5fdfc] rounded-lg border border-gray-200 w-full overflow-hidden sm:text-lg text-xs font-semibold">
+                                //             <SyntaxHighlighter language="javascript" style={oneLight}>
+                                //                 {faq.answer}
+                                //             </SyntaxHighlighter>
+                                //         </div>
+                                //     )}

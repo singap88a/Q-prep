@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 
 import CommunityHeader from "./CommunityHeader";
 import PostForm from "./PostForm";
@@ -47,19 +47,19 @@ function CommunityPage1() {
 
         // Then check membership status
         try {
-          const membershipResponse = await axios.get(
-            `https://redasaad.azurewebsites.net/api/UserGroup/IsMember/${groupId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
+          // const membershipResponse = await axios.get(
+          //   `https://redasaad.azurewebsites.net/api/UserGroup/IsMember/${groupId}`,
+          //   {
+          //     headers: {
+          //       Authorization: `Bearer ${token}`,
+          //     },
+          //   }
+          // );
 
-          setIsMember(membershipResponse.data);
+          // setIsMember(membershipResponse.data);
           localStorage.setItem(`group_${groupId}_membership_${userResponse.data.id}`, membershipResponse.data);
         } catch (membershipError) {
-          console.error("Error checking membership:", membershipError);
+          // console.error("Error checking membership:", membershipError);
           // If membership check fails, use the saved value for this specific user
           const savedMembership = localStorage.getItem(`group_${groupId}_membership_${userResponse.data.id}`) === 'true';
           setIsMember(savedMembership);
@@ -122,17 +122,18 @@ function CommunityPage1() {
         const processedPosts = await Promise.all(postsResponse.data.map(async (post) => {
           try {
             // الحصول على قائمة اللايكات لكل منشور
-            const likesResponse = await axios.get(
-              `https://redasaad.azurewebsites.net/api/Likes/GetLikes/${post.postId || post.id}`,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              }
-            );
+            // const likesResponse = await axios.get(
+            //   `https://redasaad.azurewebsites.net/api/Likes/AddLike/${post.postId || post.id}`,
+            //   {
+            //     headers: {
+            //       Authorization: `Bearer ${token}`,
+            //     },
+            //   }
+            // );
+            // consol.log("likesResponse:", likesResponse)
 
-            const isLiked = likesResponse.data.includes(currentUser.id);
-            const likesCount = likesResponse.data.length;
+            // const isLiked = likesResponse.data.includes(currentUser.id);
+            // const likesCount = likesResponse.data.length;
 
             return {
               ...post,
@@ -147,8 +148,9 @@ function CommunityPage1() {
               userName: post.userName || "Anonymous",
               userPhoto: getImageUrl(post.userPhoto, "profile"),
               text: post.text || post.content || "",
-              likesCount,
-              isLiked,
+              // khaly balak
+              likesCount:post?.likes,
+              isLiked: post.isLiked,
             };
           } catch (err) {
             console.error("Error fetching likes for post:", err);
@@ -165,11 +167,13 @@ function CommunityPage1() {
               userName: post.userName || "Anonymous",
               userPhoto: getImageUrl(post.userPhoto, "profile"),
               text: post.text || post.content || "",
-              likesCount: post.likes || post.likesCount || 0,
+              likesCount: post.likes || 0,
               isLiked: false,
             };
           }
         }));
+
+        console.log(processedPosts)
 
         setPosts(processedPosts);
       } catch (err) {
@@ -321,6 +325,8 @@ function CommunityPage1() {
 
   return (
     <div className="container max-w-screen-xl mx-auto">
+      < ToastContainer />
+
       <CommunityHeader
         group={group}
         currentUser={currentUser}

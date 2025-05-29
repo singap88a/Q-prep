@@ -7,13 +7,15 @@ import "react-phone-input-2/lib/style.css";
 import userImage from "../../assets/user.png";
 import LogOut from "../../components/LogOut";
 import { FaKey } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import PrivateRoute from "../../Router/PrivateRouting";
 import { useUser } from "../../Context/UserContext";
 import { AuthContext } from "../../components/Auth/AuthContext";
 
 import { RiImageEditLine } from "react-icons/ri";
+import { ToastContainer, toast } from "react-toastify";
+
 
 
 function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
@@ -35,6 +37,10 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
 
   const { userRole } = useContext(AuthContext)
   // console.log("userRole", userRole);
+
+  const [showModal, setShowModal] = useState(false);
+
+  const navigate = useNavigate();
 
 
 
@@ -104,7 +110,9 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
         );
 
         if (!response.ok) {
-          throw new Error(`Failed to fetch user: ${response.status}`);
+          const err = new Error(response.message || response.error || "Login failed. Please check your credentials.");
+          err.status = response.status;
+          throw err;
         }
 
         const data = await response.json();
@@ -127,6 +135,9 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
       } catch (error) {
         console.error("Error fetching user:", error.message);
         setError(error.message);
+        if (error.status === 401) {
+          navigate("/login");
+        }
       } finally {
         setLoading(false);
       }
@@ -182,6 +193,7 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
       // تحديث الصورة محلياً وفي الكون텍ست العالمي
       setProfileImage(newImage);
       setGlobalProfileImage(newImage);
+      toast.success("Edit successfully")
 
       // إظهار رسالة نجاح
       // console.log("Profile edited successfully");
@@ -198,16 +210,27 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
   const DiscardChanges = () => {
     setIsEditMode(false);
     GetUserFunc();
+    setShowModal(false);
   };
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
+
     if (file) {
+
+      const allowedTypesRegex = /\.(jpg|jpeg|png|bmp|webp)$/i;
+
+      if (!allowedTypesRegex.test(file.name)) {
+        toast.error("Only image files (jpg, jpeg, png, bmp, webp) are allowed.");
+        return;
+      }
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setProfileImage(reader.result);  // reader.result is [Base64]
+        toast.info("Image Uploaded")
       };
-      reader.readAsDataURL(file); //readAsDataURL read img as a [URL]
+      reader.readAsDataURL(file); // ReadAsDataURL read img as a [URL]
     }
   };
 
@@ -221,6 +244,16 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
     visible: { x: 0, opacity: 1, transition: { duration: 0.5 } },
   };
 
+
+  const handleOpenModal = () => {
+    setShowModal(true);
+  };
+
+  const handleCancel = () => {
+    setShowModal(false);
+  };
+
+
   return (
     <motion.div
       initial="hidden"
@@ -228,7 +261,37 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
       variants={fadeIn}
       className="container p-4 mx-auto"
     >
+      <ToastContainer />
       <div className="flex items-center gap-3 mb-8">
+
+
+        <div>
+          {/* Modal Confirmation */}
+          {showModal && (
+            <div className="fixed inset-0 z-50 flex items-start justify-center bg-black bg-opacity-40 ">
+              <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mt-4  ">
+                <h2 className="text-lg font-semibold mb-4">
+                  Are you Sure want Discard changes !!
+                </h2>
+                <div className="flex justify-end space-x-4">
+                  <button
+                    onClick={handleCancel}
+                    className="px-4 py-2 bg-gray-200 text-black rounded hover:bg-gray-300"
+                  >
+                    No
+                  </button>
+                  <button
+                    onClick={DiscardChanges}
+                    className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                  >
+                    Yes
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* <i className="text-2xl font-bold cursor-pointer fa-solid fa-chevron-left text-primary"></i> */}
         <div className="flex sm:flex-row flex-col sm:items-center justify-between w-full sm:gap-3 gap-5">
 
@@ -405,7 +468,7 @@ function Profile({ setIsLoggedIn, setSavedQuestions, setIsSaved }) {
               >
                 <motion.button
                   type="button"
-                  onClick={DiscardChanges}
+                  onClick={handleOpenModal}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="relative px-2 py-1 overflow-hidden font-bold  text-lg border-2 rounded-md md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-secondary before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 text-secondary hover:text-white"

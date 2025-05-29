@@ -71,7 +71,9 @@ function Login({ setIsLoggedIn }) {
       console.log("Login data:", data);
 
       if (!response.ok) {
-        throw new Error(data.message || data.error || "Login failed. Please check your credentials.");
+        const err = new Error(data.message || data.error || "Login failed. Please check your credentials.");
+        err.status = response.status;
+        throw err;
       }
 
       localStorage.setItem("token", data.token);
@@ -95,6 +97,9 @@ function Login({ setIsLoggedIn }) {
     } catch (error) {
       console.error("Error:", error);
       setError(error.message || "Login failed. Please try again.");
+      if (error.status === 401) {
+        navigate("/login")
+      }
     } finally {
       setLoading(false);
     }
@@ -102,7 +107,7 @@ function Login({ setIsLoggedIn }) {
 
   const handleForgotPassword = async (e) => {
     e.preventDefault();
-    
+
     if (!email) {
       setError("Please enter your email address");
       return;

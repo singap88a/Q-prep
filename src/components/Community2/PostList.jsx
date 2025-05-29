@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
- import PostItem from "./PostItem";
+import PostItem from "./PostItem";
 
-export default function PostList({ 
-  posts, 
+export default function PostList({
+  posts,
   isMember,
   currentUser,
   onPostDeleted,
@@ -12,14 +12,17 @@ export default function PostList({
     <div>
       {posts.length > 0 ? (
         posts.map((post) => (
-          <PostItem
-            key={post.id}
-            post={post}
-            isMember={isMember}
-            currentUser={currentUser}
-            onPostDeleted={onPostDeleted}
-            onPostUpdated={onPostUpdated}
-          />
+          <div key={post.id}>
+            <PostItem
+              key={post.id}
+              post={post}
+              isMember={isMember}
+              currentUser={currentUser}
+              onPostDeleted={onPostDeleted}
+              onPostUpdated={onPostUpdated}
+            />
+          </div>
+
         ))
       ) : (
         <div className="py-8 text-center text-gray-500">

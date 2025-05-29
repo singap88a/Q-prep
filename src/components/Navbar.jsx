@@ -5,8 +5,7 @@ import { FaBookmark, FaRegBookmark } from "react-icons/fa";
 import logo from "../assets/home-img/logo.png";
 import userImage from "../assets/user.png";
 import { useUser } from "../Context/UserContext";
-// eslint-disable-next-line no-unused-vars
-import AdminRoute from "../Router/PrivateRouting";
+// import AdminRoute from "../Router/PrivateRouting";
 import { AuthContext } from "./Auth/AuthContext";
 
 function Navbar({ isLoggedIn, savedQuestions }) {
@@ -82,16 +81,7 @@ function Navbar({ isLoggedIn, savedQuestions }) {
     }
   }, [location.pathname]);
 
-  // Logout cleanup
-  // useEffect(() => {
-  //   if (!sessionStorage.getItem("hasLoggedOut")) {
-  //     localStorage.removeItem("token");
-  //     localStorage.removeItem("bookmarkActive");
-  //     localStorage.removeItem("role");
-  //     setIsLoggedIn(false);
-  //     sessionStorage.setItem("hasLoggedOut", "true");
-  //   }
-  // }, [setIsLoggedIn]);
+
 
   const closeMenu = () => setIsOpen(false);
 

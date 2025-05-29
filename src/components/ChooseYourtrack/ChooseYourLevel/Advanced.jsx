@@ -283,7 +283,7 @@ function Advanced({ savedQuestions, setSavedQuestions, isSaved, setIsSaved }) {
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.2 }}
-                  className="mt-3"
+                  className="mt-3 "
                 >
                   <div className="p-4 bg-[#f5fdfc] rounded-lg border border-gray-200 w-full overflow-hidden sm:text-lg text-xs font-semibold">
                     <SyntaxHighlighter language="javascript" style={oneLight}>

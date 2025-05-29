@@ -7,7 +7,7 @@ import {
   faShare,
   faCalendarAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import PostOptionsMenu from "./PostOptionsMenu";
 // import { getImageUrl } from "./utils";
@@ -16,7 +16,7 @@ import defaultUserImage from "../../assets/user.png";
 // Add URL detection function
 const detectAndStyleLinks = (text) => {
   if (!text) return "";
-  
+
   const urlRegex = /(https?:\/\/[^\s]+)/g;
   return text.split(urlRegex).map((part, index) => {
     if (part.match(urlRegex)) {
@@ -43,37 +43,135 @@ export default function PostItem({
   onPostDeleted,
   onPostUpdated,
 }) {
-  const [liked, setLiked] = useState(post.isLiked || false);
-  const [likesCount, setLikesCount] = useState(post.likesCount || 0);
+
   const [showOptions, setShowOptions] = useState(false);
 
-  // تحديث حالة اللايك عند تغيير البيانات من السيرفر
+  // when refresh return false from zero
+  const [liked, setLiked] = useState(false);
+  console.log("liked", liked)
+  const [likesCount, setLikesCount] = useState(post.likesCount);
+  const [isLiking, setIsLiking] = useState(false);
+  // console.log("isLiking:", isLiking)
+
+  const token = localStorage.getItem("token");
+
+
+
+
+  // const handleLikePost = async () => {
+  //   if (!currentUser) {
+  //     toast.info("Please login to like posts");
+  //     return;
+  //   }
+
+  //   if (!isMember) {
+  //     toast.info("Join the group to like posts");
+  //     return;
+  //   }
+
+  //   try {
+  //     const token = localStorage.getItem("token");
+  //     if (!token) {
+  //       toast.info("Please login to like posts");
+  //       return;
+  //     }
+
+  //     // تحديث واجهة المستخدم بشكل فوري
+  //     // const newLikedState = !liked;
+  //     // setLiked(newLikedState);
+  //     // setLikesCount((prev) => newLikedState ? prev + 1 : Math.max(0, prev - 1));
+
+  //     // if (newLikedState) {
+  //       try {
+  //         // إضافة لايك
+  //         await axios.post(
+  //           `https://redasaad.azurewebsites.net/api/Likes/AddLike/${post.id}`,
+  //           {},
+  //           {
+  //             headers: {
+  //               Authorization: `Bearer ${token}`,
+  //             },
+  //           }
+  //         );
+  //         console.log("data", data)
+  //         // return data
+  //       } catch (err) {
+  //         if (err.response?.status === 400 && err.response?.data === "You have already liked this post") {
+  //           // إذا كان المنشور معجب به بالفعل، نترك الحالة كما هي
+  //           setLiked((prev) => !prev);
+  //           setLikesCount((prev) => liked ? prev + 1 : Math.max(0, prev - 1));
+  //         } else {
+  //           console.log("error in add Like")
+  //           throw err;
+  //         }
+  //       }
+  //     }catch(err){
+  //       console.log(err)
+  //     }
+  //   //   else {
+  //   //     // إزالة اللايك
+  //   //     await axios.post(
+  //   //       `https://redasaad.azurewebsites.net/api/Likes/RemoveLike/${post.id}`,
+  //   //       {},
+  //   //       {
+  //   //         headers: {
+  //   //           Authorization: `Bearer ${token}`,
+  //   //         },
+  //   //       }
+  //   //     );
+  //   //   }
+  //   // } catch (err) {
+  //   //   console.error("Error handling like:", err);
+  //   //   // إعادة الحالة في حالة حدوث خطأ
+  //   //   setLiked((prev) => !prev);
+  //   //   setLikesCount((prev) => liked ? prev + 1 : Math.max(0, prev - 1));
+  //   //   toast.error(`Failed to ${liked ? "unlike" : "like"} post`);
+  //   // }
+
+  // };
+
+
+  const IsLiked = async () => {
+    try {
+      const res = await axios.post(
+        `https://redasaad.azurewebsites.net/api/Likes?postId=${post.postId || post.id}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      console.log("isLiked", res.data)
+      setLiked(res.data.isLiked)
+      return res.data
+    } catch (err) {
+      console.log("Error:", err)
+    }
+  }
+
   useEffect(() => {
-    const checkLikeStatus = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token || !currentUser) return;
+    setLikesCount(post.likesCount);
+    IsLiked()
+  }, [post]);
 
-        // التحقق من حالة اللايك من السيرفر
-        const response = await axios.get(
-          `https://redasaad.azurewebsites.net/api/Likes/GetLikes/${post.id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
 
-        // التحقق مما إذا كان المستخدم الحالي قد أعجب بالمنشور
-        const isLiked = response.data.includes(currentUser.id);
-        setLiked(isLiked);
-      } catch (err) {
-        console.error("Error checking like status:", err);
-      }
-    };
+  const addLike = async () => {
+    const url = `https://redasaad.azurewebsites.net/api/Likes/AddLike/${post.postId || post.id}`;
+    const res = await axios.post(url, {}, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    console.log("Add Like response:", res.data);
+    return res.data;
 
-    checkLikeStatus();
-  }, [post.id, currentUser]);
+  };
+
+  const removeLike = async () => {
+    const url = `https://redasaad.azurewebsites.net/api/Likes/RemoveLike/${post.postId || post.id}`;
+    const res = await axios.post(url, {}, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    console.log("Remove Like response:", res.data);
+    return res.data;
+  };
+
 
   const handleLikePost = async () => {
     if (!currentUser) {
@@ -86,58 +184,50 @@ export default function PostItem({
       return;
     }
 
+    if (!token) {
+      toast.info("Please login to like posts");
+      return;
+    }
+
+    if (isLiking) return;
+    setIsLiking(true);
+
+    const previousLiked = liked;
+    const previousLikesCount = likesCount;
+
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        toast.info("Please login to like posts");
-        return;
-      }
+      // when refresh
+      // zero go to else so it 
+      // make add and add return 
+      // toast.info("You already liked this post");
 
-      // تحديث واجهة المستخدم بشكل فوري
-      const newLikedState = !liked;
-      setLiked(newLikedState);
-      setLikesCount((prev) => newLikedState ? prev + 1 : Math.max(0, prev - 1));
-
-      if (newLikedState) {
-        try {
-          // إضافة لايك
-          await axios.post(
-            `https://redasaad.azurewebsites.net/api/Likes/AddLike/${post.id}`,
-            {},
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-        } catch (err) {
-          if (err.response?.status === 400 && err.response?.data === "You have already liked this post") {
-            // إذا كان المنشور معجب به بالفعل، نترك الحالة كما هي
-            setLiked(true);
-          } else {
-            throw err;
-          }
-        }
+      if (liked) {
+        await removeLike();
+        setLiked(false);
+        setLikesCount(prev => Math.max(0, prev - 1));
       } else {
-        // إزالة اللايك
-        await axios.post(
-          `https://redasaad.azurewebsites.net/api/Likes/RemoveLike/${post.id}`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        await addLike();
+        setLiked(true);
+        setLikesCount(prev => prev + 1);
       }
     } catch (err) {
-      console.error("Error handling like:", err);
-      // إعادة الحالة في حالة حدوث خطأ
-      setLiked((prev) => !prev);
-      setLikesCount((prev) => liked ? prev + 1 : Math.max(0, prev - 1));
-      toast.error(`Failed to ${liked ? "unlike" : "like"} post`);
+      setLiked(previousLiked);
+      setLikesCount(previousLikesCount);
+
+      if (err.response?.status === 400 && err.response?.data === "You have already liked this post") {
+        toast.info("You already liked this post");
+      } else {
+        toast.error("Something went wrong");
+        console.error(err);
+      }
+    } finally {
+      setIsLiking(false);
     }
   };
+
+
+
+
 
   const handleSharePost = async () => {
     try {
@@ -218,9 +308,8 @@ export default function PostItem({
 
       {post.images && post.images.length > 0 && (
         <div
-          className={`grid gap-2 mb-4 ${
-            post.images.length === 1 ? "grid-cols-1" : "grid-cols-2"
-          }`}
+          className={`grid gap-2 mb-4 ${post.images.length === 1 ? "grid-cols-1" : "grid-cols-2"
+            }`}
         >
           {post.images.map((image, index) => (
             <div
@@ -257,15 +346,16 @@ export default function PostItem({
       <div className="flex gap-4">
         <button
           onClick={handleLikePost}
-          className={`flex items-center gap-2 px-4 py-1 rounded-full max-w-[120px] ${
-            liked
+          className={`flex items-center gap-2 px-4 py-1 rounded-full max-w-[120px] 
+            ${liked
               ? "text-red-500 bg-red-100"
               : "text-gray-700 bg-gray-100 hover:bg-gray-200"
-          }`}
+            }`}
         >
           <FontAwesomeIcon icon={faHeart} />
           <span className="truncate">{likesCount} Likes</span>
         </button>
+
         <button
           onClick={handleSharePost}
           className="flex items-center gap-2 px-4 py-1 text-gray-700 bg-gray-100 rounded-full hover:bg-gray-200"
@@ -273,7 +363,38 @@ export default function PostItem({
           <FontAwesomeIcon icon={faShare} />
           Share
         </button>
+
       </div>
     </div>
   );
 }
+
+
+
+// تحديث حالة اللايك عند تغيير البيانات من السيرفر
+// useEffect(() => {
+//   const checkLikeStatus = async () => {
+//     try {
+//       const token = localStorage.getItem("token");
+//       if (!token || !currentUser) return;
+
+//       // التحقق من حالة اللايك من السيرفر
+//       const response = await axios.get(
+//         `https://redasaad.azurewebsites.net/api/Likes/GetLikes/${post.id}`,
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         }
+//       );
+
+//       // التحقق مما إذا كان المستخدم الحالي قد أعجب بالمنشور
+//       const isLiked = response.data.includes(currentUser.id);
+//       setLiked(isLiked);
+//     } catch (err) {
+//       console.error("Error checking like status:", err);
+//     }
+//   };
+
+//   checkLikeStatus();
+// }, [post.id, currentUser]);

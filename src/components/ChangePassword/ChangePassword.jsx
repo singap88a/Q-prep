@@ -1,10 +1,11 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ChangePassword = () => {
 
     const [userdata, setUserData] = useState([]);
-
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     const [token, setToken] = useState(localStorage.getItem("token"));
@@ -96,22 +97,26 @@ const ChangePassword = () => {
             });
 
             if (response.ok) {
+                toast.success("Password changed successfully")
                 setMessage("Password changed successfully!");
                 // Clear the form
                 setOldPassword("");
                 setPassword("");
                 setConfirmPassword("");
             } else {
-                setMessage("Failed to change password");
+                setMessage("Old Password Is Uncorrect");
+                toast.error("Failed to change password")
             }
         }
         catch (error) {
             setMessage("Error: " + error.message);
+            // toast.error(message)
         }
     };
 
     return (
         <div className='px-10 pt-5 ChangePassword'>
+            <ToastContainer />
             <h1 className='pb-8 text-3xl font-bold text-center'>Change Password</h1>
 
             <div className="flex flex-col items-center justify-center w-full gap-2 pt-5 pb-10 m-auto lg:w-1/2 md:w-2/3 form">
@@ -137,9 +142,12 @@ const ChangePassword = () => {
                     className="w-full p-3 border rounded-lg border-secondary text-secondary"
                 />
 
-                <p className={`w-full text-md text-center font-semibold ${message.includes("success") ? "text-green-800" : "text-red-800"}`}>
-                    {message}
-                </p>
+                {message && (
+                    <p className={`w-full text-md text-center font-semibold ${message.includes("success") ? "text-green-800 bg-green-100 border border-green-600 rounded-md px-2 py-1 " : "text-red-800 bg-red-100 border border-red-800 rounded-md px-2 py-1 "}`}>
+                        {message}
+                    </p>
+                )}
+
                 <button onClick={handleChangePassword}
                     className="relative z-10 w-full px-2 py-1 mx-2 overflow-hidden font-bold text-white border-2 rounded-md cursor-pointer md:px-8 isolation-auto border-secondary before:absolute before:w-full before:transition-all before:duration-1000 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-1000 hover:text-secondary bg-secondary"
                 >Change Password
