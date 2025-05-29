@@ -173,6 +173,7 @@ export default function PostItem({
   };
 
 
+
   const handleLikePost = async () => {
     if (!currentUser) {
       toast.info("Please login to like posts");
@@ -222,6 +223,7 @@ export default function PostItem({
       }
     } finally {
       setIsLiking(false);
+
     }
   };
 
