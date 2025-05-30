@@ -1,5 +1,6 @@
-import React from 'react'
-import { createContext, useState, useEffect } from "react";
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
+ import { createContext, useState, useEffect } from "react";
 
 export const AuthContext = createContext();
 
@@ -12,13 +13,14 @@ const AuthProvider = ({ children }) => {
         return loggedIn ? JSON.parse(loggedIn) : false;
     });
 
-    // For role, provide a default empty string or null if not present
+    // For role, provide a default empty array if not present
     const [userRole, setUserRole] = useState(() => {
-        const role = (JSON.parse(localStorage.getItem("role")) || [])
+        const role = localStorage.getItem("role");
+        if (!role) return [];
         try {
-            return role ? JSON.parse(role) : null;
+            return JSON.parse(role);
         } catch (e) {
-            return role || null; // if JSON parsing fails, return the raw value
+            return []; // if JSON parsing fails, return empty array
         }
     });
     // console.log("Auth", userRole)
@@ -27,8 +29,13 @@ const AuthProvider = ({ children }) => {
         if (token) {
             setIsLoggedIn(true);
             localStorage.setItem("isLoggedIn", "true");
+        } else {
+            setIsLoggedIn(false);
+            localStorage.setItem("isLoggedIn", "false");
+            localStorage.removeItem("role");
+            setUserRole([]);
         }
-    }, [token]);
+    }, [token, setUserRole]);
 
     return (
         <AuthContext.Provider

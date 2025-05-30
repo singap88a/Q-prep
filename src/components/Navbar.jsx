@@ -40,18 +40,18 @@ function Navbar({ isLoggedIn, savedQuestions }) {
 
   // Sync profile image with global state
   useEffect(() => {
-    if (globalProfileImage) {
+    if (isLoggedIn && globalProfileImage) {
       setLocalProfileImage(globalProfileImage);
     } else {
       setLocalProfileImage(userImage);
     }
-  }, [globalProfileImage]);
+  }, [globalProfileImage, isLoggedIn]);
 
   // Fetch user data on login
   useEffect(() => {
     if (isLoggedIn) {
       const token = localStorage.getItem("token");
-      if (token && !globalProfileImage) {
+      if (token) {
         fetch("https://redasaad.azurewebsites.net/api/Account/GetUser", {
           method: "GET",
           headers: {
@@ -64,12 +64,19 @@ function Navbar({ isLoggedIn, savedQuestions }) {
               const newImage = `https://prep.blob.core.windows.net/photosprep/${data.urlPhoto}`;
               setLocalProfileImage(newImage);
               setGlobalProfileImage(newImage);
+            } else {
+              setLocalProfileImage(userImage);
+              setGlobalProfileImage(userImage);
             }
           })
           .catch(console.error);
       }
+    } else {
+      // Reset profile image when logged out
+      setLocalProfileImage(userImage);
+      setGlobalProfileImage(userImage);
     }
-  }, [isLoggedIn, globalProfileImage, setGlobalProfileImage]);
+  }, [isLoggedIn, setGlobalProfileImage]);
 
   // Add effect to set active button based on current path
   useEffect(() => {
@@ -80,8 +87,6 @@ function Navbar({ isLoggedIn, savedQuestions }) {
       setActiveButton('signup');
     }
   }, [location.pathname]);
-
-
 
   const closeMenu = () => setIsOpen(false);
 
