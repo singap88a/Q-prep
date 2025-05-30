@@ -21,7 +21,15 @@ const GeminiSingap = () => {
   const [isTypingStopped, setIsTypingStopped] = useState(false);
 
   const chatContainerRef = useRef(null);
-  const API_KEY = "AIzaSyAIOptNThzMyTP___buTRz0gpcG3KXpXzg";
+  const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || "AIzaSyDTh5gjk2xhH9XyNYw47lrz5-RG2mKdwyw";
+  
+  // Add API key validation
+  useEffect(() => {
+    if (!API_KEY) {
+      console.error('Gemini API key is missing. Please check your .env file and ensure VITE_GEMINI_API_KEY is set.');
+    }
+  }, [API_KEY]);
+
   const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
 
   // بيانات الاقتراحات
